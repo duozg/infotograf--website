@@ -48,6 +48,9 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   const [commentText, setCommentText] = useState('');
   const [sendingComment, setSendingComment] = useState(false);
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
+  const [showOwnerMenu, setShowOwnerMenu] = useState(false);
+  const [editingCaption, setEditingCaption] = useState(false);
+  const [captionDraft, setCaptionDraft] = useState('');
 
   useEffect(() => {
     if (!postId) return;
@@ -102,14 +105,60 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     setReplyTo(null);
     try {
       const newComment = await api.post<Comment>(`/posts/${post.id}/comments`, { body, parentId });
-      setComments(prev => [newComment, ...prev]);
+      setComments(prev => [...prev, newComment]);
       setPost(p => p ? { ...p, commentCount: toCount(p.commentCount) + 1 } : p);
-    } catch (e) {
+    } catch {
       setCommentText(body);
     } finally {
       setSendingComment(false);
     }
   }, [post, commentText, sendingComment, replyTo]);
+
+  const handleSaveCaption = useCallback(async () => {
+    if (!post) return;
+    const caption = captionDraft.trim();
+    setPost(p => p ? { ...p, caption } : p);
+    setEditingCaption(false);
+    try {
+      await api.patch(`/posts/${post.id}`, { caption });
+    } catch {
+      setPost(p => p ? { ...p, caption: post.caption } : p);
+    }
+  }, [post, captionDraft]);
+
+  const handleToggleComments = useCallback(async () => {
+    if (!post) return;
+    const newVal = !post.commentsDisabled;
+    setPost(p => p ? { ...p, commentsDisabled: newVal } : p);
+    setShowOwnerMenu(false);
+    try {
+      await api.patch(`/posts/${post.id}`, { commentsDisabled: newVal });
+    } catch {
+      setPost(p => p ? { ...p, commentsDisabled: post.commentsDisabled } : p);
+    }
+  }, [post]);
+
+  const handleDeletePost = useCallback(async () => {
+    if (!post) return;
+    setShowOwnerMenu(false);
+    try {
+      await api.delete(`/posts/${post.id}`);
+      onClose?.();
+      navigate(-1);
+    } catch {}
+  }, [post, onClose, navigate]);
+
+  const handleDeleteComment = useCallback(async (comment: Comment) => {
+    if (!post) return;
+    setComments(prev => prev.filter(c => c.id !== comment.id));
+    setPost(p => p ? { ...p, commentCount: Math.max(0, toCount(p.commentCount) - 1) } : p);
+    try {
+      await api.delete(`/posts/${post.id}/comments/${comment.id}`);
+    } catch {
+      setComments(prev => [...prev, comment]);
+      setPost(p => p ? { ...p, commentCount: toCount(p.commentCount) + 1 } : p);
+    }
+  }, [post]);
 
   const handleLikeComment = useCallback(async (comment: Comment) => {
     if (!post) return;
@@ -176,6 +225,39 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
           </div>
           {post.locationName && <div className={styles.location}>{post.locationName}</div>}
         </div>
+        {post.userId === user?.id && (
+          <div style={{ position: 'relative' }}>
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowOwnerMenu(v => !v)}
+              aria-label="Post options"
+              style={{ fontSize: 20 }}
+            >···</button>
+            {showOwnerMenu && (
+              <div className={styles.ownerMenu}>
+                <button
+                  className={styles.ownerMenuItem}
+                  onClick={() => {
+                    setShowOwnerMenu(false);
+                    setCaptionDraft(post.caption || '');
+                    setEditingCaption(true);
+                  }}
+                >
+                  Edit Caption
+                </button>
+                <button className={styles.ownerMenuItem} onClick={handleToggleComments}>
+                  {post.commentsDisabled ? 'Enable Comments' : 'Disable Comments'}
+                </button>
+                <button
+                  className={`${styles.ownerMenuItem} ${styles.ownerMenuItemDanger}`}
+                  onClick={handleDeletePost}
+                >
+                  Delete Post
+                </button>
+              </div>
+            )}
+          </div>
+        )}
         {onClose && (
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">×</button>
         )}
@@ -219,14 +301,32 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
               {toCount(post.likeCount).toLocaleString()} {toCount(post.likeCount) === 1 ? 'like' : 'likes'}
             </div>
           )}
-          {post.caption && (
+          {editingCaption ? (
+            <div className={styles.editCaptionWrap}>
+              <textarea
+                className={styles.editCaptionInput}
+                value={captionDraft}
+                onChange={e => setCaptionDraft(e.target.value)}
+                autoFocus
+                rows={3}
+              />
+              <div className={styles.editCaptionActions}>
+                <button className={styles.sendBtn} onClick={handleSaveCaption}>Save</button>
+                <button
+                  className={styles.sendBtn}
+                  style={{ color: 'var(--text-secondary)' }}
+                  onClick={() => setEditingCaption(false)}
+                >Cancel</button>
+              </div>
+            </div>
+          ) : post.caption ? (
             <div className={styles.caption}>
               <span className={styles.captionUser} onClick={() => navigate(`/profile/${post.username}`)}>
                 {post.username}
               </span>
               <TextEntityRenderer text={post.caption} />
             </div>
-          )}
+          ) : null}
           <div className={styles.timestamp}>{timeAgo(post.createdAt)}</div>
         </div>
 
@@ -273,6 +373,15 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
                       }}
                     >
                       Reply
+                    </button>
+                  )}
+                  {comment.userId === user?.id && (
+                    <button
+                      className={styles.replyBtn}
+                      style={{ color: 'var(--accent-red)' }}
+                      onClick={() => handleDeleteComment(comment)}
+                    >
+                      Delete
                     </button>
                   )}
                 </div>

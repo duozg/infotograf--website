@@ -9,12 +9,14 @@ import { timeAgo } from '../utils/timeAgo';
 import { imageUrl } from '../utils/imageUrl';
 import { toCount } from '../utils/textParser';
 import { api } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 
 interface PostCardProps {
   post: Post;
   onPostClick?: (post: Post) => void;
   onUserClick?: (username: string) => void;
   onUpdate?: (updated: Post) => void;
+  onDelete?: (postId: string) => void;
 }
 
 function HeartIcon({ filled }: { filled?: boolean }) {
@@ -41,11 +43,15 @@ function BookmarkIcon({ filled }: { filled?: boolean }) {
   );
 }
 
-export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardProps) {
+export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }: PostCardProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [localPost, setLocalPost] = useState(post);
   const likeInProgressRef = useRef(false);
   const bookmarkInProgressRef = useRef(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [editingCaption, setEditingCaption] = useState(false);
+  const [captionDraft, setCaptionDraft] = useState('');
 
   // Sync with parent
   React.useEffect(() => {
@@ -131,6 +137,42 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
     navigate(`/post/${localPost.id}`);
   };
 
+  const handleSaveCaption = useCallback(async () => {
+    const caption = captionDraft.trim();
+    const updated = { ...localPost, caption };
+    setLocalPost(updated);
+    onUpdate?.(updated);
+    setEditingCaption(false);
+    try {
+      await api.patch(`/posts/${localPost.id}`, { caption });
+    } catch {
+      setLocalPost(localPost);
+      onUpdate?.(localPost);
+    }
+  }, [localPost, captionDraft, onUpdate]);
+
+  const handleToggleComments = useCallback(async () => {
+    setShowMenu(false);
+    const newVal = !localPost.commentsDisabled;
+    const updated = { ...localPost, commentsDisabled: newVal };
+    setLocalPost(updated);
+    onUpdate?.(updated);
+    try {
+      await api.patch(`/posts/${localPost.id}`, { commentsDisabled: newVal });
+    } catch {
+      setLocalPost(localPost);
+      onUpdate?.(localPost);
+    }
+  }, [localPost, onUpdate]);
+
+  const handleDeletePost = useCallback(async () => {
+    setShowMenu(false);
+    try {
+      await api.delete(`/posts/${localPost.id}`);
+      onDelete?.(localPost.id);
+    } catch {}
+  }, [localPost.id, onDelete]);
+
   const handleCommentClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate(`/post/${localPost.id}?focus=comment`);
@@ -164,7 +206,42 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
             <div className={styles.location}>{localPost.locationName}</div>
           )}
         </div>
-        <button className={styles.moreBtn} aria-label="More options">···</button>
+        {localPost.userId === user?.id && (
+          <div style={{ position: 'relative' }}>
+            <button
+              className={styles.moreBtn}
+              aria-label="More options"
+              onClick={e => { e.stopPropagation(); setShowMenu(v => !v); }}
+            >···</button>
+            {showMenu && (
+              <div className={styles.cardMenu}>
+                <button
+                  className={styles.cardMenuItem}
+                  onClick={e => {
+                    e.stopPropagation();
+                    setShowMenu(false);
+                    setCaptionDraft(localPost.caption || '');
+                    setEditingCaption(true);
+                  }}
+                >
+                  Edit Caption
+                </button>
+                <button
+                  className={styles.cardMenuItem}
+                  onClick={e => { e.stopPropagation(); handleToggleComments(); }}
+                >
+                  {localPost.commentsDisabled ? 'Enable Comments' : 'Disable Comments'}
+                </button>
+                <button
+                  className={`${styles.cardMenuItem} ${styles.cardMenuItemDanger}`}
+                  onClick={e => { e.stopPropagation(); handleDeletePost(); }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Image */}
@@ -208,14 +285,28 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
             {likeCount.toLocaleString()} {likeCount === 1 ? 'like' : 'likes'}
           </div>
         )}
-        {localPost.caption && (
+        {editingCaption ? (
+          <div className={styles.editCaptionWrap} onClick={e => e.stopPropagation()}>
+            <textarea
+              className={styles.editCaptionInput}
+              value={captionDraft}
+              onChange={e => setCaptionDraft(e.target.value)}
+              autoFocus
+              rows={2}
+            />
+            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <button className={styles.editCaptionSave} onClick={handleSaveCaption}>Save</button>
+              <button className={styles.editCaptionCancel} onClick={() => setEditingCaption(false)}>Cancel</button>
+            </div>
+          </div>
+        ) : localPost.caption ? (
           <div className={styles.caption}>
             <span className={styles.captionUsername} onClick={handleUserClick}>
               {localPost.username}
             </span>
             <TextEntityRenderer text={localPost.caption} />
           </div>
-        )}
+        ) : null}
         {localPost.commentsDisabled ? (
           <div className={styles.commentsDisabled}>Comments disabled</div>
         ) : commentCount > 0 ? (

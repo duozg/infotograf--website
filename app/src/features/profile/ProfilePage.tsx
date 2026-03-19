@@ -10,6 +10,84 @@ import { useAuth } from '../../context/AuthContext';
 import { EditProfileModal } from './EditProfileModal';
 import { SettingsModal } from './SettingsModal';
 
+interface FollowModalProps {
+  userId: string;
+  kind: 'followers' | 'following';
+  onClose: () => void;
+}
+
+function FollowModal({ userId, kind, onClose }: FollowModalProps) {
+  const navigate = useNavigate();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const endpoint = kind === 'followers'
+      ? `/follows/${userId}/followers`
+      : `/follows/${userId}/following`;
+    api.get<User[]>(endpoint)
+      .then(res => setUsers(Array.isArray(res) ? res : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [userId, kind]);
+
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 300,
+      }}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div style={{
+        background: 'var(--bg-card)', borderRadius: 12, width: 360, maxWidth: '90vw',
+        maxHeight: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+      }}>
+        <div style={{
+          padding: '14px 16px', borderBottom: '1px solid var(--divider-card)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+            {kind === 'followers' ? 'Followers' : 'Following'}
+          </span>
+          <button
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--text-secondary)', lineHeight: 1 }}
+          >×</button>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {loading && (
+            <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>Loading…</div>
+          )}
+          {!loading && users.length === 0 && (
+            <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+              {kind === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'}
+            </div>
+          )}
+          {users.map(u => (
+            <div
+              key={u.id}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px',
+                cursor: 'pointer', transition: 'background 0.1s',
+              }}
+              onClick={() => { onClose(); navigate(`/profile/${u.username}`); }}
+            >
+              <Avatar src={u.avatarUrl} username={u.username} size="md" />
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{u.username}</div>
+                {u.displayName && (
+                  <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{u.displayName}</div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GridIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -51,6 +129,7 @@ export function ProfilePage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [followModal, setFollowModal] = useState<'followers' | 'following' | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState<'posts' | 'bookmarks'>('posts');
   const [bookmarks, setBookmarks] = useState<Post[]>([]);
@@ -181,7 +260,7 @@ export function ProfilePage() {
                       </button>
                       <button
                         className={styles.messageBtn}
-                        onClick={() => navigate(`/messages`)}
+                        onClick={() => navigate(`/messages?with=${profile.id}`)}
                       >
                         Message
                       </button>
@@ -197,7 +276,7 @@ export function ProfilePage() {
                   </div>
                   <div
                     className={styles.statItem}
-                    onClick={() => navigate(`/profile/${profile.username}/followers`)}
+                    onClick={() => setFollowModal('followers')}
                     style={{ cursor: 'pointer' }}
                   >
                     <span className={styles.statValue}>{toCount(profile.followerCount).toLocaleString()}</span>
@@ -205,7 +284,7 @@ export function ProfilePage() {
                   </div>
                   <div
                     className={styles.statItem}
-                    onClick={() => navigate(`/profile/${profile.username}/following`)}
+                    onClick={() => setFollowModal('following')}
                     style={{ cursor: 'pointer' }}
                   >
                     <span className={styles.statValue}>{toCount(profile.followingCount).toLocaleString()}</span>
@@ -372,6 +451,14 @@ export function ProfilePage() {
 
       {showSettings && (
         <SettingsModal onClose={() => setShowSettings(false)} />
+      )}
+
+      {followModal && profile && (
+        <FollowModal
+          userId={profile.id}
+          kind={followModal}
+          onClose={() => setFollowModal(null)}
+        />
       )}
     </div>
   );

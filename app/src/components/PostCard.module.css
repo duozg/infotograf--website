@@ -150,3 +150,75 @@
   color: var(--text-tertiary);
   margin-bottom: 4px;
 }
+
+/* ── Owner card menu ── */
+
+.cardMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  min-width: 160px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.cardMenuItem {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.cardMenuItem:hover { background: var(--bg-elevated); }
+.cardMenuItemDanger { color: var(--accent-red) !important; }
+
+/* ── Inline caption editing ── */
+
+.editCaptionWrap {
+  margin-bottom: 4px;
+}
+
+.editCaptionInput {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: var(--font-body);
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.editCaptionInput:focus { border-color: var(--text-link); }
+
+.editCaptionSave {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-link);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0;
+}
+
+.editCaptionCancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 0;
+}

@@ -144,6 +144,10 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
     setItems(prev => prev.map(p => p.id === updated.id ? updated : p));
   }, [setItems]);
 
+  const handleDelete = useCallback((postId: string) => {
+    setItems(prev => prev.filter(p => p.id !== postId));
+  }, [setItems]);
+
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     if (!hasMore || loadingMore) return;
@@ -182,7 +186,7 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
           )}
 
           {posts.map(post => (
-            <PostCard key={post.id} post={post} onUpdate={handleUpdate} />
+            <PostCard key={post.id} post={post} onUpdate={handleUpdate} onDelete={handleDelete} />
           ))}
 
           {loadingMore && (
