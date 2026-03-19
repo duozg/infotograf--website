@@ -1,0 +1,615 @@
+/* ============================================================
+   Infotograf — Website Styles
+   Design tokens mapped from iOS AppTheme.swift
+   ============================================================ */
+
+:root {
+  /* === Dark Mode Tokens (nav, hero, philosophy, footer) === */
+  --bg-app-dark: #1c1a1b;
+  --bg-card-dark: #2c2a2b;
+  --bg-input-dark: #353334;
+  --bg-elevated-dark: #363435;
+  --text-primary-dark: #e8e6e7;
+  --text-secondary-dark: #8a8889;
+  --text-tertiary-dark: #666565;
+  --text-link-dark: #6a9fd4;
+  --border-primary-dark: #484647;
+  --border-secondary-dark: #4e4c4d;
+  --header-gradient-top: #3a5270;
+  --header-gradient-bottom: #263d5c;
+  --header-border: #1e344e;
+  --cta-gradient-top: #4a82b5;
+  --cta-gradient-bottom: #2f6499;
+  --cta-border: #245a8e;
+  --tab-gradient-top: #393939;
+  --tab-gradient-bottom: #1a1a1a;
+  --tab-border: #555555;
+
+  /* === Light Mode Tokens (features, content pages) === */
+  --bg-app-light: #efedee;
+  --bg-card-light: #ffffff;
+  --bg-input-light: #f5f5f5;
+  --text-primary-light: #333333;
+  --text-secondary-light: #999999;
+  --text-tertiary-light: #bbbbbb;
+  --text-link-light: #3b6994;
+  --border-primary-light: #d4d4d4;
+  --border-secondary-light: #cccccc;
+
+  /* === Invariant Accents === */
+  --accent-red: #ed4956;
+  --success-green: #4caf50;
+
+  /* === Typography === */
+  --font-logo: 'Georgia', 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* === Layout === */
+  --section-padding-y: 100px;
+  --section-padding-x: 24px;
+  --content-max-width: 980px;
+  --nav-height: 48px;
+
+  /* === Corner Radii (from iOS) === */
+  --radius-button: 3px;
+  --radius-card: 4px;
+}
+
+
+/* ─── Reset ────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text-primary-light);
+  background: var(--bg-app-light);
+}
+
+
+/* ─── Navigation ───────────────────────────────────────── */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  background: linear-gradient(to bottom, var(--header-gradient-top), var(--header-gradient-bottom));
+  border-bottom: 1px solid var(--header-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.nav-inner {
+  max-width: var(--content-max-width);
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-size: 21px;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #ffffff;
+}
+
+
+/* ─── Hero Section ─────────────────────────────────────── */
+
+.hero {
+  background: var(--bg-app-dark);
+  color: var(--text-primary-dark);
+  text-align: center;
+  padding: 120px var(--section-padding-x) 100px;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo {
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-size: 72px;
+  color: var(--text-primary-dark);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.hero-tagline {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 200;
+  color: var(--text-secondary-dark);
+  max-width: 540px;
+  margin: 0 auto 48px;
+  line-height: 1.5;
+}
+
+.hero-cta {
+  display: inline-block;
+  padding: 14px 48px;
+  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
+  border: 1px solid var(--cta-border);
+  border-radius: var(--radius-button);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.hero-cta:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.hero--compact {
+  min-height: auto;
+  padding: 80px var(--section-padding-x);
+}
+
+.hero--compact .hero-tagline {
+  margin-bottom: 32px;
+}
+
+
+/* ─── Features Section ─────────────────────────────────── */
+
+.features {
+  background: var(--bg-app-light);
+  padding: var(--section-padding-y) var(--section-padding-x);
+}
+
+.features-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.features-heading {
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 36px;
+  font-weight: 200;
+  color: var(--text-primary-light);
+  margin-bottom: 16px;
+}
+
+.features-subheading {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--text-secondary-light);
+  margin-bottom: 64px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 32px 24px;
+  background: var(--bg-card-light);
+  border: 1px solid var(--border-primary-light);
+  border-radius: var(--radius-card);
+}
+
+.feature-icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.feature-title {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary-light);
+  margin-bottom: 12px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-secondary-light);
+  line-height: 1.6;
+}
+
+
+/* ─── Philosophy Section ───────────────────────────────── */
+
+.philosophy {
+  background: var(--bg-card-dark);
+  color: var(--text-primary-dark);
+  text-align: center;
+  padding: var(--section-padding-y) var(--section-padding-x);
+}
+
+.philosophy-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.philosophy-heading {
+  font-family: var(--font-body);
+  font-size: 32px;
+  font-weight: 200;
+  margin-bottom: 24px;
+}
+
+.philosophy-text {
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--text-secondary-dark);
+  line-height: 1.8;
+}
+
+
+/* ─── Footer ───────────────────────────────────────────── */
+
+.footer {
+  background: linear-gradient(to bottom, var(--tab-gradient-top), var(--tab-gradient-bottom));
+  border-top: 1px solid var(--tab-border);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 40px var(--section-padding-x);
+}
+
+.footer-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-copyright {
+  max-width: var(--content-max-width);
+  margin: 24px auto 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+}
+
+
+/* ─── Content Pages (Privacy, Support) ─────────────────── */
+
+.content-page-header {
+  background: var(--bg-app-dark);
+  text-align: center;
+  padding: 64px var(--section-padding-x) 56px;
+}
+
+.content-page-header h1 {
+  font-family: var(--font-body);
+  font-size: 36px;
+  font-weight: 200;
+  color: var(--text-primary-dark);
+}
+
+.content-page-header .last-updated {
+  font-size: 13px;
+  color: var(--text-secondary-dark);
+  margin-top: 8px;
+}
+
+.content-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px var(--section-padding-x) 80px;
+}
+
+.content-body h2 {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-primary-light);
+  margin-top: 40px;
+  margin-bottom: 16px;
+}
+
+.content-body h2:first-child {
+  margin-top: 0;
+}
+
+.content-body h3 {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-primary-light);
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+
+.content-body p {
+  font-size: 15px;
+  font-weight: 300;
+  color: #666666;
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+
+.content-body ul,
+.content-body ol {
+  font-size: 15px;
+  font-weight: 300;
+  color: #666666;
+  margin-bottom: 16px;
+  padding-left: 24px;
+  line-height: 1.7;
+}
+
+.content-body li {
+  margin-bottom: 6px;
+}
+
+.content-body a {
+  color: var(--text-link-light);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.content-body a:hover {
+  border-bottom-color: var(--text-link-light);
+}
+
+
+/* ─── Contact Card ─────────────────────────────────────── */
+
+.contact-card {
+  background: var(--bg-card-light);
+  border: 1px solid var(--border-primary-light);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.contact-card p {
+  color: var(--text-secondary-dark);
+}
+
+.contact-email {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-link-light);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.contact-email:hover {
+  border-bottom-color: var(--text-link-light);
+}
+
+
+/* ─── FAQ Accordion ────────────────────────────────────── */
+
+.faq-item {
+  border-bottom: 1px solid var(--border-primary-light);
+  padding: 20px 0;
+}
+
+.faq-item summary {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary-light);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: '+';
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text-tertiary-light);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.faq-item[open] summary::after {
+  content: '\2212';
+}
+
+.faq-item .faq-answer {
+  margin-top: 12px;
+}
+
+.faq-item .faq-answer p {
+  font-size: 15px;
+  font-weight: 300;
+  color: #666666;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+
+/* ─── Animations ───────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-logo,
+.hero-tagline,
+.hero-cta {
+  animation: fadeInUp 0.8s ease-out both;
+}
+
+.hero-tagline {
+  animation-delay: 0.15s;
+}
+
+.hero-cta {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ─── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding-y: 64px;
+  }
+
+  .hero {
+    padding: 80px 20px 64px;
+    min-height: 60vh;
+  }
+
+  .hero-logo {
+    font-size: 48px;
+  }
+
+  .hero-tagline {
+    font-size: 18px;
+  }
+
+  .hero--compact {
+    padding: 56px 20px;
+  }
+
+  .features-heading {
+    font-size: 28px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .philosophy-heading {
+    font-size: 26px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .content-page-header h1 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-logo {
+    font-size: 36px;
+  }
+
+  .hero {
+    padding: 64px 16px 48px;
+  }
+
+  .hero--compact {
+    padding: 48px 16px;
+  }
+
+  .nav {
+    padding: 0 16px;
+  }
+
+  .nav-links {
+    gap: 16px;
+  }
+
+  .content-body {
+    padding: 32px 16px 60px;
+  }
+
+  .content-page-header {
+    padding: 48px 16px 40px;
+  }
+}
