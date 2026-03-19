@@ -1,10 +1,13 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "_out",
-  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/:path*", "destination": "/" }
+    { "source": "/privacy",    "destination": "/privacy.html" },
+    { "source": "/terms",      "destination": "/terms.html" },
+    { "source": "/support",    "destination": "/support.html" },
+    { "source": "/guidelines", "destination": "/guidelines.html" },
+    { "source": "/(.*)",       "destination": "/index.html" }
   ],
   "headers": [
     {
