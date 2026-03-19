@@ -1,0 +1,140 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  background: linear-gradient(to bottom, var(--header-gradient-top), var(--header-gradient-bottom));
+  border-bottom: 1px solid var(--header-border);
+  z-index: 100;
+}
+
+.inner {
+  max-width: 975px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+}
+
+.logo {
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-size: 22px;
+  color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+  letter-spacing: -0.3px;
+}
+
+.logo:hover { opacity: 0.85; }
+
+.searchForm {
+  flex: 1;
+  max-width: 268px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 5px 12px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.searchBar:focus-within {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.searchIcon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.searchInput::placeholder { color: rgba(255, 255, 255, 0.45); }
+.searchInput::-webkit-search-cancel-button { display: none; }
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.navBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.navBtn.active { color: #fff; }
+
+.navBtn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Profile avatar in nav sits flush */
+.navBtn :global(.avatar) {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  outline: 2px solid transparent;
+  transition: outline-color 0.15s;
+}
+
+.navBtn.active :global(.avatar) {
+  outline-color: rgba(255, 255, 255, 0.7);
+}
+
+.badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: var(--accent-red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  pointer-events: none;
+  line-height: 1;
+}

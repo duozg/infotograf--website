@@ -4,7 +4,6 @@ import styles from './PostDetailModal.module.css';
 import { Avatar } from '../../components/Avatar';
 import { ImageCarousel } from '../../components/ImageCarousel';
 import { TextEntityRenderer } from '../../components/TextEntityRenderer';
-import { HeaderBar } from '../../components/HeaderBar';
 import { api } from '../../api/client';
 import { Post, Comment } from '../../models';
 import { parsePaginated } from '../../api/client';
@@ -63,7 +62,6 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     }).catch(() => {}).finally(() => setLoading(false));
   }, [postId]);
 
-  // Auto-focus comment input if ?focus=comment
   useEffect(() => {
     if (searchParams.get('focus') === 'comment') {
       setTimeout(() => commentInputRef.current?.focus(), 300);
@@ -103,10 +101,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     const parentId = replyTo?.id;
     setReplyTo(null);
     try {
-      const newComment = await api.post<Comment>(`/posts/${post.id}/comments`, {
-        body,
-        parentId,
-      });
+      const newComment = await api.post<Comment>(`/posts/${post.id}/comments`, { body, parentId });
       setComments(prev => [newComment, ...prev]);
       setPost(p => p ? { ...p, commentCount: toCount(p.commentCount) + 1 } : p);
     } catch (e) {
@@ -127,9 +122,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
       if (wasLiked) await api.delete(`/posts/${post.id}/comments/${comment.id}/like`);
       else await api.post(`/posts/${post.id}/comments/${comment.id}/like`);
     } catch {
-      setComments(prev => prev.map(c =>
-        c.id === comment.id ? comment : c
-      ));
+      setComments(prev => prev.map(c => c.id === comment.id ? comment : c));
     }
   }, [post]);
 
@@ -146,202 +139,210 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
 
   if (!postId) return null;
 
-  const content = (
-    <>
-      {loading && (
-        <div className={styles.loadingState}>Loading…</div>
-      )}
-
-      {post && (
-        <>
-          {/* Post Header */}
-          <div className={styles.header}>
-            <Avatar
-              src={post.avatarUrl}
-              username={post.username}
-              size="md"
-              className={styles.avatar}
-              onClick={() => navigate(`/profile/${post.username}`)}
-            />
-            <div className={styles.userInfo}>
-              <div className={styles.username} onClick={() => navigate(`/profile/${post.username}`)}>
-                {post.username}
-              </div>
-              {post.locationName && <div className={styles.location}>{post.locationName}</div>}
-            </div>
-            {onClose && (
-              <button className={styles.closeBtn} onClick={onClose}>×</button>
-            )}
-          </div>
-
-          {/* Image */}
-          <div className={styles.imageSection}>
-            {(() => {
-              const images = post.imageUrls && post.imageUrls.length > 0
-                ? post.imageUrls
-                : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl, filterName: post.filterName }];
-              return <ImageCarousel images={images} filterName={post.filterName} />;
-            })()}
-          </div>
-
-          <div className={styles.scrollable}>
-            {/* Actions */}
-            <div className={styles.actions}>
-              <button
-                className={`${styles.actionBtn} ${post.isLiked ? styles.liked : ''}`}
-                onClick={handleLike}
-                aria-label={post.isLiked ? 'Unlike' : 'Like'}
-                style={{ color: post.isLiked ? 'var(--accent-red)' : 'var(--text-primary)' }}
-              >
-                <HeartIcon filled={post.isLiked} />
-              </button>
-              {!post.commentsDisabled && (
-                <button
-                  className={styles.actionBtn}
-                  onClick={() => commentInputRef.current?.focus()}
-                  aria-label="Comment"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                </button>
-              )}
-              <div className={styles.spacer} />
-              <button
-                className={`${styles.actionBtn} ${post.isBookmarked ? '' : ''}`}
-                onClick={handleBookmark}
-                aria-label={post.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-              >
-                <BookmarkIcon filled={post.isBookmarked} />
-              </button>
-            </div>
-
-            {/* Meta */}
-            <div className={styles.meta}>
-              {toCount(post.likeCount) > 0 && (
-                <div className={styles.likeCount}>
-                  {toCount(post.likeCount).toLocaleString()} {toCount(post.likeCount) === 1 ? 'like' : 'likes'}
-                </div>
-              )}
-              {post.caption && (
-                <div className={styles.caption}>
-                  <span
-                    className={styles.captionUser}
-                    onClick={() => navigate(`/profile/${post.username}`)}
-                  >
-                    {post.username}
-                  </span>
-                  <TextEntityRenderer text={post.caption} />
-                </div>
-              )}
-              <div className={styles.timestamp}>{timeAgo(post.createdAt)}</div>
-            </div>
-
-            {/* Comments */}
-            <div className={styles.comments}>
-              {comments.map(comment => (
-                <div key={comment.id} className={styles.comment}>
-                  <Avatar
-                    src={comment.avatarUrl}
-                    username={comment.username}
-                    size="sm"
-                    onClick={() => navigate(`/profile/${comment.username}`)}
-                  />
-                  <div className={styles.commentBody}>
-                    <div>
-                      <span
-                        className={styles.commentUser}
-                        onClick={() => navigate(`/profile/${comment.username}`)}
-                      >
-                        {comment.username}
-                      </span>
-                      <TextEntityRenderer text={comment.body} className={styles.commentText} />
-                    </div>
-                    <div className={styles.commentMeta}>
-                      <span className={styles.commentTime}>{timeAgo(comment.createdAt)}</span>
-                      {toCount(comment.likeCount) > 0 && (
-                        <span className={styles.commentTime}>{toCount(comment.likeCount)} likes</span>
-                      )}
-                      <button
-                        className={`${styles.commentLikeBtn} ${comment.isLiked ? styles.liked : ''}`}
-                        onClick={() => handleLikeComment(comment)}
-                        aria-label={comment.isLiked ? 'Unlike comment' : 'Like comment'}
-                      >
-                        <svg viewBox="0 0 24 24" fill={comment.isLiked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} style={{ width: 12, height: 12 }}>
-                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                        </svg>
-                      </button>
-                      {!post.commentsDisabled && (
-                        <button
-                          className={styles.replyBtn}
-                          onClick={() => {
-                            setReplyTo(comment);
-                            setCommentText(`@${comment.username} `);
-                            commentInputRef.current?.focus();
-                          }}
-                        >
-                          Reply
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {commentCursor && (
-                <button className={styles.loadMoreComments} onClick={loadMoreComments}>
-                  Load more comments…
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Comment Input */}
-          {!post.commentsDisabled && (
-            <div className={styles.inputBar}>
-              <Avatar src={user?.avatarUrl} username={user?.username} size="sm" />
-              <textarea
-                ref={commentInputRef}
-                className={styles.commentInput}
-                placeholder={replyTo ? `Reply to @${replyTo.username}…` : 'Add a comment…'}
-                value={commentText}
-                onChange={e => setCommentText(e.target.value)}
-                rows={1}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendComment();
-                  }
-                }}
-              />
-              <button
-                className={styles.sendBtn}
-                onClick={handleSendComment}
-                disabled={!commentText.trim() || sendingComment}
-              >
-                Post
-              </button>
-            </div>
-          )}
-        </>
-      )}
-    </>
-  );
-
-  if (asPage) {
-    return (
+  if (loading) {
+    return asPage ? (
       <div className={styles.page}>
-        <HeaderBar title="Post" onBack={() => navigate(-1)} />
-        <div style={{ marginTop: 44 }}>
-          {content}
+        <div className={styles.loadingState}>Loading…</div>
+      </div>
+    ) : (
+      <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose?.(); }}>
+        <div className={styles.modal}>
+          <div className={styles.loadingState}>Loading…</div>
         </div>
       </div>
     );
   }
 
+  if (!post) return null;
+
+  const images = post.imageUrls && post.imageUrls.length > 0
+    ? post.imageUrls
+    : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl, filterName: post.filterName }];
+
+  /* ── Shared right panel content ── */
+  const rightPanel = (
+    <>
+      {/* Header */}
+      <div className={styles.header}>
+        <Avatar
+          src={post.avatarUrl}
+          username={post.username}
+          size="md"
+          onClick={() => navigate(`/profile/${post.username}`)}
+        />
+        <div className={styles.userInfo}>
+          <div className={styles.username} onClick={() => navigate(`/profile/${post.username}`)}>
+            {post.username}
+          </div>
+          {post.locationName && <div className={styles.location}>{post.locationName}</div>}
+        </div>
+        {onClose && (
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">×</button>
+        )}
+      </div>
+
+      {/* Scrollable: actions + meta + comments */}
+      <div className={styles.scrollable}>
+        <div className={styles.actions}>
+          <button
+            className={`${styles.actionBtn} ${post.isLiked ? styles.liked : ''}`}
+            onClick={handleLike}
+            aria-label={post.isLiked ? 'Unlike' : 'Like'}
+            style={{ color: post.isLiked ? 'var(--accent-red)' : undefined }}
+          >
+            <HeartIcon filled={post.isLiked} />
+          </button>
+          {!post.commentsDisabled && (
+            <button
+              className={styles.actionBtn}
+              onClick={() => commentInputRef.current?.focus()}
+              aria-label="Comment"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
+          )}
+          <div className={styles.spacer} />
+          <button
+            className={styles.actionBtn}
+            onClick={handleBookmark}
+            aria-label={post.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+          >
+            <BookmarkIcon filled={post.isBookmarked} />
+          </button>
+        </div>
+
+        <div className={styles.meta}>
+          {toCount(post.likeCount) > 0 && (
+            <div className={styles.likeCount}>
+              {toCount(post.likeCount).toLocaleString()} {toCount(post.likeCount) === 1 ? 'like' : 'likes'}
+            </div>
+          )}
+          {post.caption && (
+            <div className={styles.caption}>
+              <span className={styles.captionUser} onClick={() => navigate(`/profile/${post.username}`)}>
+                {post.username}
+              </span>
+              <TextEntityRenderer text={post.caption} />
+            </div>
+          )}
+          <div className={styles.timestamp}>{timeAgo(post.createdAt)}</div>
+        </div>
+
+        <div className={styles.comments}>
+          {comments.map(comment => (
+            <div key={comment.id} className={styles.comment}>
+              <Avatar
+                src={comment.avatarUrl}
+                username={comment.username}
+                size="sm"
+                onClick={() => navigate(`/profile/${comment.username}`)}
+              />
+              <div className={styles.commentBody}>
+                <div>
+                  <span
+                    className={styles.commentUser}
+                    onClick={() => navigate(`/profile/${comment.username}`)}
+                  >
+                    {comment.username}
+                  </span>
+                  <TextEntityRenderer text={comment.body} className={styles.commentText} />
+                </div>
+                <div className={styles.commentMeta}>
+                  <span className={styles.commentTime}>{timeAgo(comment.createdAt)}</span>
+                  {toCount(comment.likeCount) > 0 && (
+                    <span className={styles.commentTime}>{toCount(comment.likeCount)} likes</span>
+                  )}
+                  <button
+                    className={`${styles.commentLikeBtn} ${comment.isLiked ? styles.liked : ''}`}
+                    onClick={() => handleLikeComment(comment)}
+                    aria-label={comment.isLiked ? 'Unlike comment' : 'Like comment'}
+                  >
+                    <svg viewBox="0 0 24 24" fill={comment.isLiked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} style={{ width: 12, height: 12 }}>
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
+                  {!post.commentsDisabled && (
+                    <button
+                      className={styles.replyBtn}
+                      onClick={() => {
+                        setReplyTo(comment);
+                        setCommentText(`@${comment.username} `);
+                        commentInputRef.current?.focus();
+                      }}
+                    >
+                      Reply
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          {commentCursor && (
+            <button className={styles.loadMoreComments} onClick={loadMoreComments}>
+              Load more comments…
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Comment input */}
+      {!post.commentsDisabled && (
+        <div className={styles.inputBar}>
+          <Avatar src={user?.avatarUrl} username={user?.username} size="sm" />
+          <textarea
+            ref={commentInputRef}
+            className={styles.commentInput}
+            placeholder={replyTo ? `Reply to @${replyTo.username}…` : 'Add a comment…'}
+            value={commentText}
+            onChange={e => setCommentText(e.target.value)}
+            rows={1}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendComment();
+              }
+            }}
+          />
+          <button
+            className={styles.sendBtn}
+            onClick={handleSendComment}
+            disabled={!commentText.trim() || sendingComment}
+          >
+            Post
+          </button>
+        </div>
+      )}
+    </>
+  );
+
+  /* ── Page variant: centered column ── */
+  if (asPage) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.pageModal}>
+          <div className={styles.imagePanel}>
+            <ImageCarousel images={images} filterName={post.filterName} />
+          </div>
+          <div className={styles.rightPanel}>
+            {rightPanel}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Modal overlay: side-by-side ── */
   return (
     <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose?.(); }}>
       <div className={styles.modal}>
-        {content}
+        <div className={styles.imagePanel}>
+          <ImageCarousel images={images} filterName={post.filterName} />
+        </div>
+        <div className={styles.rightPanel}>
+          {rightPanel}
+        </div>
       </div>
     </div>
   );

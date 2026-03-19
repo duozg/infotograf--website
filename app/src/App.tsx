@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Routes, Route, Navigate, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useCallback } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
@@ -9,11 +9,9 @@ import { NotificationsPage } from './features/notifications/NotificationsPage';
 import { ProfilePage } from './features/profile/ProfilePage';
 import { PostDetailModal } from './features/post/PostDetailModal';
 import { CreatePostModal } from './features/post/CreatePostModal';
-import { InboxModal } from './features/dms/InboxModal';
-import { ChatModal } from './features/dms/ChatModal';
-import { TabBar } from './components/TabBar';
+import { MessagesPage } from './features/dms/MessagesPage';
+import { NavBar } from './components/NavBar';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Conversation } from './models';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, initialized } = useAuth();
@@ -51,42 +49,23 @@ function RequireGuest({ children }: { children: React.ReactNode }) {
 
 function AuthenticatedApp() {
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const [showInbox, setShowInbox] = useState(false);
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    if (searchParams.get('inbox') === '1') {
-      setShowInbox(true);
-      setSearchParams({}, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
 
   const handleCreatePost = useCallback(() => setShowCreatePost(true), []);
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
-  const handleOpenInbox = useCallback(() => setShowInbox(true), []);
-  const handleCloseInbox = useCallback(() => setShowInbox(false), []);
-
-  const handleOpenChat = useCallback((conv: Conversation) => {
-    setActiveConversation(conv);
-    setShowInbox(false);
-  }, []);
-
-  const handleCloseChat = useCallback(() => {
-    setActiveConversation(null);
-    setShowInbox(true);
-  }, []);
 
   return (
     <div className="app-layout">
+      <NavBar onCreatePost={handleCreatePost} />
+
       <div className="app-main">
         <Routes>
           <Route
             path="/"
-            element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} onOpenInbox={handleOpenInbox} /></ErrorBoundary>}
+            element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>}
           />
           <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
           <Route path="/notifications" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
+          <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
           <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
           <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
           <Route
@@ -97,23 +76,10 @@ function AuthenticatedApp() {
         </Routes>
       </div>
 
-      <TabBar onCreatePost={handleCreatePost} />
-
       {showCreatePost && (
         <CreatePostModal
           onClose={handleCloseCreatePost}
           onSuccess={handleCloseCreatePost}
-        />
-      )}
-
-      {showInbox && !activeConversation && (
-        <InboxModal onClose={handleCloseInbox} onOpenChat={handleOpenChat} />
-      )}
-
-      {activeConversation && (
-        <ChatModal
-          conversation={activeConversation}
-          onClose={handleCloseChat}
         />
       )}
     </div>

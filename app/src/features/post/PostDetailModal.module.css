@@ -1,41 +1,80 @@
+/* ── Overlay + modal ── */
+
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.85);
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 .modal {
   background: var(--bg-card);
-  width: 100%;
-  max-width: 680px;
-  max-height: 92vh;
-  border-radius: 8px;
-  overflow: hidden;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  width: min(968px, 95vw);
+  height: min(620px, 90vh);
+  border-radius: 4px;
+  overflow: hidden;
 }
+
+/* ── Page variant ── */
 
 .page {
   background: var(--bg-app);
   min-height: 100%;
   display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 20px;
+}
+
+.pageModal {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 968px;
+  min-height: 540px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* ── Left: image panel ── */
+
+.imagePanel {
+  flex: 1;
+  min-width: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Right: info panel ── */
+
+.rightPanel {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
   flex-direction: column;
+  border-left: 1px solid var(--divider-card);
+  background: var(--bg-card);
 }
 
 .header {
   display: flex;
   align-items: center;
-  padding: 10px 12px;
+  padding: 12px 14px;
   gap: 10px;
   border-bottom: 1px solid var(--divider-card);
-  background: var(--bg-card);
+  flex-shrink: 0;
 }
-
-.avatar { flex-shrink: 0; }
 
 .userInfo { flex: 1; min-width: 0; }
 
@@ -44,7 +83,12 @@
   font-weight: 600;
   color: var(--text-primary);
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+.username:hover { text-decoration: underline; }
 
 .location {
   font-size: 11px;
@@ -55,29 +99,29 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 2px 8px;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .closeBtn:hover { color: var(--text-primary); }
 
-.imageSection {
-  flex-shrink: 0;
-}
+/* ── Scrollable section ── */
 
 .scrollable {
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .actions {
   display: flex;
   align-items: center;
   padding: 8px 12px 4px;
-  gap: 16px;
-  border-top: 1px solid var(--divider-card);
+  gap: 14px;
+  border-bottom: 1px solid var(--divider-card);
 }
 
 .actionBtn {
@@ -97,7 +141,7 @@
 .spacer { flex: 1; }
 
 .meta {
-  padding: 6px 12px 8px;
+  padding: 8px 14px 10px;
   border-bottom: 1px solid var(--divider-card);
 }
 
@@ -121,12 +165,17 @@
   cursor: pointer;
 }
 
+.captionUser:hover { text-decoration: underline; }
+
 .timestamp {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-top: 6px;
 }
+
+/* ── Comments ── */
 
 .comments {
   padding: 8px 0;
@@ -135,7 +184,7 @@
 .comment {
   display: flex;
   gap: 10px;
-  padding: 6px 12px;
+  padding: 6px 14px;
 }
 
 .commentBody {
@@ -151,6 +200,8 @@
   margin-right: 4px;
 }
 
+.commentUser:hover { text-decoration: underline; }
+
 .commentText {
   font-size: 13px;
   color: var(--text-primary);
@@ -160,7 +211,7 @@
 .commentMeta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-top: 2px;
 }
 
@@ -188,19 +239,34 @@
   cursor: pointer;
   font-size: 12px;
   color: var(--text-secondary);
+  font-weight: 600;
 }
 
-.replies {
-  padding-left: 46px;
+.replyBtn:hover { color: var(--text-primary); }
+
+.loadMoreComments {
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  text-align: left;
 }
+
+.loadMoreComments:hover { color: var(--text-primary); }
+
+/* ── Comment input ── */
 
 .inputBar {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 10px 14px;
   gap: 10px;
   border-top: 1px solid var(--divider-card);
-  background: var(--bg-card);
+  flex-shrink: 0;
 }
 
 .commentInput {
@@ -227,6 +293,7 @@
   font-size: 14px;
   font-weight: 600;
   padding: 4px;
+  flex-shrink: 0;
 }
 
 .sendBtn:disabled {
@@ -234,22 +301,11 @@
   cursor: not-allowed;
 }
 
+/* ── Loading ── */
+
 .loadingState {
-  padding: 40px;
+  padding: 60px;
   text-align: center;
   color: var(--text-secondary);
+  font-size: 14px;
 }
-
-.loadMoreComments {
-  padding: 8px 16px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: block;
-  width: 100%;
-  text-align: left;
-}
-
-.loadMoreComments:hover { color: var(--text-primary); }

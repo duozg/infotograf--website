@@ -1,12 +1,173 @@
 .page {
+  height: 100%;
+  overflow-y: auto;
   background: var(--bg-app);
-  min-height: 100%;
 }
 
-.feed {
-  max-width: 470px;
+.layout {
+  max-width: 935px;
   margin: 0 auto;
+  padding: 24px 20px;
+  display: grid;
+  grid-template-columns: 470px 1fr;
+  gap: 32px;
+  align-items: start;
 }
+
+.feedColumn {
+  min-width: 0;
+}
+
+/* ── Sidebar ── */
+
+.sidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.userCardAvatar { cursor: pointer; flex-shrink: 0; }
+
+.userCardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userCardUsername {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userCardUsername:hover { text-decoration: underline; }
+
+.userCardName {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.switchBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-link);
+  flex-shrink: 0;
+}
+
+/* ── Suggestions ── */
+
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.suggestionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.suggestionsTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.seeAllBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.suggestItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.suggestAvatarWrap { cursor: pointer; flex-shrink: 0; }
+
+.suggestInfo {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.suggestUsername {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestUsername:hover { text-decoration: underline; }
+
+.suggestSub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.followBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-link);
+  flex-shrink: 0;
+}
+
+.followBtn.following {
+  color: var(--text-secondary);
+}
+
+/* ── Footer ── */
+
+.sidebarFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding-top: 4px;
+}
+
+.footerLink {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+}
+
+.footerLink:hover { color: var(--text-secondary); text-decoration: none; }
+
+.footerCopy {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* ── Feed states ── */
 
 .emptyState {
   display: flex;
@@ -42,14 +203,9 @@
   text-align: center;
   font-size: 14px;
   color: var(--text-secondary);
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
-.loadMoreBtn:hover {
-  color: var(--text-primary);
-}
+.loadMoreBtn:hover { color: var(--text-primary); }
 
 .errorState {
   padding: 40px 20px;

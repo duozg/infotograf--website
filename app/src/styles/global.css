@@ -97,13 +97,12 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
 .app-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .app-main {
   flex: 1;
-  padding-top: 44px; /* header height */
-  padding-bottom: 49px; /* tab bar height */
+  padding-top: 54px; /* navbar height */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
