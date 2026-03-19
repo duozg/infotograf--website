@@ -182,15 +182,16 @@
   display: flex;
   align-items: flex-end;
   gap: 6px;
+  /* stretch to full width so max-width on .bubble resolves against
+     the messages container, not a shrunk flex-end wrapper */
 }
 
 .bubbleWrapper.mine {
   flex-direction: row-reverse;
-  align-self: flex-end;
 }
 
 .bubbleWrapper.theirs {
-  align-self: flex-start;
+  /* default stretch — no override needed */
 }
 
 .bubble {
@@ -200,6 +201,7 @@
   font-size: 14px;
   line-height: 1.4;
   word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .bubble.mine {
