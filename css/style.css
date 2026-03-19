@@ -155,6 +155,15 @@ body {
   letter-spacing: -0.5px;
 }
 
+.hero-brand-i {
+  height: 1.05em;
+  vertical-align: baseline;
+  margin-right: -0.04em;
+  display: inline;
+  position: relative;
+  top: 0.05em;
+}
+
 .hero-tagline {
   font-family: var(--font-body);
   font-size: 22px;
