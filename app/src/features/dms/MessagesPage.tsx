@@ -18,6 +18,39 @@ function previewBody(body: string | undefined, imageUrl?: string, audioUrl?: str
   return body;
 }
 
+function VoiceBubble({ audioUrl }: { audioUrl: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const toggle = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) { a.pause(); setPlaying(false); }
+    else { a.play(); setPlaying(true); }
+  };
+
+  return (
+    <div className={styles.voiceBubble} onClick={e => e.stopPropagation()}>
+      <audio
+        ref={audioRef}
+        src={audioUrl}
+        onEnded={() => { setPlaying(false); setProgress(0); }}
+        onTimeUpdate={e => {
+          const a = e.currentTarget;
+          if (a.duration) setProgress(a.currentTime / a.duration);
+        }}
+      />
+      <button className={styles.voicePlayBtn} onClick={toggle}>
+        {playing ? '⏸' : '▶'}
+      </button>
+      <div className={styles.voiceBarWrap}>
+        <div className={styles.voiceBarFill} style={{ width: `${progress * 100}%` }} />
+      </div>
+    </div>
+  );
+}
+
 export function MessagesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -28,6 +61,7 @@ export function MessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [convsLoading, setConvsLoading] = useState(true);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [deletingConvId, setDeletingConvId] = useState<string | null>(null);
 
   // Messages
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,10 +70,20 @@ export function MessagesPage() {
   const [sending, setSending] = useState(false);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
+  const [isOtherUserOnline, setIsOtherUserOnline] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastMessageIdRef = useRef<string | null>(null);
   const lastTypingRef = useRef<number>(0);
+
+  // Reactions
+  const [reactingToMsgId, setReactingToMsgId] = useState<string | null>(null);
+
+  // Voice recording
+  const [recording, setRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   // Compose
   const [showCompose, setShowCompose] = useState(false);
@@ -119,6 +163,7 @@ export function MessagesPage() {
       try {
         const res = await api.post<{ isTyping?: boolean; otherUserPresent?: boolean }>(`/conversations/${convId}/heartbeat`);
         setIsOtherUserTyping(res.isTyping ?? false);
+        setIsOtherUserOnline(res.otherUserPresent ?? false);
       } catch {}
     }, 1500);
     return () => {
@@ -163,6 +208,16 @@ export function MessagesPage() {
       setActiveConversation(conv);
     } catch {}
   }, []);
+
+  const handleDeleteConversation = useCallback(async (convId: string) => {
+    setConversations(prev => prev.filter(c => c.id !== convId));
+    if (activeConversation?.id === convId) setActiveConversation(null);
+    try {
+      await api.delete(`/conversations/${convId}`);
+    } catch {
+      // ignore
+    }
+  }, [activeConversation]);
 
   const handleSend = useCallback(async () => {
     if (!activeConversation || !text.trim() || sending) return;
@@ -230,6 +285,74 @@ export function MessagesPage() {
       setMessages(prev => prev.map(m => m.id === tempId ? { ...m, sendStatus: 'failed' } : m));
     }
   }, [activeConversation, user?.id]);
+
+  const handleDeleteMessage = useCallback(async (msgId: string) => {
+    setMessages(prev => prev.filter(m => m.id !== msgId));
+    try {
+      await api.delete(`/conversations/${activeConversation!.id}/messages/${msgId}`);
+    } catch {}
+  }, [activeConversation]);
+
+  const handleReact = useCallback(async (msgId: string, emoji: string) => {
+    setReactingToMsgId(null);
+    try {
+      await api.post(`/conversations/${activeConversation!.id}/messages/${msgId}/react`, { emoji });
+      // Optimistically add reaction
+      setMessages(prev => prev.map(m => {
+        if (m.id !== msgId) return m;
+        const reactions = [...(m.reactions || [])];
+        const existing = reactions.findIndex(r => r.emoji === emoji && r.userId === undefined);
+        if (existing >= 0) return m; // already has it
+        return { ...m, reactions: [...reactions, { emoji, userId: '' }] };
+      }));
+    } catch {}
+  }, [activeConversation]);
+
+  const startRecording = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream);
+      mediaRecorderRef.current = mr;
+      audioChunksRef.current = [];
+      mr.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
+      mr.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        setAudioBlob(blob);
+        stream.getTracks().forEach(t => t.stop());
+      };
+      mr.start();
+      setRecording(true);
+    } catch {}
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    mediaRecorderRef.current?.stop();
+    setRecording(false);
+  }, []);
+
+  const sendVoiceMessage = useCallback(async () => {
+    if (!activeConversation || !audioBlob) return;
+    const blob = audioBlob;
+    setAudioBlob(null);
+    const form = new FormData();
+    form.append('audio', blob, 'voice.webm');
+    const tempId = `temp-voice-${Date.now()}`;
+    const tempMsg: Message = {
+      id: tempId,
+      conversationId: activeConversation.id,
+      senderId: user?.id,
+      audioUrl: URL.createObjectURL(blob),
+      createdAt: new Date().toISOString(),
+      sendStatus: 'sending',
+    };
+    setMessages(prev => [...prev, tempMsg]);
+    try {
+      const sent = await api.upload<Message>(`/conversations/${activeConversation.id}/messages/voice`, form);
+      setMessages(prev => prev.map(m => m.id === tempId ? { ...sent, sendStatus: 'sent' } : m));
+    } catch {
+      setMessages(prev => prev.map(m => m.id === tempId ? { ...m, sendStatus: 'failed' } : m));
+    }
+  }, [activeConversation, audioBlob, user?.id]);
 
   const getOtherMember = (conv: Conversation) => {
     if (!user) return conv.members[0];
@@ -309,6 +432,12 @@ export function MessagesPage() {
                   {unread > 0 && (
                     <span className={styles.unreadBadge}>{unread > 9 ? '9+' : unread}</span>
                   )}
+                  <button
+                    className={styles.deleteConvBtn}
+                    onClick={e => { e.stopPropagation(); handleDeleteConversation(conv.id); }}
+                    aria-label="Delete conversation"
+                    title="Delete"
+                  >×</button>
                 </div>
               </div>
             );
@@ -342,6 +471,9 @@ export function MessagesPage() {
                   {isOtherUserTyping && (
                     <div className={styles.typingStatus}>typing…</div>
                   )}
+                  {isOtherUserOnline && !isOtherUserTyping && (
+                    <div className={styles.presenceStatus}>Active now</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -358,12 +490,14 @@ export function MessagesPage() {
                     const isMine = msg.senderId === user?.id;
                     const imgSrc = imageUrl(msg.imageUrl);
                     const sharedPostId = parseSharedPostId(msg.body);
+                    const hasAudio = !msg.body && !msg.imageUrl && msg.audioUrl;
 
                     return (
                       <div
                         key={msg.id}
                         className={`${styles.bubbleWrapper} ${isMine ? styles.mine : styles.theirs}`}
                         onDoubleClick={() => setReplyTo(msg)}
+                        onMouseLeave={() => setReactingToMsgId(null)}
                       >
                         {!isMine && (
                           <Avatar src={otherMember?.avatarUrl} username={otherMember?.username} size="sm" />
@@ -382,6 +516,8 @@ export function MessagesPage() {
                           <div className={`${styles.bubble} ${isMine ? styles.mine : styles.theirs} ${msg.sendStatus === 'sending' ? styles.sending : ''} ${msg.sendStatus === 'failed' ? styles.failed : ''}`}>
                             {imgSrc ? (
                               <img src={imgSrc} alt="" className={styles.bubbleImage} />
+                            ) : hasAudio ? (
+                              <VoiceBubble audioUrl={msg.audioUrl!} />
                             ) : msg.body === '[heart]' ? '❤️' : msg.body}
                           </div>
                           )}
@@ -394,6 +530,13 @@ export function MessagesPage() {
                               Failed · Tap to retry
                             </div>
                           )}
+                          {isMine && (
+                            <button
+                              className={styles.deleteMsgBtn}
+                              onClick={e => { e.stopPropagation(); handleDeleteMessage(msg.id); }}
+                              aria-label="Delete message"
+                            >✕</button>
+                          )}
                           {msg.reactions && msg.reactions.length > 0 && (
                             <div className={styles.reactions}>
                               {msg.reactions.map((r, i) => (
@@ -403,6 +546,26 @@ export function MessagesPage() {
                           )}
                         </div>
                         <span className={styles.bubbleTime}>{timeAgo(msg.createdAt)}</span>
+                        {!sharedPostId && (
+                          <div style={{ position: 'relative' }}>
+                            <button
+                              className={styles.reactBtn}
+                              onClick={e => { e.stopPropagation(); setReactingToMsgId(prev => prev === msg.id ? null : msg.id); }}
+                              aria-label="Add reaction"
+                            >☺</button>
+                            {reactingToMsgId === msg.id && (
+                              <div className={`${styles.emojiPicker} ${isMine ? styles.emojiPickerLeft : styles.emojiPickerRight}`}>
+                                {['❤️','😂','😮','😢','😡','👍','👎','🔥'].map(emoji => (
+                                  <button
+                                    key={emoji}
+                                    className={styles.emojiOption}
+                                    onClick={e => { e.stopPropagation(); handleReact(msg.id, emoji); }}
+                                  >{emoji}</button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -454,6 +617,38 @@ export function MessagesPage() {
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
               </button>
+              {/* Mic / voice recording */}
+              {!audioBlob ? (
+                <button
+                  className={`${styles.imageBtn} ${recording ? styles.recordingBtn : ''}`}
+                  onMouseDown={startRecording}
+                  onMouseUp={stopRecording}
+                  onTouchStart={startRecording}
+                  onTouchEnd={stopRecording}
+                  aria-label={recording ? 'Recording…' : 'Hold to record voice'}
+                  title="Hold to record"
+                >
+                  <svg viewBox="0 0 24 24" fill={recording ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2}>
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                </button>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Voice ready</span>
+                  <button
+                    className={styles.sendBtn}
+                    onClick={sendVoiceMessage}
+                  >Send</button>
+                  <button
+                    className={styles.sendBtn}
+                    style={{ color: 'var(--text-tertiary)' }}
+                    onClick={() => setAudioBlob(null)}
+                  >✕</button>
+                </div>
+              )}
               <textarea
                 className={styles.textInput}
                 placeholder="Message…"

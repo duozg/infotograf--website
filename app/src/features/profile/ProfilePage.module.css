@@ -258,3 +258,52 @@
   color: var(--text-primary);
   margin-bottom: 8px;
 }
+
+/* ── More menu for other users ── */
+
+.moreMenuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 18px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.moreMenuBtn:hover { background: var(--bg-elevated); }
+
+.profileMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  min-width: 160px;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.profileMenuItem {
+  display: block;
+  width: 100%;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.profileMenuItem:hover { background: var(--bg-elevated); }
+.profileMenuItemDanger { color: var(--accent-red) !important; }

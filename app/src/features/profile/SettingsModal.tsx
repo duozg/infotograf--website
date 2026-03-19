@@ -23,11 +23,22 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [savingPrivate, setSavingPrivate] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({
+    likes: true, comments: true, follows: true, messages: true,
+  });
+  const [loadingPrefs, setLoadingPrefs] = useState(true);
 
   useEffect(() => {
     api.get<User[]>('/moderation/blocks').then(res => {
       setBlockedUsers(Array.isArray(res) ? res : []);
     }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    api.get<Record<string, boolean>>('/users/notification-preferences')
+      .then(res => { if (res && typeof res === 'object') setNotifPrefs(res as Record<string, boolean>); })
+      .catch(() => {})
+      .finally(() => setLoadingPrefs(false));
   }, []);
 
   const handlePrivateToggle = useCallback(async () => {
@@ -52,6 +63,15 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       // Re-add on error
     }
   }, []);
+
+  const handleNotifPref = useCallback(async (key: string, value: boolean) => {
+    setNotifPrefs(prev => ({ ...prev, [key]: value }));
+    try {
+      await api.post('/users/notification-preferences', { ...notifPrefs, [key]: value });
+    } catch {
+      setNotifPrefs(prev => ({ ...prev, [key]: !value }));
+    }
+  }, [notifPrefs]);
 
   const handleDeleteAccount = useCallback(async () => {
     setDeleting(true);
@@ -97,6 +117,30 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 <span className={styles.toggleSlider} />
               </label>
             </div>
+          </div>
+
+          {/* Notifications */}
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Notifications</div>
+            {([
+              { key: 'likes', label: 'Likes' },
+              { key: 'comments', label: 'Comments' },
+              { key: 'follows', label: 'New Followers' },
+              { key: 'messages', label: 'Messages' },
+            ] as { key: string; label: string }[]).map(({ key, label }) => (
+              <div key={key} className={styles.row}>
+                <span className={styles.rowLabel}>{label}</span>
+                <label className={styles.toggle}>
+                  <input
+                    type="checkbox"
+                    checked={notifPrefs[key] ?? true}
+                    onChange={e => handleNotifPref(key, e.target.checked)}
+                    disabled={loadingPrefs}
+                  />
+                  <span className={styles.toggleSlider} />
+                </label>
+              </div>
+            ))}
           </div>
 
           {/* Appearance */}

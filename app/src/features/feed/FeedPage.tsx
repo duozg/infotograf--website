@@ -200,6 +200,14 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
               Load more
             </button>
           )}
+
+          {!loading && !loadingMore && !hasMore && posts.length > 0 && (
+            <div className={styles.allCaughtUp}>
+              <div className={styles.allCaughtUpLine} />
+              <span className={styles.allCaughtUpText}>You're all caught up</span>
+              <div className={styles.allCaughtUpLine} />
+            </div>
+          )}
         </div>
 
         {/* Sidebar */}

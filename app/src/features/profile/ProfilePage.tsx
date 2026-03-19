@@ -9,6 +9,7 @@ import { toCount } from '../../utils/textParser';
 import { useAuth } from '../../context/AuthContext';
 import { EditProfileModal } from './EditProfileModal';
 import { SettingsModal } from './SettingsModal';
+import { ReportModal } from '../../components/ReportModal';
 
 interface FollowModalProps {
   userId: string;
@@ -135,6 +136,10 @@ export function ProfilePage() {
   const [bookmarks, setBookmarks] = useState<Post[]>([]);
   const [bookmarksCursor, setBookmarksCursor] = useState<string | null>(null);
   const [bookmarksLoaded, setBookmarksLoaded] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     if (!targetUsername) return;
@@ -143,6 +148,8 @@ export function ProfilePage() {
       const profileData = await api.get<User>(`/users/${targetUsername}`);
       setProfile(profileData);
       setIsFollowing(profileData.isFollowing);
+      setIsBlocked(profileData.isBlocked || false);
+      setIsMuted(profileData.isMuted || false);
       const { items: postItems, nextCursor } = await api.getPaginated<Post>(`/posts/user/${profileData.id}`);
       setPosts(postItems);
       setPostsCursor(nextCursor);
@@ -178,6 +185,32 @@ export function ProfilePage() {
       } : p);
     }
   }, [profile, isFollowing]);
+
+  const handleBlock = useCallback(async () => {
+    if (!profile) return;
+    setShowMoreMenu(false);
+    const wasBlocked = isBlocked;
+    setIsBlocked(!wasBlocked);
+    try {
+      if (wasBlocked) await api.delete(`/moderation/blocks/${profile.id}`);
+      else await api.post(`/moderation/blocks/${profile.id}`);
+    } catch {
+      setIsBlocked(wasBlocked);
+    }
+  }, [profile, isBlocked]);
+
+  const handleMute = useCallback(async () => {
+    if (!profile) return;
+    setShowMoreMenu(false);
+    const wasMuted = isMuted;
+    setIsMuted(!wasMuted);
+    try {
+      if (wasMuted) await api.delete(`/moderation/mutes/${profile.id}`);
+      else await api.post(`/moderation/mutes/${profile.id}`);
+    } catch {
+      setIsMuted(wasMuted);
+    }
+  }, [profile, isMuted]);
 
   const fetchBookmarks = useCallback(async () => {
     try {
@@ -264,6 +297,32 @@ export function ProfilePage() {
                       >
                         Message
                       </button>
+                      <div style={{ position: 'relative' }}>
+                        <button
+                          className={styles.moreMenuBtn}
+                          onClick={() => setShowMoreMenu(v => !v)}
+                          aria-label="More options"
+                        >···</button>
+                        {showMoreMenu && (
+                          <div className={styles.profileMenu}>
+                            <button className={styles.profileMenuItem} onClick={handleMute}>
+                              {isMuted ? 'Unmute' : 'Mute'}
+                            </button>
+                            <button
+                              className={`${styles.profileMenuItem} ${styles.profileMenuItemDanger}`}
+                              onClick={handleBlock}
+                            >
+                              {isBlocked ? 'Unblock' : 'Block'}
+                            </button>
+                            <button
+                              className={`${styles.profileMenuItem} ${styles.profileMenuItemDanger}`}
+                              onClick={() => { setShowMoreMenu(false); setShowReport(true); }}
+                            >
+                              Report
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>
@@ -304,6 +363,16 @@ export function ProfilePage() {
                 </div>
               </div>
             </header>
+
+            {isBlocked && (
+              <div style={{
+                margin: '24px 0', padding: '20px', background: 'var(--bg-card)',
+                border: '1px solid var(--border-primary)', borderRadius: 8,
+                textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14,
+              }}>
+                You have blocked this user.
+              </div>
+            )}
 
             {/* ── View toggle ── */}
             <div className={styles.gridToggle}>
@@ -458,6 +527,14 @@ export function ProfilePage() {
           userId={profile.id}
           kind={followModal}
           onClose={() => setFollowModal(null)}
+        />
+      )}
+
+      {showReport && profile && (
+        <ReportModal
+          targetId={profile.id}
+          targetType="user"
+          onClose={() => setShowReport(false)}
         />
       )}
     </div>

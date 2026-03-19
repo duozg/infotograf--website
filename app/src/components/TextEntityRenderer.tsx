@@ -36,7 +36,7 @@ export function TextEntityRenderer({ text, className }: TextEntityRendererProps)
               style={{ color: 'var(--text-link)', cursor: 'pointer' }}
               onClick={e => {
                 e.stopPropagation();
-                navigate(`/explore?q=${encodeURIComponent(seg.value.slice(1))}`);
+                navigate(`/hashtag/${encodeURIComponent(seg.value.slice(1))}`);
               }}
             >
               {seg.value}

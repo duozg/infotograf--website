@@ -10,6 +10,7 @@ import { ProfilePage } from './features/profile/ProfilePage';
 import { PostDetailModal } from './features/post/PostDetailModal';
 import { CreatePostModal } from './features/post/CreatePostModal';
 import { MessagesPage } from './features/dms/MessagesPage';
+import { HashtagPage } from './features/explore/HashtagPage';
 import { NavBar } from './components/NavBar';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -72,6 +73,7 @@ function AuthenticatedApp() {
             path="/post/:postId"
             element={<ErrorBoundary><PostDetailModal asPage /></ErrorBoundary>}
           />
+          <Route path="/hashtag/:tag" element={<ErrorBoundary><HashtagPage /></ErrorBoundary>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

@@ -222,3 +222,64 @@
   font-size: 13px;
   padding: 0;
 }
+
+/* ── Double-tap heart animation ── */
+
+.heartFlash {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.heartFlashIcon {
+  font-size: 80px;
+  animation: heartPop 0.8s ease-out forwards;
+}
+
+@keyframes heartPop {
+  0%   { transform: scale(0.3); opacity: 1; }
+  40%  { transform: scale(1.2); opacity: 1; }
+  70%  { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+
+/* ── Audio player on post ── */
+
+.audioPlayer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--divider-card);
+  background: var(--bg-card);
+}
+
+.audioPlayBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.audioBarWrap {
+  flex: 1;
+  height: 3px;
+  background: var(--border-primary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.audioBarFill {
+  height: 100%;
+  background: var(--text-link);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}

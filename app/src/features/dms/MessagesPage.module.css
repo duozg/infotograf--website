@@ -485,3 +485,132 @@
   0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
   30% { transform: translateY(-6px); opacity: 1; }
 }
+
+/* ── Delete conversation button ── */
+
+.deleteConvBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+  opacity: 0;
+  transition: opacity 0.1s;
+  flex-shrink: 0;
+}
+
+.convItem:hover .deleteConvBtn { opacity: 1; }
+
+/* ── Delete message button ── */
+
+.deleteMsgBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  padding: 2px 4px;
+  opacity: 0;
+  transition: opacity 0.1s;
+  align-self: flex-end;
+  line-height: 1;
+}
+
+.bubbleCol:hover .deleteMsgBtn { opacity: 1; }
+
+/* ── Reaction button ── */
+
+.reactBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  padding: 2px 4px;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.bubbleWrapper:hover .reactBtn { opacity: 1; }
+
+/* ── Emoji picker ── */
+
+.emojiPicker {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 20px;
+  padding: 6px 8px;
+  display: flex;
+  gap: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  z-index: 50;
+  white-space: nowrap;
+}
+
+.emojiPickerLeft { right: 0; }
+.emojiPickerRight { left: 0; }
+
+.emojiOption {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 2px 3px;
+  border-radius: 4px;
+  transition: transform 0.1s;
+}
+
+.emojiOption:hover { transform: scale(1.25); }
+
+/* ── Recording button active state ── */
+
+.recordingBtn {
+  color: var(--accent-red) !important;
+}
+
+/* ── Voice bubble ── */
+
+.voiceBubble {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.voicePlayBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.voiceBarWrap {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bubble.theirs .voiceBarWrap { background: var(--border-primary); }
+
+.voiceBarFill {
+  height: 100%;
+  background: currentColor;
+  opacity: 0.7;
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* ── Presence status ── */
+
+.presenceStatus {
+  font-size: 11px;
+  color: var(--text-secondary);
+}

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './PostCard.module.css';
-import { Post } from '../models';
+import { Post, User } from '../models';
 import { Avatar } from './Avatar';
 import { ImageCarousel } from './ImageCarousel';
 import { TextEntityRenderer } from './TextEntityRenderer';
@@ -43,6 +43,39 @@ function BookmarkIcon({ filled }: { filled?: boolean }) {
   );
 }
 
+function AudioPlayer({ audioUrl }: { audioUrl: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const toggle = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) { audio.pause(); setPlaying(false); }
+    else { audio.play(); setPlaying(true); }
+  };
+
+  return (
+    <div className={styles.audioPlayer}>
+      <audio
+        ref={audioRef}
+        src={audioUrl}
+        onEnded={() => { setPlaying(false); setProgress(0); }}
+        onTimeUpdate={e => {
+          const a = e.currentTarget;
+          if (a.duration) setProgress(a.currentTime / a.duration);
+        }}
+      />
+      <button onClick={e => { e.stopPropagation(); toggle(); }} className={styles.audioPlayBtn}>
+        {playing ? '⏸' : '▶'}
+      </button>
+      <div className={styles.audioBarWrap} onClick={e => e.stopPropagation()}>
+        <div className={styles.audioBarFill} style={{ width: `${progress * 100}%` }} />
+      </div>
+    </div>
+  );
+}
+
 export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }: PostCardProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -52,6 +85,8 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   const [showMenu, setShowMenu] = useState(false);
   const [editingCaption, setEditingCaption] = useState(false);
   const [captionDraft, setCaptionDraft] = useState('');
+  const [showHeart, setShowHeart] = useState(false);
+  const [likedByUsers, setLikedByUsers] = useState<User[] | null>(null);
 
   // Sync with parent
   React.useEffect(() => {
@@ -92,6 +127,8 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     const updated = { ...localPost, isLiked: true, likeCount: likeCount + 1 };
     setLocalPost(updated);
     onUpdate?.(updated);
+    setShowHeart(true);
+    setTimeout(() => setShowHeart(false), 800);
     try {
       await api.post(`/posts/${localPost.id}/like`);
     } catch {
@@ -178,144 +215,218 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     navigate(`/post/${localPost.id}?focus=comment`);
   };
 
+  const fetchLikedBy = useCallback(async () => {
+    try {
+      const res = await api.get<User[]>(`/posts/${localPost.id}/liked-by`);
+      setLikedByUsers(Array.isArray(res) ? res : []);
+    } catch {
+      setLikedByUsers(null);
+    }
+  }, [localPost.id]);
+
   // Build images array
   const images = localPost.imageUrls && localPost.imageUrls.length > 0
     ? localPost.imageUrls
     : [{ imageUrl: localPost.imageUrl, thumbnailUrl: localPost.thumbnailUrl, filterName: localPost.filterName }];
 
   return (
-    <article className={styles.card}>
-      {/* Header */}
-      <div className={styles.header}>
-        <Avatar
-          src={localPost.avatarUrl}
-          username={localPost.username}
-          size="md"
-          onClick={() => {
-            if (localPost.username) {
-              onUserClick?.(localPost.username);
-              navigate(`/profile/${localPost.username}`);
-            }
-          }}
-        />
-        <div className={styles.headerInfo}>
-          <div className={styles.username} onClick={handleUserClick}>
-            {localPost.username || localPost.displayName || 'user'}
-          </div>
-          {localPost.locationName && (
-            <div className={styles.location}>{localPost.locationName}</div>
-          )}
-        </div>
-        {localPost.userId === user?.id && (
-          <div style={{ position: 'relative' }}>
-            <button
-              className={styles.moreBtn}
-              aria-label="More options"
-              onClick={e => { e.stopPropagation(); setShowMenu(v => !v); }}
-            >···</button>
-            {showMenu && (
-              <div className={styles.cardMenu}>
-                <button
-                  className={styles.cardMenuItem}
-                  onClick={e => {
-                    e.stopPropagation();
-                    setShowMenu(false);
-                    setCaptionDraft(localPost.caption || '');
-                    setEditingCaption(true);
-                  }}
-                >
-                  Edit Caption
-                </button>
-                <button
-                  className={styles.cardMenuItem}
-                  onClick={e => { e.stopPropagation(); handleToggleComments(); }}
-                >
-                  {localPost.commentsDisabled ? 'Enable Comments' : 'Disable Comments'}
-                </button>
-                <button
-                  className={`${styles.cardMenuItem} ${styles.cardMenuItemDanger}`}
-                  onClick={e => { e.stopPropagation(); handleDeletePost(); }}
-                >
-                  Delete
-                </button>
-              </div>
+    <>
+      <article className={styles.card}>
+        {/* Header */}
+        <div className={styles.header}>
+          <Avatar
+            src={localPost.avatarUrl}
+            username={localPost.username}
+            size="md"
+            onClick={() => {
+              if (localPost.username) {
+                onUserClick?.(localPost.username);
+                navigate(`/profile/${localPost.username}`);
+              }
+            }}
+          />
+          <div className={styles.headerInfo}>
+            <div className={styles.username} onClick={handleUserClick}>
+              {localPost.username || localPost.displayName || 'user'}
+            </div>
+            {localPost.locationName && (
+              <div className={styles.location}>{localPost.locationName}</div>
             )}
           </div>
+          {localPost.userId === user?.id && (
+            <div style={{ position: 'relative' }}>
+              <button
+                className={styles.moreBtn}
+                aria-label="More options"
+                onClick={e => { e.stopPropagation(); setShowMenu(v => !v); }}
+              >···</button>
+              {showMenu && (
+                <div className={styles.cardMenu}>
+                  <button
+                    className={styles.cardMenuItem}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setShowMenu(false);
+                      setCaptionDraft(localPost.caption || '');
+                      setEditingCaption(true);
+                    }}
+                  >
+                    Edit Caption
+                  </button>
+                  <button
+                    className={styles.cardMenuItem}
+                    onClick={e => { e.stopPropagation(); handleToggleComments(); }}
+                  >
+                    {localPost.commentsDisabled ? 'Enable Comments' : 'Disable Comments'}
+                  </button>
+                  <button
+                    className={`${styles.cardMenuItem} ${styles.cardMenuItemDanger}`}
+                    onClick={e => { e.stopPropagation(); handleDeletePost(); }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Image */}
+        <div onClick={handlePostClick} onDoubleClick={handleDoubleTap} style={{ cursor: 'pointer', position: 'relative' }}>
+          <ImageCarousel images={images} filterName={localPost.filterName} />
+          {showHeart && (
+            <div className={styles.heartFlash}>
+              <span className={styles.heartFlashIcon}>❤️</span>
+            </div>
+          )}
+        </div>
+
+        {/* Audio */}
+        {localPost.audioUrl && (
+          <AudioPlayer audioUrl={localPost.audioUrl} />
         )}
-      </div>
 
-      {/* Image */}
-      <div onClick={handlePostClick} onDoubleClick={handleDoubleTap} style={{ cursor: 'pointer' }}>
-        <ImageCarousel images={images} filterName={localPost.filterName} />
-      </div>
-
-      {/* Actions */}
-      <div className={styles.actions}>
-        <button
-          className={`${styles.actionBtn} ${localPost.isLiked ? styles.liked : ''}`}
-          onClick={handleLike}
-          aria-label={localPost.isLiked ? 'Unlike' : 'Like'}
-          style={{ color: localPost.isLiked ? 'var(--accent-red)' : 'var(--text-primary)' }}
-        >
-          <HeartIcon filled={localPost.isLiked} />
-        </button>
-        {!localPost.commentsDisabled && (
+        {/* Actions */}
+        <div className={styles.actions}>
           <button
-            className={styles.actionBtn}
-            onClick={handleCommentClick}
-            aria-label="Comment"
+            className={`${styles.actionBtn} ${localPost.isLiked ? styles.liked : ''}`}
+            onClick={handleLike}
+            aria-label={localPost.isLiked ? 'Unlike' : 'Like'}
+            style={{ color: localPost.isLiked ? 'var(--accent-red)' : 'var(--text-primary)' }}
           >
-            <CommentIcon />
+            <HeartIcon filled={localPost.isLiked} />
           </button>
-        )}
-        <div className={styles.spacer} />
-        <button
-          className={`${styles.actionBtn} ${localPost.isBookmarked ? styles.bookmarked : ''}`}
-          onClick={handleBookmark}
-          aria-label={localPost.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-        >
-          <BookmarkIcon filled={localPost.isBookmarked} />
-        </button>
-      </div>
+          {!localPost.commentsDisabled && (
+            <button
+              className={styles.actionBtn}
+              onClick={handleCommentClick}
+              aria-label="Comment"
+            >
+              <CommentIcon />
+            </button>
+          )}
+          <div className={styles.spacer} />
+          <button
+            className={`${styles.actionBtn} ${localPost.isBookmarked ? styles.bookmarked : ''}`}
+            onClick={handleBookmark}
+            aria-label={localPost.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+          >
+            <BookmarkIcon filled={localPost.isBookmarked} />
+          </button>
+        </div>
 
-      {/* Meta */}
-      <div className={styles.meta}>
-        {likeCount > 0 && (
-          <div className={styles.likeCount}>
-            {likeCount.toLocaleString()} {likeCount === 1 ? 'like' : 'likes'}
-          </div>
-        )}
-        {editingCaption ? (
-          <div className={styles.editCaptionWrap} onClick={e => e.stopPropagation()}>
-            <textarea
-              className={styles.editCaptionInput}
-              value={captionDraft}
-              onChange={e => setCaptionDraft(e.target.value)}
-              autoFocus
-              rows={2}
-            />
-            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-              <button className={styles.editCaptionSave} onClick={handleSaveCaption}>Save</button>
-              <button className={styles.editCaptionCancel} onClick={() => setEditingCaption(false)}>Cancel</button>
+        {/* Meta */}
+        <div className={styles.meta}>
+          {likeCount > 0 && (
+            <div
+              className={styles.likeCount}
+              style={{ cursor: 'pointer' }}
+              onClick={e => { e.stopPropagation(); setLikedByUsers([]); fetchLikedBy(); }}
+            >
+              {likeCount.toLocaleString()} {likeCount === 1 ? 'like' : 'likes'}
+            </div>
+          )}
+          {editingCaption ? (
+            <div className={styles.editCaptionWrap} onClick={e => e.stopPropagation()}>
+              <textarea
+                className={styles.editCaptionInput}
+                value={captionDraft}
+                onChange={e => setCaptionDraft(e.target.value)}
+                autoFocus
+                rows={2}
+              />
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                <button className={styles.editCaptionSave} onClick={handleSaveCaption}>Save</button>
+                <button className={styles.editCaptionCancel} onClick={() => setEditingCaption(false)}>Cancel</button>
+              </div>
+            </div>
+          ) : localPost.caption ? (
+            <div className={styles.caption}>
+              <span className={styles.captionUsername} onClick={handleUserClick}>
+                {localPost.username}
+              </span>
+              <TextEntityRenderer text={localPost.caption} />
+            </div>
+          ) : null}
+          {localPost.commentsDisabled ? (
+            <div className={styles.commentsDisabled}>Comments disabled</div>
+          ) : commentCount > 0 ? (
+            <div className={styles.viewComments} onClick={handlePostClick}>
+              View all {commentCount.toLocaleString()} comments
+            </div>
+          ) : null}
+          <div className={styles.timestamp}>{timeAgo(localPost.createdAt)}</div>
+        </div>
+      </article>
+
+      {likedByUsers !== null && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 300,
+          }}
+          onClick={() => setLikedByUsers(null)}
+        >
+          <div
+            style={{
+              background: 'var(--bg-card)', borderRadius: 12, width: 360, maxWidth: '90vw',
+              maxHeight: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{
+              padding: '14px 16px', borderBottom: '1px solid var(--divider-card)',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>Liked by</span>
+              <button
+                onClick={() => setLikedByUsers(null)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: 'var(--text-secondary)', lineHeight: 1 }}
+              >×</button>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              {likedByUsers.length === 0 && (
+                <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+                  Loading…
+                </div>
+              )}
+              {likedByUsers.map(u => (
+                <div
+                  key={u.id}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer' }}
+                  onClick={() => { setLikedByUsers(null); navigate(`/profile/${u.username}`); }}
+                >
+                  <Avatar src={u.avatarUrl} username={u.username} size="md" />
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{u.username}</div>
+                    {u.displayName && <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{u.displayName}</div>}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ) : localPost.caption ? (
-          <div className={styles.caption}>
-            <span className={styles.captionUsername} onClick={handleUserClick}>
-              {localPost.username}
-            </span>
-            <TextEntityRenderer text={localPost.caption} />
-          </div>
-        ) : null}
-        {localPost.commentsDisabled ? (
-          <div className={styles.commentsDisabled}>Comments disabled</div>
-        ) : commentCount > 0 ? (
-          <div className={styles.viewComments} onClick={handlePostClick}>
-            View all {commentCount.toLocaleString()} comments
-          </div>
-        ) : null}
-        <div className={styles.timestamp}>{timeAgo(localPost.createdAt)}</div>
-      </div>
-    </article>
+        </div>
+      )}
+    </>
   );
 }
