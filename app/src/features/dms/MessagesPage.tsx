@@ -368,7 +368,7 @@ export function MessagesPage() {
                         {!isMine && (
                           <Avatar src={otherMember?.avatarUrl} username={otherMember?.username} size="sm" />
                         )}
-                        <div>
+                        <div className={`${styles.bubbleCol} ${isMine ? styles.mine : styles.theirs}`}>
                           {msg.replyTo && (
                             <div className={styles.replyPreview}>
                               {msg.replyTo.body === '[heart]' ? '❤️' : parseSharedPostId(msg.replyTo.body) ? 'Shared a post' : (msg.replyTo.body || 'Photo')}
