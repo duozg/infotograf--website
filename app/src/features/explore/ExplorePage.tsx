@@ -19,18 +19,32 @@ export function ExplorePage() {
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const handleQueryChange = useCallback((raw: string) => {
+    // Auto-switch to users tab and strip @ prefix
+    if (raw.startsWith('@')) {
+      setTab('users');
+      setQuery(raw.slice(1));
+    } else {
+      setQuery(raw);
+    }
+  }, []);
+
   const fetchExplore = useCallback(async (q: string) => {
     setLoading(true);
     try {
       if (!q.trim()) {
         const { items } = await api.getPaginated<Post>('/explore');
         setPosts(items);
+        setUsers([]);
+        setTags([]);
       } else {
-        const [usersRes, tagsRes] = await Promise.allSettled([
+        const [postsRes, usersRes, tagsRes] = await Promise.allSettled([
+          api.getPaginated<Post>(`/posts/search?q=${encodeURIComponent(q)}`),
           api.get<User[]>(`/users/search?q=${encodeURIComponent(q)}`),
           api.get<HashtagSuggestion[]>(`/explore/hashtags/search?q=${encodeURIComponent(q)}`),
         ]);
-        setPosts([]);
+        if (postsRes.status === 'fulfilled') setPosts(postsRes.value.items);
+        else setPosts([]);
         if (usersRes.status === 'fulfilled') setUsers(Array.isArray(usersRes.value) ? usersRes.value : []);
         else setUsers([]);
         if (tagsRes.status === 'fulfilled') setTags(Array.isArray(tagsRes.value) ? tagsRes.value : []);
@@ -69,8 +83,8 @@ export function ExplorePage() {
               className={styles.searchInput}
               type="search"
               placeholder="Search users, tags, photos…"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
+              value={query.startsWith('@') ? query : query}
+              onChange={e => handleQueryChange(e.target.value)}
             />
           </div>
         </div>
@@ -95,31 +109,36 @@ export function ExplorePage() {
         {!loading && (
           <>
             {(!isSearching || tab === 'posts') && (
-              <div className={styles.grid}>
-                {posts.map(post => {
-                  const images = post.imageUrls && post.imageUrls.length > 0
-                    ? post.imageUrls
-                    : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
-                  const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.imageUrl);
-                  return (
-                    <div
-                      key={post.id}
-                      className={styles.gridItem}
-                      onClick={() => navigate(`/post/${post.id}`)}
-                    >
-                      {thumb && <img src={thumb} alt="" loading="lazy" />}
-                      {images.length > 1 && (
-                        <div className={styles.multipleIndicator}>
-                          <svg viewBox="0 0 24 24" fill="white" width={18} height={18}>
-                            <rect x="2" y="2" width="15" height="15" rx="2" fill="none" stroke="white" strokeWidth="2"/>
-                            <rect x="7" y="7" width="15" height="15" rx="2" fill="rgba(0,0,0,0.5)" stroke="white" strokeWidth="2"/>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              <>
+                {isSearching && posts.length === 0 && (
+                  <div className={styles.emptyState}>No posts found</div>
+                )}
+                <div className={styles.grid}>
+                  {posts.map(post => {
+                    const images = post.imageUrls && post.imageUrls.length > 0
+                      ? post.imageUrls
+                      : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
+                    const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.imageUrl);
+                    return (
+                      <div
+                        key={post.id}
+                        className={styles.gridItem}
+                        onClick={() => navigate(`/post/${post.id}`)}
+                      >
+                        {thumb && <img src={thumb} alt="" loading="lazy" />}
+                        {images.length > 1 && (
+                          <div className={styles.multipleIndicator}>
+                            <svg viewBox="0 0 24 24" fill="white" width={18} height={18}>
+                              <rect x="2" y="2" width="15" height="15" rx="2" fill="none" stroke="white" strokeWidth="2"/>
+                              <rect x="7" y="7" width="15" height="15" rx="2" fill="rgba(0,0,0,0.5)" stroke="white" strokeWidth="2"/>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
 
             {isSearching && tab === 'users' && (

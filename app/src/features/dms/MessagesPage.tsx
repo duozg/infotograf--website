@@ -9,16 +9,12 @@ import { imageUrl } from '../../utils/imageUrl';
 import { useAuth } from '../../context/AuthContext';
 import { usePolling } from '../../hooks/usePolling';
 import { useAppState } from '../../context/AppStateContext';
-
-function renderBody(body: string | undefined): React.ReactNode {
-  if (!body) return null;
-  if (body === '[heart]') return '❤️';
-  return body;
-}
+import { SharedPostBubble, parseSharedPostId } from '../../components/SharedPostBubble';
 
 function previewBody(body: string | undefined, imageUrl?: string, audioUrl?: string): string {
   if (!body) return imageUrl ? 'Photo' : audioUrl ? 'Voice message' : '';
   if (body === '[heart]') return '❤️';
+  if (parseSharedPostId(body)) return 'Shared a post';
   return body;
 }
 
@@ -361,6 +357,7 @@ export function MessagesPage() {
                   {group.msgs.map(msg => {
                     const isMine = msg.senderId === user?.id;
                     const imgSrc = imageUrl(msg.imageUrl);
+                    const sharedPostId = parseSharedPostId(msg.body);
 
                     return (
                       <div
@@ -374,16 +371,20 @@ export function MessagesPage() {
                         <div>
                           {msg.replyTo && (
                             <div className={styles.replyPreview}>
-                              {msg.replyTo.body === '[heart]' ? '❤️' : (msg.replyTo.body || 'Photo')}
+                              {msg.replyTo.body === '[heart]' ? '❤️' : parseSharedPostId(msg.replyTo.body) ? 'Shared a post' : (msg.replyTo.body || 'Photo')}
                             </div>
                           )}
+                          {sharedPostId ? (
+                            <div style={{ opacity: msg.sendStatus === 'sending' ? 0.6 : 1 }}>
+                              <SharedPostBubble postId={sharedPostId} />
+                            </div>
+                          ) : (
                           <div className={`${styles.bubble} ${isMine ? styles.mine : styles.theirs} ${msg.sendStatus === 'sending' ? styles.sending : ''} ${msg.sendStatus === 'failed' ? styles.failed : ''}`}>
                             {imgSrc ? (
                               <img src={imgSrc} alt="" className={styles.bubbleImage} />
-                            ) : (
-                              renderBody(msg.body)
-                            )}
+                            ) : msg.body === '[heart]' ? '❤️' : msg.body}
                           </div>
+                          )}
                           {msg.sendStatus === 'failed' && (
                             <div
                               className={styles.failedLabel}
