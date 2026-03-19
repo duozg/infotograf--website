@@ -4,6 +4,7 @@
   "buildCommand": "cd app && npm install && npm run build",
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/app", "destination": "/app/dist/index.html" },
     { "source": "/app/(.*)", "destination": "/app/dist/index.html" }
   ],
   "headers": [
