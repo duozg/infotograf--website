@@ -41,7 +41,7 @@ export function EditProfileModal({ profile, onClose, onSave }: EditProfileModalP
     }
     setUsernameStatus('checking');
     try {
-      await api.get(`/users/check-username?username=${encodeURIComponent(uname)}`);
+      await api.get(`/users/check-username/${encodeURIComponent(uname)}`);
       setUsernameStatus('available');
     } catch {
       setUsernameStatus('taken');
@@ -59,15 +59,29 @@ export function EditProfileModal({ profile, onClose, onSave }: EditProfileModalP
     setSaving(true);
     setError('');
     try {
-      let updatedProfile: User;
-      const form = new FormData();
-      if (displayName !== profile.displayName) form.append('displayName', displayName);
-      if (username !== profile.username) form.append('username', username);
-      if (bio !== profile.bio) form.append('bio', bio);
-      if (website !== profile.website) form.append('website', website);
-      if (avatarFile) form.append('avatar', avatarFile);
+      let updatedProfile: User = profile;
 
-      updatedProfile = await api.uploadPatch<User>('/users/me', form);
+      // 1. Update profile fields (displayName, bio, website) via JSON PATCH
+      const profileChanges: Record<string, string> = {};
+      if (displayName !== profile.displayName) profileChanges.displayName = displayName;
+      if (bio !== profile.bio) profileChanges.bio = bio;
+      if (website !== profile.website) profileChanges.website = website;
+      if (Object.keys(profileChanges).length > 0) {
+        updatedProfile = await api.patch<User>('/users/me', profileChanges);
+      }
+
+      // 2. Upload avatar separately with field name "file"
+      if (avatarFile) {
+        const form = new FormData();
+        form.append('file', avatarFile);
+        updatedProfile = await api.upload<User>('/users/me/avatar', form);
+      }
+
+      // 3. Change username separately
+      if (username !== profile.username) {
+        updatedProfile = await api.patch<User>('/users/me/username', { username });
+      }
+
       onSave(updatedProfile);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save changes');

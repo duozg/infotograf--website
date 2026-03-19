@@ -29,6 +29,7 @@ export function MessagesPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastMessageIdRef = useRef<string | null>(null);
+  const lastTypingRef = useRef<number>(0);
 
   // Clear unread badge on mount
   useEffect(() => { clearMessages(); }, [clearMessages]);
@@ -36,8 +37,8 @@ export function MessagesPage() {
   // Fetch conversations
   const fetchConversations = useCallback(async () => {
     try {
-      const res = await api.get<{ conversations: Conversation[] }>('/conversations');
-      setConversations(res.conversations || []);
+      const res = await api.get<Conversation[]>('/conversations');
+      setConversations(Array.isArray(res) ? res : []);
     } catch {
       // ignore
     } finally {
@@ -46,7 +47,7 @@ export function MessagesPage() {
   }, []);
 
   useEffect(() => { fetchConversations(); }, [fetchConversations]);
-  usePolling(fetchConversations, 5000, true);
+  usePolling(fetchConversations, 2000, true);
 
   // Fetch messages for active conversation
   const fetchMessages = useCallback(async () => {
@@ -75,7 +76,20 @@ export function MessagesPage() {
     api.post(`/conversations/${activeConversation.id}/read`).catch(() => {});
   }, [activeConversation?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  usePolling(fetchMessages, 3000, !!activeConversation);
+  usePolling(fetchMessages, 800, !!activeConversation);
+
+  // Heartbeat + presence cleanup per active conversation
+  useEffect(() => {
+    if (!activeConversation) return;
+    const convId = activeConversation.id;
+    const hb = setInterval(() => {
+      api.post(`/conversations/${convId}/heartbeat`).catch(() => {});
+    }, 1500);
+    return () => {
+      clearInterval(hb);
+      api.delete(`/conversations/${convId}/presence`).catch(() => {});
+    };
+  }, [activeConversation?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -311,7 +325,16 @@ export function MessagesPage() {
                 className={styles.textInput}
                 placeholder="Message…"
                 value={text}
-                onChange={e => setText(e.target.value)}
+                onChange={e => {
+                  setText(e.target.value);
+                  if (activeConversation && e.target.value.trim()) {
+                    const now = Date.now();
+                    if (now - lastTypingRef.current > 2000) {
+                      lastTypingRef.current = now;
+                      api.post(`/conversations/${activeConversation.id}/typing`).catch(() => {});
+                    }
+                  }
+                }}
                 rows={1}
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !e.shiftKey) {

@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const user = JSON.parse(userStr) as User;
         dispatch({ type: 'INIT', payload: { user, accessToken, refreshToken: refreshToken || '' } });
         // Refresh user data in background
-        api.get<User>('/users/me').then(freshUser => {
+        api.get<User>(`/users/${user.username}`).then(freshUser => {
           localStorage.setItem('user', JSON.stringify(freshUser));
           dispatch({ type: 'UPDATE_USER', payload: freshUser });
         }).catch(() => {
@@ -102,8 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    // Fire-and-forget logout API call
-    api.post('/auth/logout').catch(() => {});
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './PostCard.module.css';
 import { Post } from '../models';
@@ -44,6 +44,8 @@ function BookmarkIcon({ filled }: { filled?: boolean }) {
 export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardProps) {
   const navigate = useNavigate();
   const [localPost, setLocalPost] = useState(post);
+  const likeInProgressRef = useRef(false);
+  const bookmarkInProgressRef = useRef(false);
 
   // Sync with parent
   React.useEffect(() => {
@@ -55,9 +57,10 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
 
   const handleLike = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (likeInProgressRef.current) return;
+    likeInProgressRef.current = true;
     const wasLiked = localPost.isLiked;
     const newLikeCount = wasLiked ? likeCount - 1 : likeCount + 1;
-    // Optimistic update
     const updated = { ...localPost, isLiked: !wasLiked, likeCount: newLikeCount };
     setLocalPost(updated);
     onUpdate?.(updated);
@@ -68,14 +71,35 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
         await api.post(`/posts/${localPost.id}/like`);
       }
     } catch {
-      // Revert
       setLocalPost(localPost);
       onUpdate?.(localPost);
+    } finally {
+      likeInProgressRef.current = false;
+    }
+  }, [localPost, likeCount, onUpdate]);
+
+  // Double-tap on image: only adds a like, never removes
+  const handleDoubleTap = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (localPost.isLiked || likeInProgressRef.current) return;
+    likeInProgressRef.current = true;
+    const updated = { ...localPost, isLiked: true, likeCount: likeCount + 1 };
+    setLocalPost(updated);
+    onUpdate?.(updated);
+    try {
+      await api.post(`/posts/${localPost.id}/like`);
+    } catch {
+      setLocalPost(localPost);
+      onUpdate?.(localPost);
+    } finally {
+      likeInProgressRef.current = false;
     }
   }, [localPost, likeCount, onUpdate]);
 
   const handleBookmark = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (bookmarkInProgressRef.current) return;
+    bookmarkInProgressRef.current = true;
     const wasBookmarked = localPost.isBookmarked;
     const updated = { ...localPost, isBookmarked: !wasBookmarked };
     setLocalPost(updated);
@@ -89,6 +113,8 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
     } catch {
       setLocalPost(localPost);
       onUpdate?.(localPost);
+    } finally {
+      bookmarkInProgressRef.current = false;
     }
   }, [localPost, onUpdate]);
 
@@ -142,7 +168,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
       </div>
 
       {/* Image */}
-      <div onClick={handlePostClick} style={{ cursor: 'pointer' }}>
+      <div onClick={handlePostClick} onDoubleClick={handleDoubleTap} style={{ cursor: 'pointer' }}>
         <ImageCarousel images={images} filterName={localPost.filterName} />
       </div>
 

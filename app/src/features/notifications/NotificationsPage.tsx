@@ -39,7 +39,9 @@ export function NotificationsPage() {
   const { clearNotifications } = useAppState();
   const [tab, setTab] = useState<NotifTab>('you');
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [friendsNotifications, setFriendsNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [friendsLoading, setFriendsLoading] = useState(false);
   const [followingStates, setFollowingStates] = useState<Record<string, boolean>>({});
 
   const fetchNotifications = useCallback(async () => {
@@ -60,6 +62,19 @@ export function NotificationsPage() {
     }
   }, []);
 
+  const fetchFriendsNotifications = useCallback(async () => {
+    setFriendsLoading(true);
+    try {
+      const raw = await api.get<unknown>('/notifications/friends');
+      const { items } = parsePaginated<AppNotification>(raw);
+      setFriendsNotifications(items);
+    } catch {
+      // ignore
+    } finally {
+      setFriendsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchNotifications();
     const timer = setTimeout(() => {
@@ -68,6 +83,10 @@ export function NotificationsPage() {
     }, 1500);
     return () => clearTimeout(timer);
   }, [fetchNotifications, clearNotifications]);
+
+  useEffect(() => {
+    if (tab === 'friends') fetchFriendsNotifications();
+  }, [tab, fetchFriendsNotifications]);
 
   const handleFollow = useCallback(async (actorId: string) => {
     const isFollowing = followingStates[actorId];
@@ -84,22 +103,26 @@ export function NotificationsPage() {
     const now = Date.now();
     const groups: { title: string; items: AppNotification[] }[] = [
       { title: 'Today', items: [] },
+      { title: 'Yesterday', items: [] },
       { title: 'This Week', items: [] },
+      { title: 'This Month', items: [] },
       { title: 'Earlier', items: [] },
     ];
     items.forEach(n => {
       const ts = new Date(n.createdAt).getTime();
       const diff = now - ts;
       if (diff < 86400000) groups[0].items.push(n);
-      else if (diff < 604800000) groups[1].items.push(n);
-      else groups[2].items.push(n);
+      else if (diff < 172800000) groups[1].items.push(n);
+      else if (diff < 604800000) groups[2].items.push(n);
+      else if (diff < 2592000000) groups[3].items.push(n);
+      else groups[4].items.push(n);
     });
     return groups.filter(g => g.items.length > 0);
   };
 
   const filteredNotifs = tab === 'you'
     ? notifications.filter(n => ['like', 'comment', 'mention', 'commentReply', 'commentLike', 'follow'].includes(n.type))
-    : notifications.filter(n => n.type === 'follow' && n.isFollowingActor === false);
+    : friendsNotifications;
 
   const groups = groupNotifications(filteredNotifs);
 
@@ -123,13 +146,15 @@ export function NotificationsPage() {
           </button>
         </div>
 
-        {loading && <div className={styles.loadingState}>Loading…</div>}
+        {(loading || (tab === 'friends' && friendsLoading)) && (
+          <div className={styles.loadingState}>Loading…</div>
+        )}
 
-        {!loading && filteredNotifs.length === 0 && (
+        {!loading && !(tab === 'friends' && friendsLoading) && filteredNotifs.length === 0 && (
           <div className={styles.emptyState}>No notifications yet.</div>
         )}
 
-        {!loading && groups.map(group => (
+        {!loading && !(tab === 'friends' && friendsLoading) && groups.map(group => (
           <div key={group.title} className={styles.section}>
             <div className={styles.sectionTitle}>{group.title}</div>
             {group.items.map(notif => {

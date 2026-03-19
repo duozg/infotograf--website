@@ -28,6 +28,14 @@ function ListIcon() {
   );
 }
 
+function BookmarkTabIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 export function ProfilePage() {
   const { username: routeUsername } = useParams();
   const navigate = useNavigate();
@@ -44,6 +52,10 @@ export function ProfilePage() {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [activeTab, setActiveTab] = useState<'posts' | 'bookmarks'>('posts');
+  const [bookmarks, setBookmarks] = useState<Post[]>([]);
+  const [bookmarksCursor, setBookmarksCursor] = useState<string | null>(null);
+  const [bookmarksLoaded, setBookmarksLoaded] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     if (!targetUsername) return;
@@ -87,6 +99,30 @@ export function ProfilePage() {
       } : p);
     }
   }, [profile, isFollowing]);
+
+  const fetchBookmarks = useCallback(async () => {
+    try {
+      const { items, nextCursor } = await api.getPaginated<Post>('/posts/bookmarks');
+      setBookmarks(items);
+      setBookmarksCursor(nextCursor);
+      setBookmarksLoaded(true);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'bookmarks' && isOwnProfile && !bookmarksLoaded) {
+      fetchBookmarks();
+    }
+  }, [activeTab, isOwnProfile, bookmarksLoaded, fetchBookmarks]);
+
+  const handleLoadMoreBookmarks = useCallback(async () => {
+    if (!bookmarksCursor) return;
+    try {
+      const { items, nextCursor } = await api.getPaginated<Post>(`/posts/bookmarks?cursor=${bookmarksCursor}`);
+      setBookmarks(prev => [...prev, ...items]);
+      setBookmarksCursor(nextCursor);
+    } catch {}
+  }, [bookmarksCursor]);
 
   const handleLoadMorePosts = useCallback(async () => {
     if (!profile || !postsCursor) return;
@@ -193,23 +229,63 @@ export function ProfilePage() {
             {/* ── View toggle ── */}
             <div className={styles.gridToggle}>
               <button
-                className={`${styles.gridToggleBtn} ${viewMode === 'grid' ? styles.active : ''}`}
-                onClick={() => setViewMode('grid')}
+                className={`${styles.gridToggleBtn} ${activeTab === 'posts' && viewMode === 'grid' ? styles.active : ''}`}
+                onClick={() => { setActiveTab('posts'); setViewMode('grid'); }}
                 aria-label="Grid view"
               >
                 <GridIcon />
               </button>
               <button
-                className={`${styles.gridToggleBtn} ${viewMode === 'list' ? styles.active : ''}`}
-                onClick={() => setViewMode('list')}
+                className={`${styles.gridToggleBtn} ${activeTab === 'posts' && viewMode === 'list' ? styles.active : ''}`}
+                onClick={() => { setActiveTab('posts'); setViewMode('list'); }}
                 aria-label="List view"
               >
                 <ListIcon />
               </button>
+              {isOwnProfile && (
+                <button
+                  className={`${styles.gridToggleBtn} ${activeTab === 'bookmarks' ? styles.active : ''}`}
+                  onClick={() => setActiveTab('bookmarks')}
+                  aria-label="Saved posts"
+                >
+                  <BookmarkTabIcon />
+                </button>
+              )}
             </div>
 
+            {/* ── Bookmarks (own profile only) ── */}
+            {activeTab === 'bookmarks' && isOwnProfile && (
+              bookmarks.length === 0 && bookmarksLoaded ? (
+                <div className={styles.emptyPosts}>No saved posts yet.</div>
+              ) : (
+                <div className={styles.grid}>
+                  {bookmarks.map(post => {
+                    const imgs = post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
+                    const thumb = imageUrl(imgs[0]?.thumbnailUrl || imgs[0]?.imageUrl);
+                    return (
+                      <div
+                        key={post.id}
+                        className={styles.gridItem}
+                        onClick={() => navigate(`/post/${post.id}`)}
+                      >
+                        {thumb && <img src={thumb} alt="" loading="lazy" />}
+                      </div>
+                    );
+                  })}
+                  {bookmarksCursor && (
+                    <div
+                      style={{ gridColumn: '1/-1', padding: '16px', textAlign: 'center', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 14 }}
+                      onClick={handleLoadMoreBookmarks}
+                    >
+                      Load more
+                    </div>
+                  )}
+                </div>
+              )
+            )}
+
             {/* ── Posts ── */}
-            {profile.isPrivate && !isFollowing && !isOwnProfile ? (
+            {activeTab === 'posts' && (profile.isPrivate && !isFollowing && !isOwnProfile ? (
               <div className={styles.privateNotice}>
                 <h3>This account is private</h3>
                 <p>Follow {profile.username} to see their photos.</p>
@@ -275,7 +351,7 @@ export function ProfilePage() {
                   );
                 })}
               </div>
-            )}
+            ))}
           </>
         ) : (
           <div className={styles.loadingState}>User not found.</div>

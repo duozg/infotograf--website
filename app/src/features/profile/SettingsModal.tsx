@@ -13,13 +13,16 @@ interface SettingsModalProps {
 
 type ThemeMode = 'dark' | 'light' | 'system';
 
+
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const [blockedUsers, setBlockedUsers] = useState<User[]>([]);
   const [isPrivate, setIsPrivate] = useState(user?.isPrivate || false);
   const [savingPrivate, setSavingPrivate] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     api.get<User[]>('/moderation/blocks').then(res => {
@@ -33,12 +36,13 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     setSavingPrivate(true);
     try {
       await api.patch('/users/me', { isPrivate: newVal });
+      updateUser({ isPrivate: newVal });
     } catch {
       setIsPrivate(!newVal);
     } finally {
       setSavingPrivate(false);
     }
-  }, [isPrivate]);
+  }, [isPrivate, updateUser]);
 
   const handleUnblock = useCallback(async (userId: string) => {
     setBlockedUsers(prev => prev.filter(u => u.id !== userId));
@@ -48,6 +52,19 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       // Re-add on error
     }
   }, []);
+
+  const handleDeleteAccount = useCallback(async () => {
+    setDeleting(true);
+    try {
+      await api.delete('/users/me');
+      logout();
+      onClose();
+      navigate('/login', { replace: true });
+    } catch {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  }, [logout, onClose, navigate]);
 
   const handleLogout = useCallback(() => {
     logout();
@@ -147,6 +164,37 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             >
               <span className={styles.dangerLabel}>Log Out{user ? ` @${user.username}` : ''}</span>
             </div>
+            {!showDeleteConfirm ? (
+              <div
+                className={styles.dangerRow}
+                onClick={() => setShowDeleteConfirm(true)}
+              >
+                <span className={styles.dangerLabel}>Delete Account</span>
+              </div>
+            ) : (
+              <div className={styles.row} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 12 }}>
+                <span style={{ fontSize: 14, color: 'var(--text-primary)' }}>
+                  Are you sure? This cannot be undone.
+                </span>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    className={styles.unblockBtn}
+                    onClick={() => setShowDeleteConfirm(false)}
+                    disabled={deleting}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className={styles.unblockBtn}
+                    style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red)' }}
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                  >
+                    {deleting ? 'Deleting…' : 'Delete'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div style={{ height: 40 }} />

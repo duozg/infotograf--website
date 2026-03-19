@@ -21,10 +21,31 @@ function Sidebar({ onCreatePost }: { onCreatePost?: () => void }) {
   const [followed, setFollowed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    api.get<{ users: User[] } | User[]>('/users/suggestions')
-      .then(res => {
-        const list = Array.isArray(res) ? res : (res as { users: User[] }).users || [];
-        setSuggestions(list.slice(0, 5));
+    // /users/suggestions doesn't exist — derive suggested users from explore posts
+    api.getPaginated<Post>('/explore')
+      .then(({ items: posts }) => {
+        const seen = new Set<string>();
+        const derived: User[] = [];
+        for (const p of posts) {
+          if (!p.userId || !p.username || seen.has(p.userId)) continue;
+          seen.add(p.userId);
+          derived.push({
+            id: p.userId,
+            username: p.username,
+            displayName: p.displayName,
+            avatarUrl: p.avatarUrl,
+            isPrivate: false,
+            createdAt: p.createdAt,
+            postCount: 0,
+            followerCount: 0,
+            followingCount: 0,
+            isFollowing: false,
+            isBlocked: false,
+            isMuted: false,
+          });
+          if (derived.length >= 5) break;
+        }
+        setSuggestions(derived);
       })
       .catch(() => {});
   }, []);

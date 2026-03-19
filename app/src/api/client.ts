@@ -87,6 +87,7 @@ export async function apiRequest<T>(
 const PAGINATED_KEYS = ['items', 'posts', 'comments', 'notifications', 'conversations', 'messages', 'users'] as const;
 
 export function parsePaginated<T>(data: unknown): { items: T[]; nextCursor: string | null } {
+  if (Array.isArray(data)) return { items: data as T[], nextCursor: null };
   if (!data || typeof data !== 'object') return { items: [], nextCursor: null };
   const obj = data as Record<string, unknown>;
   let items: T[] = [];

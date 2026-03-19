@@ -27,11 +27,11 @@ export function ExplorePage() {
         setPosts(items);
       } else {
         const [usersRes, tagsRes] = await Promise.allSettled([
-          api.get<{ users: User[] }>(`/users/search?q=${encodeURIComponent(q)}`),
+          api.get<User[]>(`/users/search?q=${encodeURIComponent(q)}`),
           api.get<HashtagSuggestion[]>(`/explore/hashtags/search?q=${encodeURIComponent(q)}`),
         ]);
         setPosts([]);
-        if (usersRes.status === 'fulfilled') setUsers(usersRes.value.users || []);
+        if (usersRes.status === 'fulfilled') setUsers(Array.isArray(usersRes.value) ? usersRes.value : []);
         else setUsers([]);
         if (tagsRes.status === 'fulfilled') setTags(Array.isArray(tagsRes.value) ? tagsRes.value : []);
         else setTags([]);
