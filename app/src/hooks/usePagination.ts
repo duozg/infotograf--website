@@ -1,8 +1,7 @@
 import { useState, useCallback, useRef, Dispatch, SetStateAction } from 'react';
-import { PaginatedResponse } from '../models';
 
 interface UsePaginationOptions<T> {
-  fetcher: (cursor: string | null) => Promise<PaginatedResponse<T>>;
+  fetcher: (cursor: string | null) => Promise<{ items: T[]; nextCursor: string | null }>;
 }
 
 interface UsePaginationResult<T> {

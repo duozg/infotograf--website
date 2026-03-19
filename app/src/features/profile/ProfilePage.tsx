@@ -4,7 +4,8 @@ import styles from './ProfilePage.module.css';
 import { HeaderBar } from '../../components/HeaderBar';
 import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
-import { User, Post, PaginatedResponse } from '../../models';
+import { User, Post } from '../../models';
+import { parsePaginated } from '../../api/client';
 import { imageUrl } from '../../utils/imageUrl';
 import { toCount } from '../../utils/textParser';
 import { useAuth } from '../../context/AuthContext';
@@ -53,9 +54,9 @@ export function ProfilePage() {
       const profileData = await api.get<User>(`/users/${targetUsername}`);
       setProfile(profileData);
       setIsFollowing(profileData.isFollowing);
-      const postsData = await api.get<PaginatedResponse<Post>>(`/posts/user/${profileData.id}`);
-      setPosts(postsData.items || []);
-      setPostsCursor(postsData.nextCursor);
+      const { items: postItems, nextCursor } = await api.getPaginated<Post>(`/posts/user/${profileData.id}`);
+      setPosts(postItems);
+      setPostsCursor(nextCursor);
     } catch {
       // ignore
     } finally {
@@ -95,11 +96,11 @@ export function ProfilePage() {
   const handleLoadMorePosts = useCallback(async () => {
     if (!profile || !postsCursor) return;
     try {
-      const res = await api.get<PaginatedResponse<Post>>(
+      const { items, nextCursor } = await api.getPaginated<Post>(
         `/posts/user/${profile.id}?cursor=${postsCursor}`
       );
-      setPosts(prev => [...prev, ...res.items]);
-      setPostsCursor(res.nextCursor);
+      setPosts(prev => [...prev, ...items]);
+      setPostsCursor(nextCursor);
     } catch {}
   }, [profile, postsCursor]);
 

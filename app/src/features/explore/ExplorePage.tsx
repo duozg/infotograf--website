@@ -4,7 +4,7 @@ import styles from './ExplorePage.module.css';
 import { HeaderBar } from '../../components/HeaderBar';
 import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
-import { Post, User, HashtagSuggestion, PaginatedResponse } from '../../models';
+import { Post, User, HashtagSuggestion } from '../../models';
 import { imageUrl } from '../../utils/imageUrl';
 
 type SearchTab = 'posts' | 'users' | 'tags';
@@ -25,8 +25,8 @@ export function ExplorePage() {
     try {
       if (!q.trim()) {
         // Load popular/discover posts
-        const res = await api.get<PaginatedResponse<Post>>('/explore');
-        setPosts(res.items || []);
+        const { items } = await api.getPaginated<Post>('/explore');
+        setPosts(items);
       } else {
         const [usersRes, tagsRes] = await Promise.allSettled([
           api.get<{ users: User[] }>(`/users/search?q=${encodeURIComponent(q)}`),

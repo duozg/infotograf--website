@@ -35,7 +35,7 @@ export function HeaderBar({
 
       {showLogo ? (
         <div className={styles.logo} style={{ flex: 1, justifyContent: 'center' }} onClick={() => navigate('/')}>
-          <img src="/images/brand-i-hero.png" alt="" className={styles.logoI} />
+          <img src="/images/brand-i.png" alt="" className={styles.logoI} />
           nfotograf
         </div>
       ) : (

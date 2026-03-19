@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './ChatModal.module.css';
 import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
-import { Conversation, Message, PaginatedResponse } from '../../models';
+import { Conversation, Message } from '../../models';
+import { parsePaginated } from '../../api/client';
 import { timeAgo } from '../../utils/timeAgo';
 import { imageUrl } from '../../utils/imageUrl';
 import { useAuth } from '../../context/AuthContext';
@@ -30,10 +31,10 @@ export function ChatModal({ conversation, onClose }: ChatModalProps) {
 
   const fetchMessages = useCallback(async () => {
     try {
-      const res = await api.get<PaginatedResponse<Message>>(
+      const raw = await api.get<unknown>(
         `/conversations/${conversation.id}/messages`
       );
-      const newMessages = res.items || [];
+      const newMessages = parsePaginated<Message>(raw).items;
       setMessages(prev => {
         // Only update if there are new messages
         if (newMessages.length > 0 && newMessages[0]?.id !== lastMessageIdRef.current) {

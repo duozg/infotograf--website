@@ -82,8 +82,24 @@ export async function apiRequest<T>(
   return res.json();
 }
 
+// The backend uses different keys for the items array depending on the endpoint.
+// This normalises any paginated response into { items, nextCursor }.
+const PAGINATED_KEYS = ['items', 'posts', 'comments', 'notifications', 'conversations', 'messages', 'users'] as const;
+
+export function parsePaginated<T>(data: unknown): { items: T[]; nextCursor: string | null } {
+  if (!data || typeof data !== 'object') return { items: [], nextCursor: null };
+  const obj = data as Record<string, unknown>;
+  let items: T[] = [];
+  for (const key of PAGINATED_KEYS) {
+    if (Array.isArray(obj[key])) { items = obj[key] as T[]; break; }
+  }
+  const nextCursor = typeof obj['nextCursor'] === 'string' ? obj['nextCursor'] : null;
+  return { items, nextCursor };
+}
+
 export const api = {
   get: <T>(path: string) => apiRequest<T>('GET', path),
+  getPaginated: <T>(path: string) => apiRequest<unknown>('GET', path).then(d => parsePaginated<T>(d)),
   post: <T>(path: string, body?: unknown) => apiRequest<T>('POST', path, body ?? {}),
   patch: <T>(path: string, body: unknown) => apiRequest<T>('PATCH', path, body),
   delete: <T>(path: string) => apiRequest<T>('DELETE', path),

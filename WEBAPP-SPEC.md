@@ -199,9 +199,24 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 ### Pagination Pattern
 
 All paginated endpoints use **cursor-based pagination**:
-- Response: `{ items: T[], nextCursor: string | null }`
+- Response uses a **dynamic key** for the items array — NOT a fixed "items" key
+- The key depends on the endpoint:
+  - Feed/Explore/User posts/Bookmarks: `{ "posts": [...], "nextCursor": "..." }`
+  - Comments: `{ "comments": [...], "nextCursor": "..." }`
+  - Notifications: `{ "notifications": [...], "nextCursor": "..." }`
+  - Conversations: `{ "conversations": [...], "nextCursor": "..." }`
+  - Messages: `{ "messages": [...], "nextCursor": "..." }`
+  - Users (followers/following): `{ "users": [...], "nextCursor": "..." }`
+- **Parser must check all keys**: try `posts`, `comments`, `notifications`, `conversations`, `messages`, `users` — use whichever exists
 - Next page: append `?cursor=<nextCursor>` to the endpoint
-- The backend tries multiple keys for the items array: `posts`, `comments`, `notifications`, `conversations`, `messages`, `users`
+- Example parser:
+```typescript
+function parsePaginated<T>(data: any): { items: T[], nextCursor: string | null } {
+  const keys = ['posts', 'comments', 'notifications', 'conversations', 'messages', 'users'];
+  const items = keys.reduce((found, key) => found ?? data[key], null) ?? [];
+  return { items, nextCursor: data.nextCursor ?? null };
+}
+```
 
 ### Important API Quirks
 

@@ -6,7 +6,8 @@ import { ImageCarousel } from '../../components/ImageCarousel';
 import { TextEntityRenderer } from '../../components/TextEntityRenderer';
 import { HeaderBar } from '../../components/HeaderBar';
 import { api } from '../../api/client';
-import { Post, Comment, PaginatedResponse } from '../../models';
+import { Post, Comment } from '../../models';
+import { parsePaginated } from '../../api/client';
 import { timeAgo } from '../../utils/timeAgo';
 import { toCount } from '../../utils/textParser';
 import { useAuth } from '../../context/AuthContext';
@@ -54,7 +55,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     setLoading(true);
     Promise.all([
       api.get<Post>(`/posts/${postId}`),
-      api.get<PaginatedResponse<Comment>>(`/posts/${postId}/comments`),
+      api.getPaginated<Comment>(`/posts/${postId}/comments`),
     ]).then(([p, c]) => {
       setPost(p);
       setComments(c.items);
@@ -135,11 +136,11 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   const loadMoreComments = useCallback(async () => {
     if (!post || !commentCursor) return;
     try {
-      const res = await api.get<PaginatedResponse<Comment>>(
+      const { items, nextCursor } = await api.getPaginated<Comment>(
         `/posts/${post.id}/comments?cursor=${commentCursor}`
       );
-      setComments(prev => [...prev, ...res.items]);
-      setCommentCursor(res.nextCursor);
+      setComments(prev => [...prev, ...items]);
+      setCommentCursor(nextCursor);
     } catch {}
   }, [post, commentCursor]);
 

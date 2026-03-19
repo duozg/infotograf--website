@@ -15,7 +15,7 @@ interface FeedPageProps {
 export function FeedPage({ onCreatePost, onOpenInbox }: FeedPageProps) {
   const fetcher = useCallback(
     (cursor: string | null) =>
-      api.get<PaginatedResponse<Post>>(`/feed${cursor ? `?cursor=${cursor}` : ''}`),
+      api.getPaginated<Post>(`/feed${cursor ? `?cursor=${cursor}` : ''}`),
     []
   );
 

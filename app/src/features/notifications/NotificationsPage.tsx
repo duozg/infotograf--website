@@ -4,7 +4,8 @@ import styles from './NotificationsPage.module.css';
 import { HeaderBar } from '../../components/HeaderBar';
 import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
-import { AppNotification, PaginatedResponse } from '../../models';
+import { AppNotification } from '../../models';
+import { parsePaginated } from '../../api/client';
 import { timeAgo } from '../../utils/timeAgo';
 import { imageUrl } from '../../utils/imageUrl';
 import { useAppState } from '../../context/AppStateContext';
@@ -45,11 +46,12 @@ export function NotificationsPage() {
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get<PaginatedResponse<AppNotification>>('/notifications');
-      setNotifications(res.items || []);
+      const raw = await api.get<unknown>('/notifications');
+      const { items } = parsePaginated<AppNotification>(raw);
+      setNotifications(items);
       // Build initial follow states
       const states: Record<string, boolean> = {};
-      (res.items || []).forEach(n => {
+      items.forEach(n => {
         if (n.actorId) states[n.actorId] = n.isFollowingActor || false;
       });
       setFollowingStates(states);
