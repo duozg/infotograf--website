@@ -96,18 +96,18 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
     e.stopPropagation();
     if (localPost.username) {
       onUserClick?.(localPost.username);
-      navigate(`/app/profile/${localPost.username}`);
+      navigate(`/profile/${localPost.username}`);
     }
   };
 
   const handlePostClick = () => {
     onPostClick?.(localPost);
-    navigate(`/app/post/${localPost.id}`);
+    navigate(`/post/${localPost.id}`);
   };
 
   const handleCommentClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/app/post/${localPost.id}?focus=comment`);
+    navigate(`/post/${localPost.id}?focus=comment`);
   };
 
   // Build images array
@@ -126,7 +126,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate }: PostCardP
           onClick={() => {
             if (localPost.username) {
               onUserClick?.(localPost.username);
-              navigate(`/app/profile/${localPost.username}`);
+              navigate(`/profile/${localPost.username}`);
             }
           }}
         />

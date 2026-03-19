@@ -1,43 +1,121 @@
+/* Full-page wrapper */
 .page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--bg-app);
+}
+
+/* Two-column layout (desktop) */
+.layout {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-app);
-  padding: 20px;
+  gap: 48px;
+  padding: 40px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Left: marketing panel ── */
+.marketing {
+  flex: 1;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wordmark {
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-size: 56px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  line-height: 1;
+}
+
+.wordmarkI {
+  height: 56px;
+  width: auto;
+}
+
+.tagline {
+  font-size: 28px;
+  font-weight: 200;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.subTagline {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.pill {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-primary);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+/* ── Right: form side ── */
+.formSide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
 }
 
 .card {
   width: 100%;
-  max-width: 380px;
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-card);
-  padding: 40px 30px 30px;
+  padding: 36px 28px 24px;
 }
 
 .logo {
   font-family: var(--font-logo);
   font-style: italic;
-  font-size: 48px;
+  font-size: 44px;
   color: var(--text-primary);
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
 }
 
 .logoI {
-  height: 48px;
+  height: 44px;
   width: auto;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .input {
@@ -93,33 +171,70 @@
   text-align: center;
 }
 
-.footer {
+.signupLink {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 18px;
   font-size: 13px;
   color: var(--text-secondary);
 }
 
-.footer a {
+.signupLink a {
   color: var(--text-link);
   font-weight: 500;
 }
 
-.divider {
+/* App Store link row */
+.appLinks {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-card);
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 8px 0;
-}
-
-.divider span {
-  flex: 1;
-  height: 1px;
-  background: var(--border-primary);
-}
-
-.divider em {
-  font-style: normal;
-  font-size: 12px;
+  justify-content: space-between;
+  font-size: 13px;
   color: var(--text-secondary);
+}
+
+.storeBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-link);
+}
+
+.storeBtn:hover {
+  text-decoration: underline;
+}
+
+/* ── Mobile: stack vertically ── */
+@media (max-width: 680px) {
+  .layout {
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px 20px;
+  }
+
+  .marketing {
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+
+  .wordmark {
+    font-size: 42px;
+    justify-content: center;
+  }
+
+  .wordmarkI {
+    height: 42px;
+  }
+
+  .tagline {
+    font-size: 22px;
+  }
+
+  .formSide {
+    max-width: 100%;
+  }
 }

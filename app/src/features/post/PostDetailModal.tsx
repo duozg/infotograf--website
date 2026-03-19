@@ -159,10 +159,10 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
               username={post.username}
               size="md"
               className={styles.avatar}
-              onClick={() => navigate(`/app/profile/${post.username}`)}
+              onClick={() => navigate(`/profile/${post.username}`)}
             />
             <div className={styles.userInfo}>
-              <div className={styles.username} onClick={() => navigate(`/app/profile/${post.username}`)}>
+              <div className={styles.username} onClick={() => navigate(`/profile/${post.username}`)}>
                 {post.username}
               </div>
               {post.locationName && <div className={styles.location}>{post.locationName}</div>}
@@ -225,7 +225,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
                 <div className={styles.caption}>
                   <span
                     className={styles.captionUser}
-                    onClick={() => navigate(`/app/profile/${post.username}`)}
+                    onClick={() => navigate(`/profile/${post.username}`)}
                   >
                     {post.username}
                   </span>
@@ -243,13 +243,13 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
                     src={comment.avatarUrl}
                     username={comment.username}
                     size="sm"
-                    onClick={() => navigate(`/app/profile/${comment.username}`)}
+                    onClick={() => navigate(`/profile/${comment.username}`)}
                   />
                   <div className={styles.commentBody}>
                     <div>
                       <span
                         className={styles.commentUser}
-                        onClick={() => navigate(`/app/profile/${comment.username}`)}
+                        onClick={() => navigate(`/profile/${comment.username}`)}
                       >
                         {comment.username}
                       </span>

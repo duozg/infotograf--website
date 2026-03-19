@@ -35,7 +35,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
-    return <Navigate to="/app/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
@@ -44,7 +44,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 function RequireGuest({ children }: { children: React.ReactNode }) {
   const { user, initialized } = useAuth();
   if (!initialized) return null;
-  if (user) return <Navigate to="/app/" replace />;
+  if (user) return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -53,9 +53,7 @@ function AuthenticatedApp() {
   const [showInbox, setShowInbox] = useState(false);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
 
-  // Handle inbox/chat from URL params
   useEffect(() => {
     if (searchParams.get('inbox') === '1') {
       setShowInbox(true);
@@ -94,7 +92,7 @@ function AuthenticatedApp() {
             path="/post/:postId"
             element={<PostDetailModal asPage />}
           />
-          <Route path="*" element={<Navigate to="/app/" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
@@ -103,9 +101,7 @@ function AuthenticatedApp() {
       {showCreatePost && (
         <CreatePostModal
           onClose={handleCloseCreatePost}
-          onSuccess={() => {
-            handleCloseCreatePost();
-          }}
+          onSuccess={handleCloseCreatePost}
         />
       )}
 
@@ -127,19 +123,17 @@ export default function App() {
   return (
     <Routes>
       <Route
-        path="/app/login"
+        path="/login"
         element={<RequireGuest><LoginPage /></RequireGuest>}
       />
       <Route
-        path="/app/register"
+        path="/register"
         element={<RequireGuest><RegisterPage /></RequireGuest>}
       />
       <Route
-        path="/app/*"
+        path="/*"
         element={<RequireAuth><AuthenticatedApp /></RequireAuth>}
       />
-      {/* Redirect root to app */}
-      <Route path="/" element={<Navigate to="/app/" replace />} />
     </Routes>
   );
 }

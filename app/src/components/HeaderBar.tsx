@@ -34,7 +34,7 @@ export function HeaderBar({
       </div>
 
       {showLogo ? (
-        <div className={styles.logo} style={{ flex: 1, justifyContent: 'center' }} onClick={() => navigate('/app/')}>
+        <div className={styles.logo} style={{ flex: 1, justifyContent: 'center' }} onClick={() => navigate('/')}>
           <img src="/images/brand-i-hero.png" alt="" className={styles.logoI} />
           nfotograf
         </div>
@@ -48,7 +48,7 @@ export function HeaderBar({
           <div className={styles.badgeWrapper}>
             <button
               className={styles.iconBtn}
-              onClick={() => navigate('/app/?inbox=1')}
+              onClick={() => navigate('/?inbox=1')}
               aria-label="Messages"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

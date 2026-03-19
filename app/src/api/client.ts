@@ -37,7 +37,7 @@ export async function apiRequest<T>(
       if (!refreshToken) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/app/login';
+        window.location.href = '/login';
         throw new Error('Not authenticated');
       }
       try {
@@ -57,7 +57,7 @@ export async function apiRequest<T>(
         isRefreshing = false;
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/app/login';
+        window.location.href = '/login';
         throw new Error('Session expired');
       }
     } else {

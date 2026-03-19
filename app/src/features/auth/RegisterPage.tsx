@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
 import { useAuth } from '../../context/AuthContext';
+import { AppFooter } from '../../components/AppFooter';
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export function RegisterPage() {
     setLoading(true);
     try {
       await register(username.trim(), email.trim(), password);
-      navigate('/app/', { replace: true });
+      navigate('/', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
     } finally {
@@ -88,9 +89,11 @@ export function RegisterPage() {
 
         <div className={styles.footer}>
           Already have an account?{' '}
-          <Link to="/app/login">Log in</Link>
+          <Link to="/login">Log in</Link>
         </div>
       </div>
+
+      <AppFooter />
     </div>
   );
 }

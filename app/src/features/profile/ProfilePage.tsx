@@ -146,14 +146,14 @@ export function ProfilePage() {
                 </div>
                 <div
                   className={styles.statItem}
-                  onClick={() => navigate(`/app/profile/${profile.username}/followers`)}
+                  onClick={() => navigate(`/profile/${profile.username}/followers`)}
                 >
                   <span className={styles.statValue}>{toCount(profile.followerCount).toLocaleString()}</span>
                   <span className={styles.statLabel}>Followers</span>
                 </div>
                 <div
                   className={styles.statItem}
-                  onClick={() => navigate(`/app/profile/${profile.username}/following`)}
+                  onClick={() => navigate(`/profile/${profile.username}/following`)}
                 >
                   <span className={styles.statValue}>{toCount(profile.followingCount).toLocaleString()}</span>
                   <span className={styles.statLabel}>Following</span>
@@ -184,7 +184,7 @@ export function ProfilePage() {
                   </button>
                   <button
                     className={styles.messageBtn}
-                    onClick={() => navigate(`/app/?chat=${profile.username}`)}
+                    onClick={() => navigate(`/?chat=${profile.username}`)}
                   >
                     Message
                   </button>
@@ -230,7 +230,7 @@ export function ProfilePage() {
                   <div
                     key={post.id}
                     className={styles.gridItem}
-                    onClick={() => navigate(`/app/post/${post.id}`)}
+                    onClick={() => navigate(`/post/${post.id}`)}
                   >
                     {thumb && <img src={thumb} alt="" loading="lazy" />}
                   </div>
@@ -261,7 +261,7 @@ export function ProfilePage() {
                       background: 'var(--bg-card)',
                       cursor: 'pointer',
                     }}
-                    onClick={() => navigate(`/app/post/${post.id}`)}
+                    onClick={() => navigate(`/post/${post.id}`)}
                   >
                     {thumb && (
                       <img

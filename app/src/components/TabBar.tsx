@@ -58,16 +58,16 @@ export function TabBar({ onCreatePost }: TabBarProps) {
   const { unreadNotifications } = useAppState();
 
   const path = location.pathname;
-  const isHome = path === '/app/' || path === '/app';
-  const isExplore = path.startsWith('/app/explore');
-  const isNotifications = path.startsWith('/app/notifications');
-  const isProfile = path.startsWith('/app/profile') || path === '/app/profile';
+  const isHome = path === '/';
+  const isExplore = path.startsWith('/explore');
+  const isNotifications = path.startsWith('/notifications');
+  const isProfile = path.startsWith('/profile') || path === '/profile';
 
   return (
     <nav className={styles.tabBar}>
       <button
         className={`${styles.tab} ${isHome ? styles.active : ''}`}
-        onClick={() => navigate('/app/')}
+        onClick={() => navigate('/')}
         aria-label="Home"
       >
         <HomeIcon active={isHome} />
@@ -75,7 +75,7 @@ export function TabBar({ onCreatePost }: TabBarProps) {
 
       <button
         className={`${styles.tab} ${isExplore ? styles.active : ''}`}
-        onClick={() => navigate('/app/explore')}
+        onClick={() => navigate('/explore')}
         aria-label="Explore"
       >
         <ExploreIcon active={isExplore} />
@@ -91,7 +91,7 @@ export function TabBar({ onCreatePost }: TabBarProps) {
 
       <button
         className={`${styles.tab} ${isNotifications ? styles.active : ''}`}
-        onClick={() => navigate('/app/notifications')}
+        onClick={() => navigate('/notifications')}
         aria-label="Notifications"
         style={{ position: 'relative' }}
       >
@@ -105,7 +105,7 @@ export function TabBar({ onCreatePost }: TabBarProps) {
 
       <button
         className={`${styles.tab} ${isProfile ? styles.active : ''}`}
-        onClick={() => navigate('/app/profile')}
+        onClick={() => navigate('/profile')}
         aria-label="Profile"
       >
         <ProfileIcon active={isProfile} />

@@ -138,7 +138,7 @@ export function ChatModal({ conversation, onClose }: ChatModalProps) {
           <button className={styles.backBtn} onClick={onClose}>‹</button>
           <div
             className={styles.headerInfo}
-            onClick={() => navigate(`/app/profile/${otherMember?.username}`)}
+            onClick={() => navigate(`/profile/${otherMember?.username}`)}
           >
             <Avatar src={otherMember?.avatarUrl} username={otherMember?.username} size="md" />
           </div>

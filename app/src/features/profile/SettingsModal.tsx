@@ -52,7 +52,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const handleLogout = useCallback(() => {
     logout();
     onClose();
-    navigate('/app/login', { replace: true });
+    navigate('/login', { replace: true });
   }, [logout, onClose, navigate]);
 
   return (

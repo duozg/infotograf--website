@@ -146,8 +146,8 @@ export function NotificationsPage() {
                 key={notif.id}
                 className={`${styles.notifItem} ${!notif.read ? styles.unread : ''}`}
                 onClick={() => {
-                  if (notif.postId) navigate(`/app/post/${notif.postId}`);
-                  else if (notif.actorUsername) navigate(`/app/profile/${notif.actorUsername}`);
+                  if (notif.postId) navigate(`/post/${notif.postId}`);
+                  else if (notif.actorUsername) navigate(`/profile/${notif.actorUsername}`);
                 }}
               >
                 <div className={styles.avatarStack}>

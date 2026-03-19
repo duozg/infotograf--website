@@ -5,9 +5,9 @@ echo "==> Cleaning output directory"
 rm -rf _out
 mkdir -p _out
 
-echo "==> Copying marketing site static files"
+echo "==> Copying static marketing pages (privacy, terms, support, guidelines)"
 cp -r css images _out/
-for f in *.html; do
+for f in privacy.html terms.html support.html guidelines.html; do
   [ -f "$f" ] && cp "$f" _out/
 done
 
@@ -17,8 +17,7 @@ npm install
 npm run build
 cd ..
 
-echo "==> Copying SPA output to _out/app/"
-mkdir -p _out/app
-cp -r app/dist/* _out/app/
+echo "==> Copying SPA output to _out/ (SPA serves from root)"
+cp -r app/dist/* _out/
 
 echo "==> Build complete. Output in _out/"

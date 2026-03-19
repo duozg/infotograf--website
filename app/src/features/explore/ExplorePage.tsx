@@ -102,7 +102,7 @@ export function ExplorePage() {
                   <div
                     key={post.id}
                     className={styles.gridItem}
-                    onClick={() => navigate(`/app/post/${post.id}`)}
+                    onClick={() => navigate(`/post/${post.id}`)}
                   >
                     {thumb && <img src={thumb} alt="" loading="lazy" />}
                     {images.length > 1 && (
@@ -126,7 +126,7 @@ export function ExplorePage() {
                 <div
                   key={user.id}
                   className={styles.userItem}
-                  onClick={() => navigate(`/app/profile/${user.username}`)}
+                  onClick={() => navigate(`/profile/${user.username}`)}
                 >
                   <Avatar src={user.avatarUrl} username={user.username} size="lg" />
                   <div className={styles.userInfo}>
