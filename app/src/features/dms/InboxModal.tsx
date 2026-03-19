@@ -19,8 +19,8 @@ export function InboxModal({ onClose, onOpenChat }: InboxModalProps) {
 
   const fetchConversations = useCallback(async () => {
     try {
-      const res = await api.get<{ conversations: Conversation[] }>('/conversations');
-      setConversations(res.conversations || []);
+      const { items } = await api.getPaginated<Conversation>('/conversations');
+      setConversations(items);
     } catch {
       // ignore
     } finally {

@@ -97,8 +97,8 @@ export function MessagesPage() {
   // Fetch conversations
   const fetchConversations = useCallback(async () => {
     try {
-      const res = await api.get<Conversation[]>('/conversations');
-      setConversations(Array.isArray(res) ? res : []);
+      const { items } = await api.getPaginated<Conversation>('/conversations');
+      setConversations(items);
     } catch {
       // ignore
     } finally {
