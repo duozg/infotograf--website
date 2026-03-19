@@ -8,9 +8,9 @@ export interface User {
   website?: string;
   isPrivate: boolean;
   createdAt: string;
-  postCount: number | string;
-  followerCount: number | string;
-  followingCount: number | string;
+  postCount: number | string | null;
+  followerCount: number | string | null;
+  followingCount: number | string | null;
   usernameChangesLeft?: number;
   isFollowing: boolean;
   isBlocked: boolean;
@@ -35,8 +35,8 @@ export interface Post {
   filterName?: string;
   caption?: string;
   locationName?: string;
-  likeCount: number | string;
-  commentCount: number | string;
+  likeCount: number | string | null;
+  commentCount: number | string | null;
   isLiked?: boolean;
   isBookmarked?: boolean;
   audioUrl?: string;
@@ -56,7 +56,7 @@ export interface Comment {
   parentId?: string;
   body: string;
   createdAt: string;
-  likeCount: number | string;
+  likeCount: number | string | null;
   isLiked?: boolean;
 }
 

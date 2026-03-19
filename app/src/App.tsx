@@ -12,6 +12,7 @@ import { CreatePostModal } from './features/post/CreatePostModal';
 import { InboxModal } from './features/dms/InboxModal';
 import { ChatModal } from './features/dms/ChatModal';
 import { TabBar } from './components/TabBar';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Conversation } from './models';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -82,15 +83,15 @@ function AuthenticatedApp() {
         <Routes>
           <Route
             path="/"
-            element={<FeedPage onCreatePost={handleCreatePost} onOpenInbox={handleOpenInbox} />}
+            element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} onOpenInbox={handleOpenInbox} /></ErrorBoundary>}
           />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
+          <Route path="/notifications" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
+          <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+          <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
           <Route
             path="/post/:postId"
-            element={<PostDetailModal asPage />}
+            element={<ErrorBoundary><PostDetailModal asPage /></ErrorBoundary>}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

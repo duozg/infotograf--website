@@ -30,7 +30,8 @@ export function parseText(text: string): TextSegment[] {
   return segments;
 }
 
-export function toCount(val: number | string): number {
+export function toCount(val: number | string | null | undefined): number {
+  if (val == null) return 0;
   if (typeof val === 'string') return parseInt(val, 10) || 0;
   return val;
 }

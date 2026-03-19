@@ -1,4 +1,5 @@
-export function timeAgo(date: string): string {
+export function timeAgo(date: string | null | undefined): string {
+  if (!date) return '';
   const now = Date.now();
   const then = new Date(date).getTime();
   const diff = Math.floor((now - then) / 1000);
