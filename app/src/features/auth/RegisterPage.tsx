@@ -33,10 +33,7 @@ export function RegisterPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>
-          <img src="/images/brand-i-hero.png" alt="" className={styles.logoI} />
-          nfotograf
-        </div>
+        <div className={styles.logo}>Infotograf</div>
         <p className={styles.subtitle}>Photos, filters, and a chronological feed.</p>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>

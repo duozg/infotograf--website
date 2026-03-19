@@ -4,6 +4,24 @@ import styles from './LoginPage.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { AppFooter } from '../../components/AppFooter';
 
+// Warm-toned decorative photo mosaic — evokes a chronological photo feed
+const TILE_COLORS = [
+  '#3a2e2a','#2e3a38','#3a3020','#2a3430','#382822',
+  '#304038','#3a2e34','#283840','#382e28','#2e3838',
+  '#3a3428','#283040','#382634','#2e3c2e','#3a2e20',
+  '#28303e','#362830','#2a3a34','#342820','#283436',
+];
+
+function PhotoGrid() {
+  return (
+    <div className={styles.photoGrid}>
+      {TILE_COLORS.map((color, i) => (
+        <div key={i} className={styles.photoTile} style={{ background: color }} />
+      ))}
+    </div>
+  );
+}
+
 export function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -32,31 +50,21 @@ export function LoginPage() {
       <div className={styles.layout}>
         {/* Left: marketing panel */}
         <div className={styles.marketing}>
-          <div className={styles.wordmark}>
-            <img src="/images/brand-i-hero.png" alt="" className={styles.wordmarkI} />
-            nfotograf
-          </div>
-          <p className={styles.tagline}>
-            We cut the noise.
-          </p>
-          <p className={styles.subTagline}>
-            No algorithm. No reels. No shopping.<br />
-            Just photos, filters, and a chronological feed.
-          </p>
-          <div className={styles.pills}>
-            <span className={styles.pill}>Chronological</span>
-            <span className={styles.pill}>No algorithm</span>
-            <span className={styles.pill}>Film filters</span>
+          <PhotoGrid />
+          <div className={styles.marketingText}>
+            <div className={styles.wordmark}>Infotograf</div>
+            <p className={styles.tagline}>We cut the noise.</p>
+            <p className={styles.subTagline}>
+              No algorithm. No reels. No shopping.<br />
+              Just photos, filters, and a chronological feed.
+            </p>
           </div>
         </div>
 
         {/* Right: login form */}
         <div className={styles.formSide}>
           <div className={styles.card}>
-            <div className={styles.logo}>
-              <img src="/images/brand-i-hero.png" alt="" className={styles.logoI} />
-              nfotograf
-            </div>
+            <div className={styles.logo}>Infotograf</div>
 
             <form className={styles.form} onSubmit={handleSubmit} noValidate>
               {error && <div className={styles.error}>{error}</div>}
@@ -99,7 +107,12 @@ export function LoginPage() {
 
           <div className={styles.appLinks}>
             <span>Get the app</span>
-            <a href="https://apps.apple.com/app/infotograf/id6746817898" target="_blank" rel="noopener noreferrer" className={styles.storeBtn}>
+            <a
+              href="https://apps.apple.com/app/infotograf/id6746817898"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.storeBtn}
+            >
               App Store
             </a>
           </div>

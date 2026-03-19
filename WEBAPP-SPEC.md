@@ -87,7 +87,7 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
 | POST | `/auth/register` | `{ username, email, password, displayName? }` | `AuthResponse` | |
-| POST | `/auth/login` | `{ username, password }` | `AuthResponse` | username can be email too |
+| POST | `/auth/login` | `{ login, password }` | `AuthResponse` | login field accepts username or email |
 | POST | `/auth/refresh` | `{ refreshToken }` | `AuthResponse` | |
 | POST | `/auth/apple` | `{ identityToken, fullName? }` | `AuthResponse` | Sign in with Apple |
 

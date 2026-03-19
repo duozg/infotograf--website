@@ -6,15 +6,15 @@
   background: var(--bg-app);
 }
 
-/* Two-column layout (desktop) */
+/* Two-column layout */
 .layout {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: 48px;
-  padding: 40px 24px;
-  max-width: 900px;
+  gap: 64px;
+  padding: 48px 40px;
+  max-width: 960px;
   margin: 0 auto;
   width: 100%;
 }
@@ -22,58 +22,63 @@
 /* ── Left: marketing panel ── */
 .marketing {
   flex: 1;
-  max-width: 380px;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  gap: 28px;
+}
+
+/* Photo mosaic grid */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 3px;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  opacity: 0.85;
+}
+
+.photoTile {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  transition: opacity 0.3s;
+}
+
+.photoTile:hover {
+  opacity: 0.7;
+}
+
+.marketingText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .wordmark {
   font-family: var(--font-logo);
   font-style: italic;
-  font-size: 56px;
+  font-size: 52px;
   color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 0;
   line-height: 1;
-}
-
-.wordmarkI {
-  height: 56px;
-  width: auto;
+  letter-spacing: -1px;
 }
 
 .tagline {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 200;
   color: var(--text-primary);
   line-height: 1.2;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 
 .subTagline {
   font-size: 15px;
   font-weight: 300;
   color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.pill {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--text-secondary);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-primary);
-  border-radius: 20px;
-  padding: 4px 12px;
+  line-height: 1.7;
 }
 
 /* ── Right: form side ── */
@@ -81,6 +86,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 16px;
   width: 100%;
   max-width: 360px;
@@ -101,15 +107,8 @@
   color: var(--text-primary);
   text-align: center;
   margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-}
-
-.logoI {
-  height: 44px;
-  width: auto;
+  line-height: 1;
+  letter-spacing: -0.5px;
 }
 
 .form {
@@ -207,31 +206,31 @@
   text-decoration: underline;
 }
 
-/* ── Mobile: stack vertically ── */
-@media (max-width: 680px) {
+/* ── Mobile: stack vertically, hide photo grid ── */
+@media (max-width: 700px) {
   .layout {
     flex-direction: column;
     gap: 24px;
     padding: 32px 20px;
+    align-items: center;
   }
 
   .marketing {
     max-width: 100%;
-    text-align: center;
     align-items: center;
+    text-align: center;
+  }
+
+  .photoGrid {
+    display: none;
   }
 
   .wordmark {
     font-size: 42px;
-    justify-content: center;
-  }
-
-  .wordmarkI {
-    height: 42px;
   }
 
   .tagline {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .formSide {
