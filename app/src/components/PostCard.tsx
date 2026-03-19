@@ -217,8 +217,8 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
 
   const fetchLikedBy = useCallback(async () => {
     try {
-      const res = await api.get<User[]>(`/posts/${localPost.id}/liked-by`);
-      setLikedByUsers(Array.isArray(res) ? res : []);
+      const { items } = await api.getPaginated<User>(`/posts/${localPost.id}/liked-by`);
+      setLikedByUsers(items);
     } catch {
       setLikedByUsers(null);
     }

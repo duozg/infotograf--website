@@ -26,8 +26,8 @@ function FollowModal({ userId, kind, onClose }: FollowModalProps) {
     const endpoint = kind === 'followers'
       ? `/follows/${userId}/followers`
       : `/follows/${userId}/following`;
-    api.get<User[]>(endpoint)
-      .then(res => setUsers(Array.isArray(res) ? res : []))
+    api.getPaginated<User>(endpoint)
+      .then(({ items }) => setUsers(items))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [userId, kind]);
