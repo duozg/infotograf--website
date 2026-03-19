@@ -1,0 +1,152 @@
+.card {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--divider-card);
+  margin-bottom: 1px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 10px;
+}
+
+.headerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.username:hover {
+  text-decoration: underline;
+}
+
+.location {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moreBtn {
+  color: var(--text-secondary);
+  font-size: 20px;
+  padding: 4px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.imageContainer {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #000;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px 4px;
+  gap: 16px;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-primary);
+  transition: transform 0.1s;
+}
+
+.actionBtn:active {
+  transform: scale(0.85);
+}
+
+.actionBtn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.actionBtn.liked svg {
+  fill: var(--accent-red);
+  stroke: var(--accent-red);
+}
+
+.actionBtn.bookmarked svg {
+  fill: var(--text-primary);
+}
+
+.spacer { flex: 1; }
+
+.meta {
+  padding: 0 12px 8px;
+}
+
+.likeCount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.caption {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.captionUsername {
+  font-weight: 600;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+.captionUsername:hover {
+  text-decoration: underline;
+}
+
+.viewComments {
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.viewComments:hover {
+  color: var(--text-primary);
+}
+
+.timestamp {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.commentsDisabled {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}

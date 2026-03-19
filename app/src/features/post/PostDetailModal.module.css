@@ -1,0 +1,255 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  background: var(--bg-app);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 10px;
+  border-bottom: 1px solid var(--divider-card);
+  background: var(--bg-card);
+}
+
+.avatar { flex-shrink: 0; }
+
+.userInfo { flex: 1; min-width: 0; }
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.location {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.closeBtn:hover { color: var(--text-primary); }
+
+.imageSection {
+  flex-shrink: 0;
+}
+
+.scrollable {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px 4px;
+  gap: 16px;
+  border-top: 1px solid var(--divider-card);
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-primary);
+  transition: transform 0.1s;
+}
+
+.actionBtn:active { transform: scale(0.85); }
+.actionBtn svg { width: 24px; height: 24px; }
+.actionBtn.liked { color: var(--accent-red); }
+.spacer { flex: 1; }
+
+.meta {
+  padding: 6px 12px 8px;
+  border-bottom: 1px solid var(--divider-card);
+}
+
+.likeCount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.caption {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.captionUser {
+  font-weight: 600;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.comments {
+  padding: 8px 0;
+}
+
+.comment {
+  display: flex;
+  gap: 10px;
+  padding: 6px 12px;
+}
+
+.commentBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.commentUser {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+.commentText {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.commentMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.commentTime {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.commentLikeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.commentLikeBtn.liked { color: var(--accent-red); }
+
+.replyBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.replies {
+  padding-left: 46px;
+}
+
+.inputBar {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 10px;
+  border-top: 1px solid var(--divider-card);
+  background: var(--bg-card);
+}
+
+.commentInput {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  resize: none;
+  font-family: var(--font-body);
+}
+
+.commentInput::placeholder { color: var(--text-secondary); }
+.commentInput:focus { border-color: var(--text-link); }
+
+.sendBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-link);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px;
+}
+
+.sendBtn:disabled {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.loadingState {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.loadMoreComments {
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.loadMoreComments:hover { color: var(--text-primary); }

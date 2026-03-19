@@ -1,0 +1,134 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 500px;
+  max-height: 92vh;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider-card);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cancelBtn, .doneBtn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.cancelBtn { color: var(--text-secondary); }
+.doneBtn { color: var(--text-link); font-weight: 600; }
+.doneBtn:disabled { color: var(--text-tertiary); cursor: not-allowed; }
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.changePhotoBtn {
+  background: none;
+  border: none;
+  color: var(--text-link);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  font-family: var(--font-body);
+  transition: border-color 0.15s;
+}
+
+.input:focus, .textarea:focus {
+  border-color: var(--text-link);
+}
+
+.input::placeholder, .textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.usernameStatus {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.usernameStatus.available { color: var(--success-green); }
+.usernameStatus.taken { color: var(--accent-red); }
+.usernameStatus.checking { color: var(--text-secondary); }
+
+.error {
+  background: rgba(237,73,86,0.1);
+  border: 1px solid rgba(237,73,86,0.3);
+  border-radius: var(--radius-button);
+  padding: 10px 12px;
+  color: var(--accent-red);
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+.changesLeft {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}

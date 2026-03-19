@@ -1,0 +1,167 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import styles from './ExplorePage.module.css';
+import { HeaderBar } from '../../components/HeaderBar';
+import { Avatar } from '../../components/Avatar';
+import { api } from '../../api/client';
+import { Post, User, HashtagSuggestion, PaginatedResponse } from '../../models';
+import { imageUrl } from '../../utils/imageUrl';
+
+type SearchTab = 'posts' | 'users' | 'tags';
+
+export function ExplorePage() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('q') || '');
+  const [tab, setTab] = useState<SearchTab>('posts');
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [tags, setTags] = useState<HashtagSuggestion[]>([]);
+  const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const fetchExplore = useCallback(async (q: string) => {
+    setLoading(true);
+    try {
+      if (!q.trim()) {
+        // Load trending/recent posts
+        const res = await api.get<PaginatedResponse<Post>>('/posts/explore');
+        setPosts(res.items || []);
+      } else {
+        const [postsRes, usersRes, tagsRes] = await Promise.allSettled([
+          api.get<PaginatedResponse<Post>>(`/posts/search?q=${encodeURIComponent(q)}`),
+          api.get<{ users: User[] }>(`/users/search?q=${encodeURIComponent(q)}`),
+          api.get<{ hashtags: HashtagSuggestion[] }>(`/hashtags/search?q=${encodeURIComponent(q)}`),
+        ]);
+        if (postsRes.status === 'fulfilled') setPosts(postsRes.value.items || []);
+        else setPosts([]);
+        if (usersRes.status === 'fulfilled') setUsers(usersRes.value.users || []);
+        else setUsers([]);
+        if (tagsRes.status === 'fulfilled') setTags(tagsRes.value.hashtags || []);
+        else setTags([]);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      fetchExplore(query);
+      if (query) setSearchParams({ q: query });
+      else setSearchParams({});
+    }, 400);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [query, fetchExplore, setSearchParams]);
+
+  const isSearching = query.trim().length > 0;
+
+  return (
+    <div className={styles.page}>
+      <HeaderBar title="Explore" />
+
+      <div className={styles.searchBar}>
+        <input
+          className={styles.searchInput}
+          type="search"
+          placeholder="Search users, tags, photos…"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+      </div>
+
+      {isSearching && (
+        <div className={styles.tabs}>
+          {(['posts', 'users', 'tags'] as SearchTab[]).map(t => (
+            <button
+              key={t}
+              className={`${styles.tab} ${tab === t ? styles.active : ''}`}
+              onClick={() => setTab(t)}
+            >
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {loading && <div className={styles.loading}>Searching…</div>}
+
+      {!loading && (
+        <>
+          {(!isSearching || tab === 'posts') && (
+            <div className={styles.grid}>
+              {posts.map(post => {
+                const images = post.imageUrls && post.imageUrls.length > 0
+                  ? post.imageUrls
+                  : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
+                const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.imageUrl);
+                return (
+                  <div
+                    key={post.id}
+                    className={styles.gridItem}
+                    onClick={() => navigate(`/app/post/${post.id}`)}
+                  >
+                    {thumb && <img src={thumb} alt="" loading="lazy" />}
+                    {images.length > 1 && (
+                      <div className={styles.multipleIndicator}>
+                        <svg viewBox="0 0 24 24" fill="white" width={18} height={18}>
+                          <rect x="2" y="2" width="15" height="15" rx="2" fill="none" stroke="white" strokeWidth="2"/>
+                          <rect x="7" y="7" width="15" height="15" rx="2" fill="rgba(0,0,0,0.5)" stroke="white" strokeWidth="2"/>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {isSearching && tab === 'users' && (
+            <div className={styles.userList}>
+              {users.length === 0 && <div className={styles.emptyState}>No users found</div>}
+              {users.map(user => (
+                <div
+                  key={user.id}
+                  className={styles.userItem}
+                  onClick={() => navigate(`/app/profile/${user.username}`)}
+                >
+                  <Avatar src={user.avatarUrl} username={user.username} size="lg" />
+                  <div className={styles.userInfo}>
+                    <div className={styles.userUsername}>{user.username}</div>
+                    {user.displayName && <div className={styles.userDisplayName}>{user.displayName}</div>}
+                    {user.bio && <div className={styles.userBio}>{user.bio}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {isSearching && tab === 'tags' && (
+            <div>
+              {tags.length === 0 && <div className={styles.emptyState}>No hashtags found</div>}
+              {tags.map(tag => (
+                <div
+                  key={tag.name}
+                  className={styles.hashtagItem}
+                  onClick={() => {
+                    setQuery(tag.name);
+                    setTab('posts');
+                  }}
+                >
+                  <div className={styles.hashtagIcon}>#</div>
+                  <div>
+                    <div className={styles.hashtagName}>#{tag.name}</div>
+                    <div className={styles.hashtagCount}>{tag.postCount.toLocaleString()} posts</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

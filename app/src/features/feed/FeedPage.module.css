@@ -1,0 +1,71 @@
+.page {
+  background: var(--bg-app);
+  min-height: 100%;
+}
+
+.feed {
+  max-width: 470px;
+  margin: 0 auto;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  gap: 12px;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  opacity: 0.4;
+}
+
+.emptyTitle {
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text-primary);
+}
+
+.emptyText {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 280px;
+}
+
+.loadMoreBtn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.loadMoreBtn:hover {
+  color: var(--text-primary);
+}
+
+.errorState {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--accent-red);
+  font-size: 15px;
+}
+
+.retryBtn {
+  margin-top: 12px;
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+}

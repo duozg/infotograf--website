@@ -1,0 +1,145 @@
+.page {
+  background: var(--bg-app);
+  min-height: 100%;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  position: sticky;
+  top: 44px;
+  z-index: 10;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.section {
+  padding: 6px 0 0;
+}
+
+.sectionTitle {
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.notifItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  gap: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--divider-card);
+  background: var(--bg-card);
+  transition: background 0.1s;
+}
+
+.notifItem:hover { background: var(--bg-elevated); }
+
+.notifItem.unread {
+  background: var(--bg-elevated);
+}
+
+.avatarStack {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+}
+
+.avatarStack .avatar2 {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  border: 2px solid var(--bg-card);
+  border-radius: 50%;
+}
+
+.notifContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.notifText {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.notifText strong { font-weight: 600; }
+
+.notifTime {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.postThumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.followBtn {
+  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
+  border: 1px solid var(--cta-border);
+  border-radius: var(--radius-button);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.followBtn.following {
+  background: transparent;
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.emptyState {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.loadingState {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.unreadDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-link);
+  flex-shrink: 0;
+}
