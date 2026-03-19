@@ -1,0 +1,8 @@
+{
+  "name": "infotograf-website",
+  "private": true,
+  "scripts": {
+    "build": "bash build.sh",
+    "dev": "cd app && npm run dev"
+  }
+}
