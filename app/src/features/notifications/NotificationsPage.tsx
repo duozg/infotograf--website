@@ -64,7 +64,7 @@ export function NotificationsPage() {
     fetchNotifications();
     // Mark read after 1.5s
     const timer = setTimeout(() => {
-      api.post('/notifications/mark-all-read').catch(() => {});
+      api.post('/notifications/read').catch(() => {});
       clearNotifications();
     }, 1500);
     return () => clearTimeout(timer);
@@ -75,9 +75,9 @@ export function NotificationsPage() {
     setFollowingStates(prev => ({ ...prev, [actorId]: !isFollowing }));
     try {
       if (isFollowing) {
-        await api.delete(`/users/${actorUsername}/follow`);
+        await api.delete(`/follows/${actorId}`);
       } else {
-        await api.post(`/users/${actorUsername}/follow`);
+        await api.post(`/follows/${actorId}`);
       }
     } catch {
       setFollowingStates(prev => ({ ...prev, [actorId]: isFollowing }));

@@ -96,7 +96,7 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 |--------|----------|------|----------|-------|
 | GET | `/users/:username` | — | `User` | Profile data |
 | PATCH | `/users/me` | `{ displayName?, bio?, website? }` | `User` | |
-| POST | `/users/me/avatar` | multipart `file` | `User` | Image upload |
+| POST | `/users/me/avatar` | multipart `image` | `User` | Image upload (field name is "image") |
 | GET | `/users/search?q=:query` | — | `User[]` | |
 | GET | `/users/check-username/:username` | — | `{ available, reason? }` | |
 | PATCH | `/users/me/username` | `{ username }` | `{ success, username?, usernameChangesLeft? }` | Limited changes (2 total) |
@@ -104,10 +104,10 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 #### Follows
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
-| POST | `/users/:userId/follow` | `{}` | — | Empty body but needs Content-Type: application/json |
-| DELETE | `/users/:userId/unfollow` | — | — | |
-| GET | `/users/:userId/followers` | — | `User[]` | Paginated |
-| GET | `/users/:userId/following` | — | `User[]` | Paginated |
+| POST | `/follows/:userId` | `{}` | — | Empty body but needs Content-Type: application/json |
+| DELETE | `/follows/:userId` | — | — | Unfollow |
+| GET | `/follows/:userId/followers` | — | `User[]` | Paginated |
+| GET | `/follows/:userId/following` | — | `User[]` | Paginated |
 
 #### Posts
 | Method | Endpoint | Body | Response | Notes |
@@ -116,24 +116,24 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 | GET | `/posts/:postId` | — | `Post` | |
 | PATCH | `/posts/:postId` | `{ caption?, commentsDisabled? }` | `Post` | |
 | DELETE | `/posts/:postId` | — | — | |
-| GET | `/users/:userId/posts` | — | `PaginatedResponse<Post>` | Cursor pagination |
+| GET | `/posts/user/:userId` | — | `PaginatedResponse<Post>` | Cursor pagination |
 
 #### Feed & Explore
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
 | GET | `/feed` | — | `PaginatedResponse<Post>` | Chronological, authenticated |
 | GET | `/explore` | — | `PaginatedResponse<Post>` | Popular/discover posts |
-| GET | `/hashtags/:tag/posts` | — | `{ posts, nextCursor?, hashtagPostCount? }` | |
-| GET | `/hashtags/search?q=:query` | — | `HashtagSuggestion[]` | `{ name, postCount }` |
+| GET | `/explore/hashtag/:tag` | — | `{ posts, nextCursor?, hashtagPostCount? }` | |
+| GET | `/explore/hashtags/search?q=:query` | — | `HashtagSuggestion[]` | `{ name, postCount }` |
 
 #### Likes
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
 | POST | `/posts/:postId/like` | — | — | |
-| DELETE | `/posts/:postId/unlike` | — | — | |
+| DELETE | `/posts/:postId/like` | — | — | Same path as like, just DELETE method |
 | GET | `/posts/:postId/liked-by` | — | `User[]` | Who liked this post |
 | POST | `/posts/:postId/comments/:commentId/like` | — | — | |
-| DELETE | `/posts/:postId/comments/:commentId/unlike` | — | — | |
+| DELETE | `/posts/:postId/comments/:commentId/like` | — | — | Same path, DELETE method|
 
 #### Comments
 | Method | Endpoint | Body | Response | Notes |
@@ -146,8 +146,8 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
 | POST | `/posts/:postId/bookmark` | — | — | |
-| DELETE | `/posts/:postId/unbookmark` | — | — | |
-| GET | `/bookmarks` | — | `{ posts, nextCursor? }` | User's saved posts |
+| DELETE | `/posts/:postId/bookmark` | — | — | Same path, DELETE method |
+| GET | `/posts/bookmarks` | — | `{ posts, nextCursor? }` | User's saved posts |
 
 #### Conversations & Messages
 | Method | Endpoint | Body | Response | Notes |
@@ -177,23 +177,24 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 #### Device Token (skip for web — web push is separate)
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
-| POST | `/device-token` | `{ token, platform }` | — | APNs only |
+| POST | `/users/device-token` | `{ token, platform }` | — | APNs only |
 
 #### Moderation
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
-| POST | `/users/:userId/block` | `{}` | — | |
-| DELETE | `/users/:userId/unblock` | — | — | |
-| POST | `/users/:userId/mute` | `{}` | — | |
-| DELETE | `/users/:userId/unmute` | — | — | |
-| POST | `/reports` | `{ targetType, targetId, reason, details? }` | — | targetType: "post", "comment", "user" |
-| GET | `/blocked-users` | — | `User[]` | |
+| POST | `/moderation/blocks/:userId` | `{}` | — | Block user |
+| DELETE | `/moderation/blocks/:userId` | — | — | Unblock user |
+| POST | `/moderation/mutes/:userId` | `{}` | — | Mute user |
+| DELETE | `/moderation/mutes/:userId` | — | — | Unmute user |
+| POST | `/moderation/reports` | `{ targetType, targetId, reason, details? }` | — | targetType: "post", "comment", "user" |
+| GET | `/moderation/blocks` | — | `User[]` | List blocked users |
 
 #### Account
 | Method | Endpoint | Body | Response | Notes |
 |--------|----------|------|----------|-------|
 | DELETE | `/users/me` | — | — | Delete account |
-| GET | `/users/me/unread` | — | `{ notifications, messages }` | Combined unread counts |
+| GET | `/notifications/unread-count` | — | `{ count }` | Notification unread count |
+| GET | `/conversations/unread-count` | — | `{ count }` | Message unread count (separate endpoint) |
 
 ### Pagination Pattern
 
@@ -417,7 +418,7 @@ The iOS app supports Sign in with Apple. For web, you can implement this later w
 ### Session Check on Launch
 On app load:
 1. Check if `accessToken` exists in localStorage
-2. If yes, try `GET /users/me/unread` to verify token validity
+2. If yes, try `GET /notifications/unread-count` to verify token validity
 3. If 401 → try refresh → if fails → logged out state
 
 ---
@@ -851,8 +852,9 @@ For web, this becomes a **file upload flow** (no native camera):
 The app uses **polling** (not WebSockets) for all real-time features:
 
 ### Unread Counts (Global)
-- Poll `GET /users/me/unread` every 3 seconds while authenticated
-- Returns `{ notifications: number, messages: number }`
+- Poll TWO separate endpoints every 3 seconds while authenticated:
+  - `GET /notifications/unread-count` → `{ count }` (notification badge)
+  - `GET /conversations/unread-count` → `{ count }` (message badge)
 - Drive badge counts on tab bar icons
 
 ### Feed

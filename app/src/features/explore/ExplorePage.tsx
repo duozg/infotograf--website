@@ -24,20 +24,18 @@ export function ExplorePage() {
     setLoading(true);
     try {
       if (!q.trim()) {
-        // Load trending/recent posts
-        const res = await api.get<PaginatedResponse<Post>>('/posts/explore');
+        // Load popular/discover posts
+        const res = await api.get<PaginatedResponse<Post>>('/explore');
         setPosts(res.items || []);
       } else {
-        const [postsRes, usersRes, tagsRes] = await Promise.allSettled([
-          api.get<PaginatedResponse<Post>>(`/posts/search?q=${encodeURIComponent(q)}`),
+        const [usersRes, tagsRes] = await Promise.allSettled([
           api.get<{ users: User[] }>(`/users/search?q=${encodeURIComponent(q)}`),
-          api.get<{ hashtags: HashtagSuggestion[] }>(`/hashtags/search?q=${encodeURIComponent(q)}`),
+          api.get<HashtagSuggestion[]>(`/explore/hashtags/search?q=${encodeURIComponent(q)}`),
         ]);
-        if (postsRes.status === 'fulfilled') setPosts(postsRes.value.items || []);
-        else setPosts([]);
+        setPosts([]);
         if (usersRes.status === 'fulfilled') setUsers(usersRes.value.users || []);
         else setUsers([]);
-        if (tagsRes.status === 'fulfilled') setTags(tagsRes.value.hashtags || []);
+        if (tagsRes.status === 'fulfilled') setTags(Array.isArray(tagsRes.value) ? tagsRes.value : []);
         else setTags([]);
       }
     } catch {

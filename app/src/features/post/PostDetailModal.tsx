@@ -116,20 +116,21 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   }, [post, commentText, sendingComment, replyTo]);
 
   const handleLikeComment = useCallback(async (comment: Comment) => {
+    if (!post) return;
     const wasLiked = comment.isLiked;
     const newCount = toCount(comment.likeCount) + (wasLiked ? -1 : 1);
     setComments(prev => prev.map(c =>
       c.id === comment.id ? { ...c, isLiked: !wasLiked, likeCount: newCount } : c
     ));
     try {
-      if (wasLiked) await api.delete(`/comments/${comment.id}/like`);
-      else await api.post(`/comments/${comment.id}/like`);
+      if (wasLiked) await api.delete(`/posts/${post.id}/comments/${comment.id}/like`);
+      else await api.post(`/posts/${post.id}/comments/${comment.id}/like`);
     } catch {
       setComments(prev => prev.map(c =>
         c.id === comment.id ? comment : c
       ));
     }
-  }, []);
+  }, [post]);
 
   const loadMoreComments = useCallback(async () => {
     if (!post || !commentCursor) return;

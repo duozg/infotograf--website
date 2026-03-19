@@ -28,10 +28,17 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const fetchCounts = useCallback(async () => {
     if (!user) return;
     try {
-      const res = await api.get<{ notifications: number; messages: number }>('/users/me/unread');
+      const [notifRes, msgRes] = await Promise.allSettled([
+        api.get<{ count: number }>('/notifications/unread-count'),
+        api.get<{ count: number }>('/conversations/unread-count'),
+      ]);
       setState({
-        unreadNotifications: res.notifications || 0,
-        unreadMessages: res.messages || 0,
+        unreadNotifications: notifRes.status === 'fulfilled'
+          ? (typeof notifRes.value.count === 'string' ? parseInt(notifRes.value.count, 10) : notifRes.value.count) || 0
+          : 0,
+        unreadMessages: msgRes.status === 'fulfilled'
+          ? (typeof msgRes.value.count === 'string' ? parseInt(msgRes.value.count, 10) : msgRes.value.count) || 0
+          : 0,
       });
     } catch {
       // Ignore polling errors

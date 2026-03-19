@@ -22,8 +22,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [savingPrivate, setSavingPrivate] = useState(false);
 
   useEffect(() => {
-    api.get<{ users: User[] }>('/users/blocked').then(res => {
-      setBlockedUsers(res.users || []);
+    api.get<User[]>('/moderation/blocks').then(res => {
+      setBlockedUsers(Array.isArray(res) ? res : []);
     }).catch(() => {});
   }, []);
 
@@ -40,10 +40,10 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     }
   }, [isPrivate]);
 
-  const handleUnblock = useCallback(async (username: string) => {
-    setBlockedUsers(prev => prev.filter(u => u.username !== username));
+  const handleUnblock = useCallback(async (userId: string) => {
+    setBlockedUsers(prev => prev.filter(u => u.id !== userId));
     try {
-      await api.delete(`/users/${username}/block`);
+      await api.delete(`/moderation/blocks/${userId}`);
     } catch {
       // Re-add on error
     }
@@ -112,7 +112,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                     <span style={{ fontSize: 14, color: 'var(--text-primary)' }}>{u.username}</span>
                     <button
                       className={styles.unblockBtn}
-                      onClick={() => handleUnblock(u.username)}
+                      onClick={() => handleUnblock(u.id)}
                     >
                       Unblock
                     </button>

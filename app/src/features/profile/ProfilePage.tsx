@@ -50,12 +50,10 @@ export function ProfilePage() {
     if (!targetUsername) return;
     setLoading(true);
     try {
-      const [profileData, postsData] = await Promise.all([
-        api.get<User>(`/users/${targetUsername}`),
-        api.get<PaginatedResponse<Post>>(`/users/${targetUsername}/posts`),
-      ]);
+      const profileData = await api.get<User>(`/users/${targetUsername}`);
       setProfile(profileData);
       setIsFollowing(profileData.isFollowing);
+      const postsData = await api.get<PaginatedResponse<Post>>(`/posts/user/${profileData.id}`);
       setPosts(postsData.items || []);
       setPostsCursor(postsData.nextCursor);
     } catch {
@@ -80,9 +78,9 @@ export function ProfilePage() {
     } : p);
     try {
       if (wasFollowing) {
-        await api.delete(`/users/${profile.username}/follow`);
+        await api.delete(`/follows/${profile.id}`);
       } else {
-        await api.post(`/users/${profile.username}/follow`);
+        await api.post(`/follows/${profile.id}`);
       }
     } catch {
       setIsFollowing(wasFollowing);
@@ -95,15 +93,15 @@ export function ProfilePage() {
   }, [profile, isFollowing]);
 
   const handleLoadMorePosts = useCallback(async () => {
-    if (!targetUsername || !postsCursor) return;
+    if (!profile || !postsCursor) return;
     try {
       const res = await api.get<PaginatedResponse<Post>>(
-        `/users/${targetUsername}/posts?cursor=${postsCursor}`
+        `/posts/user/${profile.id}?cursor=${postsCursor}`
       );
       setPosts(prev => [...prev, ...res.items]);
       setPostsCursor(res.nextCursor);
     } catch {}
-  }, [targetUsername, postsCursor]);
+  }, [profile, postsCursor]);
 
   const headerRight = isOwnProfile ? (
     <button
