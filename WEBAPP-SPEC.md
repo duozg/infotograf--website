@@ -96,7 +96,7 @@ Content-Type: application/json (except file uploads which use multipart/form-dat
 |--------|----------|------|----------|-------|
 | GET | `/users/:username` | — | `User` | Profile data |
 | PATCH | `/users/me` | `{ displayName?, bio?, website? }` | `User` | |
-| POST | `/users/me/avatar` | multipart `image` | `User` | Image upload (field name is "image") |
+| POST | `/users/me/avatar` | multipart `file` | `User` | Image upload (field name is "file") |
 | GET | `/users/search?q=:query` | — | `User[]` | |
 | GET | `/users/check-username/:username` | — | `{ available, reason? }` | |
 | PATCH | `/users/me/username` | `{ username }` | `{ success, username?, usernameChangesLeft? }` | Limited changes (2 total) |

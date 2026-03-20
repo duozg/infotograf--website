@@ -4,5 +4,8 @@
   "scripts": {
     "build": "bash build.sh",
     "dev": "cd app && npm run dev"
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.6.18"
   }
 }
