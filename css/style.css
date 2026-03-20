@@ -833,8 +833,8 @@ body {
 .fedi-comparison-card {
   text-align: center;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-primary-dark);
+  background: var(--bg-card-light);
+  border: 1px solid var(--border-primary-light);
   border-radius: var(--radius-card);
   flex: 0 1 200px;
 }
@@ -849,14 +849,14 @@ body {
   display: block;
   font-size: 15px;
   font-weight: 500;
-  color: var(--text-primary-dark);
+  color: var(--text-primary-light);
   margin-bottom: 6px;
 }
 
 .fedi-comparison-desc {
   display: block;
   font-size: 12px;
-  color: var(--text-tertiary-dark);
+  color: var(--text-secondary-light);
   line-height: 1.5;
 }
 
