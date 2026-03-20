@@ -7,6 +7,7 @@
     { "source": "/terms",      "destination": "/terms.html" },
     { "source": "/support",    "destination": "/support.html" },
     { "source": "/guidelines", "destination": "/guidelines.html" },
+    { "source": "/fediverse",  "destination": "/fediverse.html" },
     { "source": "/(.*)",       "destination": "/index.html" }
   ],
   "headers": [

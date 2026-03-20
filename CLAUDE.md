@@ -91,6 +91,7 @@ infotograf-website/
   index.html       — Home/landing page
   privacy.html     — Privacy policy
   support.html     — Support & FAQ
+  fediverse.html   — Fediverse documentary page
   css/
     style.css      — All styles (single file)
   images/          — Screenshots, App Store badge (future)
@@ -103,6 +104,7 @@ infotograf-website/
 - **/** (index.html): Hero + Features + Philosophy + CTA + Footer
 - **/privacy** (privacy.html): Dark header + Privacy policy content + Footer
 - **/support** (support.html): Dark header + Contact card + FAQ accordion + Footer
+- **/fediverse** (fediverse.html): Documentary-style page on Fediverse implementation (hero + 6 chapters + CTA)
 
 ## Key Conventions
 

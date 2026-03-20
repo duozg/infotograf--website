@@ -631,3 +631,567 @@ body {
     padding: 48px 16px 40px;
   }
 }
+
+
+/* ============================================================
+   Fediverse Page
+   ============================================================ */
+
+/* ─── Active nav link ──────────────────────────────────── */
+
+.nav-link-active {
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 2px;
+}
+
+
+/* ─── Fediverse Hero ───────────────────────────────────── */
+
+.fedi-hero {
+  background: var(--bg-app-dark);
+  color: var(--text-primary-dark);
+  text-align: center;
+  padding: 100px var(--section-padding-x) 80px;
+}
+
+.fedi-hero-byline {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-tertiary-dark);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+}
+
+.fedi-hero-title {
+  font-family: var(--font-body);
+  font-size: 48px;
+  font-weight: 200;
+  color: var(--text-primary-dark);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.fedi-hero-logo {
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-weight: normal;
+}
+
+.fedi-hero-subtitle {
+  font-size: 19px;
+  font-weight: 200;
+  color: var(--text-secondary-dark);
+  max-width: 560px;
+  margin: 0 auto 48px;
+  line-height: 1.6;
+}
+
+
+/* ─── Fediverse Sections ───────────────────────────────── */
+
+.fedi-section {
+  padding: var(--section-padding-y) var(--section-padding-x);
+}
+
+.fedi-section--light {
+  background: var(--bg-app-light);
+}
+
+.fedi-section--dark {
+  background: var(--bg-card-dark);
+}
+
+.fedi-section--cta {
+  background: var(--bg-app-dark);
+  text-align: center;
+  padding: 80px var(--section-padding-x);
+}
+
+.fedi-section-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.fedi-chapter-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-tertiary-light);
+  margin-bottom: 12px;
+}
+
+.fedi-chapter-label--dark {
+  color: var(--text-tertiary-dark);
+}
+
+.fedi-section-heading {
+  font-family: var(--font-body);
+  font-size: 36px;
+  font-weight: 200;
+  color: var(--text-primary-light);
+  margin-bottom: 32px;
+}
+
+.fedi-section-heading--dark {
+  color: var(--text-primary-dark);
+}
+
+
+/* ─── Prose ────────────────────────────────────────────── */
+
+.fedi-prose {
+  max-width: 680px;
+}
+
+.fedi-prose--centered {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.fedi-prose p {
+  font-size: 16px;
+  font-weight: 300;
+  color: #666666;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.fedi-prose--dark p {
+  color: var(--text-secondary-dark);
+}
+
+.fedi-prose em {
+  font-style: italic;
+  color: var(--text-primary-light);
+}
+
+.fedi-prose--dark em {
+  color: var(--text-primary-dark);
+}
+
+.fedi-prose strong {
+  font-weight: 500;
+  color: var(--text-primary-light);
+}
+
+.fedi-prose--dark strong {
+  color: var(--text-primary-dark);
+}
+
+.fedi-prose code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.fedi-prose--dark code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ccc;
+}
+
+
+/* ─── Illustrations ────────────────────────────────────── */
+
+.fedi-illustration {
+  margin: 40px auto;
+  max-width: 480px;
+}
+
+.fedi-illustration--hero {
+  max-width: 400px;
+  opacity: 0.8;
+}
+
+.fedi-illustration--architecture {
+  max-width: 640px;
+  overflow-x: auto;
+}
+
+.fedi-illustration svg {
+  width: 100%;
+  height: auto;
+}
+
+
+/* ─── Comparison (email ≈ fediverse) ───────────────────── */
+
+.fedi-comparison-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.fedi-comparison-card {
+  text-align: center;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-primary-dark);
+  border-radius: var(--radius-card);
+  flex: 0 1 200px;
+}
+
+.fedi-comparison-card svg {
+  width: 80px;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.fedi-comparison-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary-dark);
+  margin-bottom: 6px;
+}
+
+.fedi-comparison-desc {
+  display: block;
+  font-size: 12px;
+  color: var(--text-tertiary-dark);
+  line-height: 1.5;
+}
+
+.fedi-comparison-arrow svg {
+  width: 32px;
+  height: auto;
+}
+
+
+/* ─── Implementation Steps ─────────────────────────────── */
+
+.fedi-steps {
+  margin-top: 48px;
+}
+
+.fedi-step {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.fedi-step-number {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fedi-step-content h3 {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary-light);
+  margin-bottom: 8px;
+}
+
+.fedi-step-content p {
+  font-size: 15px;
+  font-weight: 300;
+  color: #666666;
+  line-height: 1.7;
+}
+
+.fedi-step-content code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+
+/* ─── Feature Grid ─────────────────────────────────────── */
+
+.fedi-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 16px;
+}
+
+.fedi-feature-card {
+  text-align: center;
+  padding: 32px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-primary-dark);
+  border-radius: var(--radius-card);
+}
+
+.fedi-feature-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+}
+
+.fedi-feature-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.fedi-feature-card h3 {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary-dark);
+  margin-bottom: 10px;
+}
+
+.fedi-feature-card p {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-secondary-dark);
+  line-height: 1.6;
+}
+
+.fedi-feature-card code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: #ccc;
+}
+
+
+/* ─── Journal Timeline ─────────────────────────────────── */
+
+.fedi-journal {
+  max-width: 680px;
+  position: relative;
+  padding-left: 40px;
+}
+
+.fedi-journal::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--border-primary-light);
+}
+
+.fedi-journal-entry {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.fedi-journal-entry:last-child {
+  margin-bottom: 0;
+}
+
+.fedi-journal-marker {
+  position: absolute;
+  left: -40px;
+  top: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-app-light);
+  border: 2px solid var(--cta-gradient-top);
+}
+
+.fedi-journal-marker::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cta-gradient-top);
+}
+
+.fedi-journal-content h3 {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary-light);
+  margin-bottom: 8px;
+}
+
+.fedi-journal-content p {
+  font-size: 15px;
+  font-weight: 300;
+  color: #666666;
+  line-height: 1.8;
+}
+
+.fedi-journal-content code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+
+/* ─── Identity Card ────────────────────────────────────── */
+
+.fedi-identity-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 420px;
+  margin: 0 auto 48px;
+  padding: 24px 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-primary-dark);
+  border-radius: var(--radius-card);
+}
+
+.fedi-identity-avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px #6364ff, 0 0 12px rgba(99, 100, 255, 0.3);
+}
+
+.fedi-identity-avatar svg {
+  width: 100%;
+  height: 100%;
+}
+
+.fedi-identity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fedi-identity-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary-dark);
+}
+
+.fedi-identity-handle {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  color: #6364ff;
+}
+
+.fedi-identity-note {
+  font-size: 12px;
+  color: var(--text-tertiary-dark);
+  margin-top: 2px;
+}
+
+
+/* ─── CTA ──────────────────────────────────────────────── */
+
+.fedi-cta-heading {
+  font-family: var(--font-body);
+  font-size: 36px;
+  font-weight: 200;
+  color: var(--text-primary-dark);
+  margin-bottom: 16px;
+}
+
+.fedi-cta-text {
+  font-size: 17px;
+  font-weight: 200;
+  color: var(--text-secondary-dark);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+
+/* ─── Fediverse Responsive ─────────────────────────────── */
+
+@media (max-width: 768px) {
+  .fedi-hero-title {
+    font-size: 32px;
+  }
+
+  .fedi-hero-subtitle {
+    font-size: 16px;
+  }
+
+  .fedi-section-heading,
+  .fedi-section-heading--dark,
+  .fedi-cta-heading {
+    font-size: 28px;
+  }
+
+  .fedi-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .fedi-step {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .fedi-comparison-row {
+    flex-direction: column;
+  }
+
+  .fedi-comparison-arrow {
+    transform: rotate(90deg);
+  }
+
+  .fedi-identity-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fedi-hero {
+    padding: 64px 16px 56px;
+  }
+
+  .fedi-hero-title {
+    font-size: 26px;
+  }
+
+  .fedi-hero-byline {
+    font-size: 11px;
+  }
+
+  .fedi-section {
+    padding: 64px 16px;
+  }
+
+  .fedi-section--cta {
+    padding: 56px 16px;
+  }
+
+  .fedi-journal {
+    padding-left: 32px;
+  }
+
+  .fedi-journal-marker {
+    left: -32px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .fedi-journal-marker::after {
+    top: 4px;
+    left: 4px;
+    width: 6px;
+    height: 6px;
+  }
+}
