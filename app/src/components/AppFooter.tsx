@@ -14,6 +14,8 @@ export function AppFooter() {
         <a href="/support" className={styles.link}>Support</a>
         <span className={styles.dot}>·</span>
         <a href="/guidelines" className={styles.link}>Guidelines</a>
+        <span className={styles.dot}>·</span>
+        <a href="/fediverse" className={styles.link}>Fediverse</a>
       </nav>
       <p className={styles.copy}>© {new Date().getFullYear()} Infotograf</p>
     </footer>

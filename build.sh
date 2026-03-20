@@ -7,7 +7,7 @@ mkdir -p _out
 
 echo "==> Copying static marketing pages (privacy, terms, support, guidelines)"
 cp -r css images _out/
-for f in privacy.html terms.html support.html guidelines.html; do
+for f in privacy.html terms.html support.html guidelines.html fediverse.html; do
   [ -f "$f" ] && cp "$f" _out/
 done
 
