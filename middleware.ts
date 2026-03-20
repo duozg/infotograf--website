@@ -3,7 +3,7 @@ const RAILWAY_BASE = "https://noiscut-api-production.up.railway.app";
 export default async function middleware(request: Request): Promise<Response | undefined> {
   const url = new URL(request.url);
 
-  if (url.pathname.startsWith("/.well-known/") || url.pathname.startsWith("/nodeinfo/")) {
+  if (url.pathname.startsWith("/.well-known/") || url.pathname.startsWith("/nodeinfo/") || url.pathname.startsWith("/ap/")) {
     const target = `${RAILWAY_BASE}${url.pathname}${url.search}`;
     const upstream = await fetch(target, {
       headers: { Accept: request.headers.get("Accept") || "application/json" },
@@ -22,5 +22,5 @@ export default async function middleware(request: Request): Promise<Response | u
 }
 
 export const config = {
-  matcher: ["/.well-known/:path*", "/nodeinfo/:path*"],
+  matcher: ["/.well-known/:path*", "/nodeinfo/:path*", "/ap/:path*"],
 };
