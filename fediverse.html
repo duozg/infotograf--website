@@ -192,33 +192,221 @@
     <div class="fedi-section-inner">
       <h2 class="fedi-section-heading">How I built it</h2>
 
+      <div class="fedi-prose">
+        <p>
+          I was in a cafe early 2026 and I thought — what if your Infotograf photos could
+          reach people on Mastodon and Pixelfed, and theirs could reach you? Turns out theres
+          a W3C standard for exactly that. It's called ActivityPub, and I decided to build it
+          into Infotograf from scratch.
+        </p>
+      </div>
+
       <div class="fedi-journal">
+
+        <!-- Step 1: Discovery -->
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
-            <h3>The idea</h3>
+            <h3>Step 1 — Making Infotograf discoverable</h3>
             <p>
-              I was in a cafe early 2026 and I thought — what if your Infotograf photos could
-              reach people on Mastodon and Pixelfed, and theirs could reach you? What if these
-              apps could just talk to eachother? Turns out theres a protocol for exactly that.
-              It's called ActivityPub, and I decided to build it into Infotograf.
+              The first thing I had to do was make Infotograf users findable from other platforms.
+              When someone on Mastodon searches for <code>@quentin@infotograf.com</code>, their
+              server needs to ask our server "who is this person?" That happens through something
+              called WebFinger — basically a standardised JSON lookup.
             </p>
+            <p>
+              I built the endpoint on our backend and set up Vercel to forward these requests
+              to our API server on Railway. Once that worked, any Fediverse server in the world
+              could find our users.
+            </p>
+            <!-- Illustration: WebFinger discovery flow -->
+            <div class="fedi-illustration">
+              <svg viewBox="0 0 540 100" xmlns="http://www.w3.org/2000/svg" aria-label="WebFinger discovery flow">
+                <rect x="0" y="25" width="130" height="50" rx="4" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5"/>
+                <text x="65" y="47" text-anchor="middle" fill="#333" font-size="10" font-weight="500">Mastodon user</text>
+                <text x="65" y="62" text-anchor="middle" fill="#999" font-size="8">searches @quentin</text>
+
+                <line x1="130" y1="50" x2="195" y2="50" stroke="#5050cc" stroke-width="2" marker-end="url(#arrPurpleSm)"/>
+                <text x="162" y="42" text-anchor="middle" fill="#5050cc" font-size="7" font-weight="500">WebFinger</text>
+
+                <rect x="195" y="25" width="150" height="50" rx="4" fill="#f5f5f5" stroke="#3b7bb8" stroke-width="1.5"/>
+                <text x="270" y="47" text-anchor="middle" fill="#333" font-size="10" font-weight="500">infotograf.com</text>
+                <text x="270" y="62" text-anchor="middle" fill="#999" font-size="8">Vercel → Railway API</text>
+
+                <line x1="345" y1="50" x2="400" y2="50" stroke="#3b7bb8" stroke-width="2" marker-end="url(#arrBlueSm)"/>
+                <text x="372" y="42" text-anchor="middle" fill="#3b7bb8" font-size="7" font-weight="500">JSON</text>
+
+                <rect x="400" y="25" width="130" height="50" rx="4" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5"/>
+                <text x="465" y="47" text-anchor="middle" fill="#333" font-size="10" font-weight="500">Profile found</text>
+                <text x="465" y="62" text-anchor="middle" fill="#999" font-size="8">avatar, bio, key</text>
+
+                <defs>
+                  <marker id="arrPurpleSm" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                    <path d="M0,0 L7,2.5 L0,5" fill="none" stroke="#5050cc" stroke-width="1"/>
+                  </marker>
+                  <marker id="arrBlueSm" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                    <path d="M0,0 L7,2.5 L0,5" fill="none" stroke="#3b7bb8" stroke-width="1"/>
+                  </marker>
+                </defs>
+              </svg>
+            </div>
           </div>
         </div>
 
+        <!-- Step 2: Keys & Signing -->
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
-            <h3>Making it work</h3>
+            <h3>Step 2 — Cryptographic keys</h3>
             <p>
-              I spent weeks reading the specification and studying how Mastodon handles federation.
-              The basic idea is actually quite elegant — servers send messages to eachother,
-              signed with cryptographic keys so you know they're genuine. I built it all from
-              scratch, piece by piece.
+              In the Fediverse, servers dont just trust eachother blindly. Every message has to
+              be signed with a cryptographic key so the receiving server can verify it's genuine.
+              I generate a unique RSA-2048 keypair for each user who opts in — the private key
+              stays on our server, the public key is shared in their Actor profile so anyone
+              can verify messages from them.
             </p>
+            <!-- Illustration: key pair -->
+            <div class="fedi-illustration">
+              <svg viewBox="0 0 440 110" xmlns="http://www.w3.org/2000/svg" aria-label="RSA keypair signing">
+                <!-- Private key -->
+                <rect x="0" y="15" width="130" height="80" rx="4" fill="#f5f5f5" stroke="#c0392b" stroke-width="1.5"/>
+                <text x="65" y="42" text-anchor="middle" fill="#c0392b" font-size="16">&#x1F511;</text>
+                <text x="65" y="62" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Private key</text>
+                <text x="65" y="78" text-anchor="middle" fill="#999" font-size="8">stays on our server</text>
+
+                <!-- Arrow -->
+                <line x1="130" y1="55" x2="165" y2="55" stroke="#999" stroke-width="1.5"/>
+                <text x="148" y="48" text-anchor="middle" fill="#999" font-size="7">signs</text>
+
+                <!-- Message -->
+                <rect x="165" y="20" width="110" height="70" rx="4" fill="#f5f5f5" stroke="#3b7bb8" stroke-width="1.5"/>
+                <text x="220" y="45" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Activity</text>
+                <text x="220" y="60" text-anchor="middle" fill="#999" font-size="8">"Create/Note"</text>
+                <text x="220" y="76" text-anchor="middle" fill="#3b7bb8" font-size="7">+ HTTP Signature</text>
+
+                <!-- Arrow -->
+                <line x1="275" y1="55" x2="310" y2="55" stroke="#999" stroke-width="1.5"/>
+                <text x="293" y="48" text-anchor="middle" fill="#999" font-size="7">sent to</text>
+
+                <!-- Public key verification -->
+                <rect x="310" y="15" width="130" height="80" rx="4" fill="#f5f5f5" stroke="#27ae60" stroke-width="1.5"/>
+                <text x="375" y="42" text-anchor="middle" fill="#27ae60" font-size="16">&#x1F513;</text>
+                <text x="375" y="62" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Public key</text>
+                <text x="375" y="78" text-anchor="middle" fill="#999" font-size="8">remote server verifies</text>
+              </svg>
+            </div>
           </div>
         </div>
 
+        <!-- Step 3: Sending photos -->
+        <div class="fedi-journal-entry">
+          <div class="fedi-journal-marker"></div>
+          <div class="fedi-journal-content">
+            <h3>Step 3 — Sending your photos out</h3>
+            <p>
+              This is where it gets exciting. When you post a photo on Infotograf, the backend
+              wraps it in an ActivityPub <code>Create/Note</code> activity with the image, caption,
+              and filter name. Then it looks up all your remote followers, signs the message with
+              your private key, and delivers it to each of their inboxes.
+            </p>
+            <p>
+              I built a Redis job queue for this so deliveries happen in the background — you
+              get your response instantly, and the federation stuff happens behind the scenes.
+              If a server is down, we retry automaticaly with exponential backoff.
+            </p>
+            <!-- Illustration: photo delivery flow -->
+            <div class="fedi-illustration">
+              <svg viewBox="0 0 540 130" xmlns="http://www.w3.org/2000/svg" aria-label="Photo delivery flow">
+                <!-- You post -->
+                <rect x="0" y="35" width="100" height="60" rx="4" fill="#f5f5f5" stroke="#3b7bb8" stroke-width="1.5"/>
+                <text x="50" y="58" text-anchor="middle" fill="#333" font-size="9" font-weight="500">You post</text>
+                <text x="50" y="73" text-anchor="middle" fill="#999" font-size="8">a photo</text>
+
+                <!-- Arrow -->
+                <line x1="100" y1="65" x2="135" y2="65" stroke="#3b7bb8" stroke-width="2" marker-end="url(#arrBlueSm)"/>
+
+                <!-- Backend -->
+                <rect x="135" y="20" width="120" height="90" rx="4" fill="#f5f5f5" stroke="#3b7bb8" stroke-width="1.5"/>
+                <text x="195" y="45" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Backend</text>
+                <text x="195" y="60" text-anchor="middle" fill="#999" font-size="8">wraps as</text>
+                <text x="195" y="73" text-anchor="middle" fill="#5050cc" font-size="8" font-weight="500">Create/Note</text>
+                <text x="195" y="88" text-anchor="middle" fill="#999" font-size="7">signs + queues</text>
+
+                <!-- Arrow -->
+                <line x1="255" y1="65" x2="290" y2="65" stroke="#5050cc" stroke-width="2" marker-end="url(#arrPurpleSm)"/>
+
+                <!-- Redis queue -->
+                <rect x="290" y="35" width="90" height="60" rx="4" fill="#f5f5f5" stroke="#e67e22" stroke-width="1.5"/>
+                <text x="335" y="58" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Redis queue</text>
+                <text x="335" y="73" text-anchor="middle" fill="#999" font-size="8">reliable delivery</text>
+
+                <!-- Arrows to followers -->
+                <line x1="380" y1="50" x2="430" y2="30" stroke="#5050cc" stroke-width="1.5" marker-end="url(#arrPurpleSm)"/>
+                <line x1="380" y1="65" x2="430" y2="65" stroke="#5050cc" stroke-width="1.5" marker-end="url(#arrPurpleSm)"/>
+                <line x1="380" y1="80" x2="430" y2="100" stroke="#5050cc" stroke-width="1.5" marker-end="url(#arrPurpleSm)"/>
+
+                <!-- Follower inboxes -->
+                <rect x="430" y="10" width="105" height="35" rx="4" fill="#f5f5f5" stroke="#5050cc" stroke-width="1"/>
+                <text x="483" y="32" text-anchor="middle" fill="#333" font-size="8">follower on Mastodon</text>
+
+                <rect x="430" y="50" width="105" height="35" rx="4" fill="#f5f5f5" stroke="#5050cc" stroke-width="1"/>
+                <text x="483" y="72" text-anchor="middle" fill="#333" font-size="8">follower on Pixelfed</text>
+
+                <rect x="430" y="90" width="105" height="35" rx="4" fill="#f5f5f5" stroke="#5050cc" stroke-width="1"/>
+                <text x="483" y="112" text-anchor="middle" fill="#333" font-size="8">follower on Misskey</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Receiving -->
+        <div class="fedi-journal-entry">
+          <div class="fedi-journal-marker"></div>
+          <div class="fedi-journal-content">
+            <h3>Step 4 — Receiving likes, comments, and follows</h3>
+            <p>
+              When someone on Mastodon likes your photo, their server sends an activity to your
+              inbox on Infotograf. I verify the signature, parse what type of activity it is,
+              and process it — a Like adds to your like count, a Create with a reply becomes
+              a comment, a Follow becomes a follow request. Everything shows up in your
+              notifications with a small purple Fediverse badge.
+            </p>
+            <!-- Illustration: incoming interactions -->
+            <div class="fedi-illustration">
+              <svg viewBox="0 0 480 100" xmlns="http://www.w3.org/2000/svg" aria-label="Receiving interactions">
+                <!-- Remote actions -->
+                <rect x="0" y="5" width="90" height="35" rx="4" fill="#f5f5f5" stroke="#5050cc" stroke-width="1"/>
+                <text x="45" y="22" text-anchor="middle" fill="#c0392b" font-size="11">&#x2764;</text>
+                <text x="45" y="34" text-anchor="middle" fill="#999" font-size="7">Like</text>
+
+                <rect x="0" y="45" width="90" height="35" rx="4" fill="#f5f5f5" stroke="#5050cc" stroke-width="1"/>
+                <text x="45" y="62" text-anchor="middle" fill="#3b7bb8" font-size="11">&#x1F4AC;</text>
+                <text x="45" y="74" text-anchor="middle" fill="#999" font-size="7">Comment</text>
+
+                <!-- Arrows -->
+                <line x1="90" y1="22" x2="145" y2="50" stroke="#5050cc" stroke-width="1.5" marker-end="url(#arrPurpleSm)"/>
+                <line x1="90" y1="62" x2="145" y2="50" stroke="#5050cc" stroke-width="1.5" marker-end="url(#arrPurpleSm)"/>
+
+                <!-- Inbox -->
+                <rect x="145" y="15" width="120" height="70" rx="4" fill="#f5f5f5" stroke="#3b7bb8" stroke-width="1.5"/>
+                <text x="205" y="40" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Your inbox</text>
+                <text x="205" y="55" text-anchor="middle" fill="#999" font-size="8">verify signature</text>
+                <text x="205" y="68" text-anchor="middle" fill="#999" font-size="8">parse activity</text>
+
+                <!-- Arrow -->
+                <line x1="265" y1="50" x2="310" y2="50" stroke="#3b7bb8" stroke-width="2" marker-end="url(#arrBlueSm)"/>
+
+                <!-- Result -->
+                <rect x="310" y="15" width="160" height="70" rx="4" fill="#f5f5f5" stroke="#27ae60" stroke-width="1.5"/>
+                <text x="390" y="38" text-anchor="middle" fill="#333" font-size="9" font-weight="500">Your notifications</text>
+                <text x="390" y="55" text-anchor="middle" fill="#999" font-size="8">&#x2764; sarah liked your photo</text>
+                <text x="390" y="70" text-anchor="middle" fill="#5050cc" font-size="7">&#x25CF; fediverse</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- The first connection -->
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
@@ -232,6 +420,7 @@
           </div>
         </div>
 
+        <!-- Audio -->
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
@@ -244,6 +433,86 @@
             </p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- The tech stack -->
+  <section class="fedi-section fedi-section--dark">
+    <div class="fedi-section-inner">
+      <h2 class="fedi-section-heading fedi-section-heading--dark">The tech behind it</h2>
+
+      <!-- Illustration: architecture stack -->
+      <div class="fedi-illustration fedi-illustration--architecture">
+        <svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg" aria-label="Infotograf federation architecture">
+          <!-- iOS App -->
+          <rect x="10" y="25" width="110" height="55" rx="4" fill="#3a3839" stroke="#888" stroke-width="1.5"/>
+          <text x="65" y="48" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="500">iOS App</text>
+          <text x="65" y="63" text-anchor="middle" fill="#8a8889" font-size="8">SwiftUI</text>
+
+          <!-- Arrow -->
+          <line x1="120" y1="52" x2="160" y2="52" stroke="#888" stroke-width="1.5" marker-end="url(#arrGrayDk)"/>
+          <text x="140" y="45" text-anchor="middle" fill="#8a8889" font-size="7">HTTPS</text>
+
+          <!-- Backend -->
+          <rect x="160" y="10" width="155" height="85" rx="4" fill="#3a3839" stroke="#5a9ad8" stroke-width="2"/>
+          <text x="238" y="35" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="500">Node.js / Fastify</text>
+          <text x="238" y="50" text-anchor="middle" fill="#8a8889" font-size="8">existing API routes</text>
+          <text x="238" y="67" text-anchor="middle" fill="#8b8cff" font-size="9" font-weight="500">/ap/* federation routes</text>
+          <text x="238" y="82" text-anchor="middle" fill="#8a8889" font-size="8">WebFinger, Actor, Inbox</text>
+
+          <!-- Arrow to remote -->
+          <line x1="315" y1="52" x2="365" y2="52" stroke="#8b8cff" stroke-width="2" marker-end="url(#arrPurpleDk)"/>
+          <text x="340" y="44" text-anchor="middle" fill="#8b8cff" font-size="7">ActivityPub</text>
+
+          <!-- Remote servers -->
+          <rect x="365" y="25" width="185" height="55" rx="4" fill="#3a3839" stroke="#8b8cff" stroke-width="1.5"/>
+          <text x="458" y="48" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="500">Mastodon / Pixelfed / ...</text>
+          <text x="458" y="63" text-anchor="middle" fill="#8a8889" font-size="8">any ActivityPub server</text>
+
+          <!-- PostgreSQL -->
+          <rect x="160" y="125" width="110" height="55" rx="4" fill="#3a3839" stroke="#888" stroke-width="1.5"/>
+          <text x="215" y="148" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="500">PostgreSQL</text>
+          <text x="215" y="163" text-anchor="middle" fill="#8a8889" font-size="8">keypairs, remote actors</text>
+
+          <!-- Redis -->
+          <rect x="290" y="125" width="110" height="55" rx="4" fill="#3a3839" stroke="#e67e22" stroke-width="1.5"/>
+          <text x="345" y="148" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="500">Redis + BullMQ</text>
+          <text x="345" y="163" text-anchor="middle" fill="#8a8889" font-size="8">delivery queue</text>
+
+          <!-- R2 -->
+          <rect x="420" y="125" width="110" height="55" rx="4" fill="#3a3839" stroke="#888" stroke-width="1.5"/>
+          <text x="475" y="148" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="500">Cloudflare R2</text>
+          <text x="475" y="163" text-anchor="middle" fill="#8a8889" font-size="8">photos &amp; audio</text>
+
+          <!-- Vertical arrows -->
+          <line x1="215" y1="95" x2="215" y2="125" stroke="#888" stroke-width="1.5" marker-end="url(#arrGrayDk)"/>
+          <line x1="345" y1="95" x2="345" y2="125" stroke="#888" stroke-width="1.5" marker-end="url(#arrGrayDk)"/>
+
+          <!-- Domain -->
+          <rect x="155" y="205" width="260" height="30" rx="15" fill="none" stroke="#5a9ad8" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="285" y="224" text-anchor="middle" fill="#5a9ad8" font-size="10">infotograf.com — your identity domain</text>
+
+          <defs>
+            <marker id="arrGrayDk" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+              <path d="M0,0 L7,2.5 L0,5" fill="none" stroke="#888" stroke-width="1"/>
+            </marker>
+            <marker id="arrPurpleDk" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+              <path d="M0,0 L7,2.5 L0,5" fill="none" stroke="#8b8cff" stroke-width="1"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="fedi-prose fedi-prose--dark fedi-prose--centered">
+        <p>
+          I built the federation layer entirely from scratch using Node.js and the built-in
+          <code>crypto</code> module — no third-party ActivityPub libraries. The federation
+          routes live under <code>/ap/*</code>, completely seperate from the existing API,
+          so the iOS app is never affected. All deliveries go through a Redis queue with
+          automatic retries, so nothing gets lost if a remote server is temporarly down.
+        </p>
       </div>
     </div>
   </section>
