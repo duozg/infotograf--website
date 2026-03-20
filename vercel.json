@@ -7,7 +7,8 @@
     { "source": "/terms",      "destination": "/terms.html" },
     { "source": "/support",    "destination": "/support.html" },
     { "source": "/guidelines", "destination": "/guidelines.html" },
-          { "source": "/.well-known/:path*", "destination": "https://noiscut-api-production.up.railway.app/.well-known/:path*" }, 
+    { "source": "/.well-known/:path*", "destination": "https://noiscut-api-production.up.railway.app/.well-known/:path*" },
+    { "source": "/nodeinfo/:path*",    "destination": "https://noiscut-api-production.up.railway.app/nodeinfo/:path*" },
     { "source": "/(.*)",       "destination": "/index.html" }
   ],
   "headers": [
