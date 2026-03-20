@@ -5,9 +5,27 @@ export default async function middleware(request: Request): Promise<Response | u
 
   if (url.pathname.startsWith("/.well-known/") || url.pathname.startsWith("/nodeinfo/") || url.pathname.startsWith("/ap/")) {
     const target = `${RAILWAY_BASE}${url.pathname}${url.search}`;
+
+    // Build upstream headers — forward relevant ones for ActivityPub
+    const upstreamHeaders: Record<string, string> = {
+      Accept: request.headers.get("Accept") || "application/json",
+    };
+
+    // Forward signature and content headers for POST (inbox) requests
+    const forwardHeaders = ["content-type", "signature", "digest", "date", "host"];
+    for (const h of forwardHeaders) {
+      const val = request.headers.get(h);
+      if (val) upstreamHeaders[h] = val;
+    }
+
+    // Forward the request with its original method and body
+    const isPost = request.method === "POST" || request.method === "PUT";
     const upstream = await fetch(target, {
-      headers: { Accept: request.headers.get("Accept") || "application/json" },
+      method: request.method,
+      headers: upstreamHeaders,
+      body: isPost ? await request.text() : undefined,
     });
+
     const body = await upstream.text();
     return new Response(body, {
       status: upstream.status,
