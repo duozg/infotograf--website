@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fediverse — Infotograf</title>
-  <meta name="description" content="How Infotograf connects to the Fediverse. A documentary by Quentin (Duong Nguyen) on building ActivityPub federation into a photo-sharing app.">
+  <meta name="description" content="How Infotograf connects to the Fediverse. By Quentin (Duong Nguyen).">
   <meta name="theme-color" content="#1c1a1b">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Infotograf and the Fediverse">
-  <meta property="og:description" content="The story of connecting a photo-sharing app to the decentralised social web. By Quentin (Duong Nguyen).">
+  <meta property="og:description" content="How Infotograf connects to the decentralised social web. By Quentin (Duong Nguyen).">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://infotograf.com/fediverse">
 
@@ -35,20 +35,17 @@
 
   <!-- Hero -->
   <section class="fedi-hero">
-    <p class="fedi-hero-byline">A documentary by Quentin (Duong Nguyen)</p>
+    <p class="fedi-hero-byline">By Quentin (Duong Nguyen)</p>
     <h1 class="fedi-hero-title">Connecting <em class="fedi-hero-logo">Infotograf</em><br>to the Fediverse</h1>
     <p class="fedi-hero-subtitle">
-      How I opened up a photo-sharing app to the decentralised social web —
-      and what that means for your photos.
+      Your photos, connected to millions of people across the open social web.
     </p>
 
     <!-- Placeholder illustration: connected nodes -->
     <div class="fedi-illustration fedi-illustration--hero">
       <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" aria-label="Connected nodes representing the Fediverse">
-        <!-- Central node (Infotograf) -->
         <circle cx="200" cy="100" r="24" fill="#4a82b5" opacity="0.9"/>
         <text x="200" y="105" text-anchor="middle" fill="#fff" font-size="11" font-family="Georgia" font-style="italic">i</text>
-        <!-- Surrounding nodes -->
         <circle cx="80" cy="60" r="14" fill="#6364ff" opacity="0.5"/>
         <circle cx="320" cy="60" r="14" fill="#6364ff" opacity="0.5"/>
         <circle cx="60" cy="150" r="12" fill="#6364ff" opacity="0.4"/>
@@ -57,7 +54,6 @@
         <circle cx="260" cy="30" r="10" fill="#6364ff" opacity="0.3"/>
         <circle cx="130" cy="170" r="11" fill="#6364ff" opacity="0.35"/>
         <circle cx="270" cy="170" r="11" fill="#6364ff" opacity="0.35"/>
-        <!-- Connection lines -->
         <line x1="200" y1="100" x2="80" y2="60" stroke="#6364ff" stroke-width="1.5" opacity="0.3"/>
         <line x1="200" y1="100" x2="320" y2="60" stroke="#6364ff" stroke-width="1.5" opacity="0.3"/>
         <line x1="200" y1="100" x2="60" y2="150" stroke="#6364ff" stroke-width="1.5" opacity="0.25"/>
@@ -66,7 +62,6 @@
         <line x1="200" y1="100" x2="260" y2="30" stroke="#6364ff" stroke-width="1.5" opacity="0.2"/>
         <line x1="200" y1="100" x2="130" y2="170" stroke="#6364ff" stroke-width="1.5" opacity="0.25"/>
         <line x1="200" y1="100" x2="270" y2="170" stroke="#6364ff" stroke-width="1.5" opacity="0.25"/>
-        <!-- Node-to-node connections -->
         <line x1="80" y1="60" x2="140" y2="30" stroke="#6364ff" stroke-width="1" opacity="0.15"/>
         <line x1="320" y1="60" x2="260" y2="30" stroke="#6364ff" stroke-width="1" opacity="0.15"/>
         <line x1="60" y1="150" x2="130" y2="170" stroke="#6364ff" stroke-width="1" opacity="0.15"/>
@@ -76,50 +71,21 @@
   </section>
 
 
-  <!-- Chapter 1: The Vision -->
+  <!-- What is the Fediverse -->
   <section class="fedi-section fedi-section--light">
     <div class="fedi-section-inner">
-      <span class="fedi-chapter-label">Chapter 1</span>
-      <h2 class="fedi-section-heading">The Vision</h2>
+      <h2 class="fedi-section-heading">So what's the Fediverse?</h2>
 
       <div class="fedi-prose">
         <p>
-          When I built Infotograf, I had one goal: bring back what made photo sharing brilliant.
-          A chronological feed. Classic filters. Just photos, and the people who take them.
+          You know how email works right? You can have Gmail and send a message to someone on Outlook.
+          Different apps, same system. Noone owns email.
         </p>
         <p>
-          From the start, I wanted Infotograf to be part of something bigger — a connected
-          world where your photos can travel beyond any single platform. The Fediverse made
-          that possible. It's a network of millions of people across Mastodon, Pixelfed,
-          Misskey, and hundreds of other platforms, all speaking the same open protocol: ActivityPub.
-        </p>
-        <p>
-          With federation, your Infotograf photos reach people wherever they are. Someone on
-          Mastodon can follow you, like your photos, and comment — all from their own platform.
-          And you see it all right in your Infotograf feed. It's social media the way it
-          ought to work: open, connected, and yours.
-        </p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- Chapter 2: What Is the Fediverse -->
-  <section class="fedi-section fedi-section--dark">
-    <div class="fedi-section-inner">
-      <span class="fedi-chapter-label fedi-chapter-label--dark">Chapter 2</span>
-      <h2 class="fedi-section-heading fedi-section-heading--dark">What Is the Fediverse?</h2>
-
-      <div class="fedi-prose fedi-prose--dark">
-        <p>
-          Think of it like email. You can have a Gmail account and send a message to someone on Outlook.
-          Different providers, same protocol. It simply works.
-        </p>
-        <p>
-          The Fediverse works the same way — but for social media. Each platform is its own independent
-          server, but they all speak a common language called <strong>ActivityPub</strong>. A photo on
-          Infotograf can appear in the feed of someone on Mastodon. A like from Pixelfed shows up
-          as a notification in your Infotograf app. Everything connects seamlessly.
+          The Fediverse is the same idea but for social media. Platforms like Mastodon, Pixelfed,
+          and Infotograf are all seperate apps — but they can talk to each other. So if you post a photo
+          on Infotograf, someone on Mastodon can see it, like it, and comment on it. And you'll see
+          their interactions right in your feed.
         </p>
       </div>
 
@@ -132,7 +98,7 @@
               <polyline points="10,15 60,48 110,15" fill="none" stroke="#8a8889" stroke-width="1.5"/>
             </svg>
             <span class="fedi-comparison-label">Email</span>
-            <span class="fedi-comparison-desc">Gmail → Outlook → Yahoo<br>Different apps, same protocol</span>
+            <span class="fedi-comparison-desc">Gmail → Outlook → Yahoo<br>Different apps, same system</span>
           </div>
           <div class="fedi-comparison-arrow">
             <svg viewBox="0 0 40 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -148,149 +114,7 @@
               <text x="85" y="44" text-anchor="middle" fill="#4a82b5" font-size="9" font-family="Georgia" font-style="italic">i</text>
             </svg>
             <span class="fedi-comparison-label">Fediverse</span>
-            <span class="fedi-comparison-desc">Mastodon → Infotograf → Pixelfed<br>Different apps, same protocol</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="fedi-prose fedi-prose--dark">
-        <p>
-          Your identity, your photos, your followers — they belong to you and travel with you.
-          The Fediverse is an open network, built on open standards, where every platform
-          can talk to every other. That's the power of connected, decentralised social media.
-        </p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- Chapter 3: How I Built It -->
-  <section class="fedi-section fedi-section--light">
-    <div class="fedi-section-inner">
-      <span class="fedi-chapter-label">Chapter 3</span>
-      <h2 class="fedi-section-heading">How I Built It</h2>
-
-      <div class="fedi-prose">
-        <p>
-          Implementing ActivityPub from scratch was one of the most rewarding challenges I've
-          taken on as a developer. There's a W3C specification, reference implementations
-          to study, and an incredibly welcoming community. I read the spec, studied how Mastodon
-          and Pixelfed handle federation, and built it piece by piece.
-        </p>
-      </div>
-
-      <!-- Placeholder illustration: architecture diagram -->
-      <div class="fedi-illustration fedi-illustration--architecture">
-        <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" aria-label="Architecture diagram showing the federation flow">
-          <!-- iOS App -->
-          <rect x="20" y="30" width="120" height="60" rx="4" fill="#2c2a2b" stroke="#484647" stroke-width="1"/>
-          <text x="80" y="55" text-anchor="middle" fill="#e8e6e7" font-size="11" font-weight="300">iOS App</text>
-          <text x="80" y="72" text-anchor="middle" fill="#8a8889" font-size="9">(SwiftUI)</text>
-
-          <!-- Arrow: iOS to Backend -->
-          <line x1="140" y1="60" x2="190" y2="60" stroke="#484647" stroke-width="1" marker-end="url(#arrowGray)"/>
-          <text x="165" y="52" text-anchor="middle" fill="#666565" font-size="8">HTTPS</text>
-
-          <!-- Backend -->
-          <rect x="190" y="20" width="160" height="80" rx="4" fill="#2c2a2b" stroke="#4a82b5" stroke-width="1.5"/>
-          <text x="270" y="48" text-anchor="middle" fill="#e8e6e7" font-size="11" font-weight="300">Infotograf Backend</text>
-          <text x="270" y="65" text-anchor="middle" fill="#8a8889" font-size="9">(Node.js / Fastify)</text>
-          <text x="270" y="82" text-anchor="middle" fill="#6364ff" font-size="9">/ap/* endpoints</text>
-
-          <!-- Arrow: Backend to Remote -->
-          <line x1="350" y1="60" x2="410" y2="60" stroke="#6364ff" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
-          <text x="380" y="50" text-anchor="middle" fill="#6364ff" font-size="8">ActivityPub</text>
-
-          <!-- Remote Server -->
-          <rect x="410" y="30" width="160" height="60" rx="4" fill="#2c2a2b" stroke="#6364ff" stroke-width="1"/>
-          <text x="490" y="55" text-anchor="middle" fill="#e8e6e7" font-size="11" font-weight="300">Mastodon / Pixelfed</text>
-          <text x="490" y="72" text-anchor="middle" fill="#8a8889" font-size="9">(any Fediverse server)</text>
-
-          <!-- Database -->
-          <rect x="200" y="140" width="100" height="50" rx="4" fill="#2c2a2b" stroke="#484647" stroke-width="1"/>
-          <text x="250" y="162" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="300">PostgreSQL</text>
-          <text x="250" y="178" text-anchor="middle" fill="#8a8889" font-size="8">keypairs, actors</text>
-
-          <!-- Redis -->
-          <rect x="320" y="140" width="100" height="50" rx="4" fill="#2c2a2b" stroke="#484647" stroke-width="1"/>
-          <text x="370" y="162" text-anchor="middle" fill="#e8e6e7" font-size="10" font-weight="300">Redis Queue</text>
-          <text x="370" y="178" text-anchor="middle" fill="#8a8889" font-size="8">delivery jobs</text>
-
-          <!-- Arrows down -->
-          <line x1="250" y1="100" x2="250" y2="140" stroke="#484647" stroke-width="1" marker-end="url(#arrowGray)"/>
-          <line x1="370" y1="100" x2="370" y2="140" stroke="#484647" stroke-width="1" marker-end="url(#arrowGray)"/>
-
-          <!-- Domain label -->
-          <rect x="180" y="220" width="240" height="36" rx="18" fill="none" stroke="#4a82b5" stroke-width="1" stroke-dasharray="4 3"/>
-          <text x="300" y="242" text-anchor="middle" fill="#4a82b5" font-size="10">@username@infotograf.com</text>
-
-          <!-- Arrow markers -->
-          <defs>
-            <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L8,3 L0,6" fill="none" stroke="#484647" stroke-width="1"/>
-            </marker>
-            <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L8,3 L0,6" fill="none" stroke="#6364ff" stroke-width="1"/>
-            </marker>
-          </defs>
-        </svg>
-      </div>
-
-      <div class="fedi-steps">
-        <div class="fedi-step">
-          <div class="fedi-step-number">1</div>
-          <div class="fedi-step-content">
-            <h3>Discovery — WebFinger &amp; NodeInfo</h3>
-            <p>
-              The first step was making Infotograf discoverable. When someone on Mastodon searches for
-              <code>@quentin@infotograf.com</code>, their server asks infotograf.com
-              "who is this person?" via WebFinger — a simple, standardised JSON lookup.
-              I set up the backend to respond to these queries and configured Vercel
-              to route discovery requests through to our API server on Railway.
-            </p>
-          </div>
-        </div>
-
-        <div class="fedi-step">
-          <div class="fedi-step-number">2</div>
-          <div class="fedi-step-content">
-            <h3>Actor Profiles &amp; Cryptographic Keys</h3>
-            <p>
-              Every Infotograf user who opts into the Fediverse receives an Actor profile —
-              a JSON-LD document describing who they are, where to send them activities,
-              and their RSA public key. Each user gets a unique RSA-2048 keypair.
-              These keys are the foundation of trust across the network: every message
-              Infotograf sends is cryptographically signed, so receiving servers can
-              verify it genuinely came from us.
-            </p>
-          </div>
-        </div>
-
-        <div class="fedi-step">
-          <div class="fedi-step-number">3</div>
-          <div class="fedi-step-content">
-            <h3>Sending Photos Out</h3>
-            <p>
-              When you post a photo on Infotograf, the backend wraps it in an ActivityPub
-              <code>Create/Note</code> activity — complete with image attachment and caption — and
-              delivers it to every remote follower's inbox. Each delivery is signed with HTTP Signatures
-              and queued through Redis for reliability. If a server is temporarily unreachable,
-              we retry automatically with exponential backoff until it goes through.
-            </p>
-          </div>
-        </div>
-
-        <div class="fedi-step">
-          <div class="fedi-step-number">4</div>
-          <div class="fedi-step-content">
-            <h3>Receiving Interactions</h3>
-            <p>
-              When someone on Mastodon likes your photo or leaves a comment, their server sends
-              an activity to your inbox on Infotograf. We verify the cryptographic signature,
-              parse the activity, and process it — a Like becomes a like count, a reply becomes
-              a comment, a Follow becomes a follow request. It all shows up in your notifications
-              with a small Fediverse badge so you know it came from the wider network.
-            </p>
+            <span class="fedi-comparison-desc">Mastodon → Infotograf → Pixelfed<br>Different apps, same system</span>
           </div>
         </div>
       </div>
@@ -298,15 +122,13 @@
   </section>
 
 
-  <!-- Chapter 4: What You'll Experience -->
+  <!-- What you get -->
   <section class="fedi-section fedi-section--dark">
     <div class="fedi-section-inner">
-      <span class="fedi-chapter-label fedi-chapter-label--dark">Chapter 4</span>
-      <h2 class="fedi-section-heading fedi-section-heading--dark">What You'll Experience</h2>
+      <h2 class="fedi-section-heading fedi-section-heading--dark">What this means for you</h2>
 
       <div class="fedi-feature-grid">
         <div class="fedi-feature-card">
-          <!-- Placeholder illustration: magnifying glass with @ -->
           <div class="fedi-feature-icon">
             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Search icon">
               <circle cx="28" cy="28" r="18" fill="none" stroke="#6364ff" stroke-width="2"/>
@@ -314,12 +136,11 @@
               <text x="28" y="34" text-anchor="middle" fill="#6364ff" font-size="16" font-weight="bold">@</text>
             </svg>
           </div>
-          <h3>Search Across Platforms</h3>
-          <p>Find and follow anyone on the Fediverse directly from Infotograf. Search <code>@user@mastodon.social</code> and their profile appears instantly.</p>
+          <h3>Follow anyone, anywhere</h3>
+          <p>Search for people on Mastodon, Pixelfed, or any Fediverse platform and follow them directly from Infotograf.</p>
         </div>
 
         <div class="fedi-feature-card">
-          <!-- Placeholder illustration: feed with mixed badges -->
           <div class="fedi-feature-icon">
             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Mixed feed icon">
               <rect x="8" y="6" width="48" height="14" rx="3" fill="#353334" stroke="#484647" stroke-width="1"/>
@@ -328,12 +149,11 @@
               <circle cx="50" cy="32" r="5" fill="#6364ff" opacity="0.7"/>
             </svg>
           </div>
-          <h3>One Unified Feed</h3>
-          <p>Posts from Fediverse users appear in your chronological feed alongside local posts. A subtle purple badge marks federated content so you always know where it came from.</p>
+          <h3>Everything in one feed</h3>
+          <p>Posts from other platforms show up in your regular feed, chronologically. A small purple badge lets you know where they came from.</p>
         </div>
 
         <div class="fedi-feature-card">
-          <!-- Placeholder illustration: bell with purple dot -->
           <div class="fedi-feature-icon">
             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Notification icon">
               <path d="M32 8c-10 0-18 8-18 18v10l-4 6h44l-4-6V26c0-10-8-18-18-18z" fill="none" stroke="#8a8889" stroke-width="2"/>
@@ -341,42 +161,11 @@
               <circle cx="46" cy="14" r="7" fill="#6364ff"/>
             </svg>
           </div>
-          <h3>Cross-Platform Notifications</h3>
-          <p>Likes, comments, and new followers from Mastodon, Pixelfed, and others arrive in your regular notification feed — tagged with a Fediverse badge.</p>
+          <h3>Likes and comments from everywhere</h3>
+          <p>When someone on Mastodon likes your photo or leaves a comment, you'll see it in your notifications just like any other interaction.</p>
         </div>
 
         <div class="fedi-feature-card">
-          <!-- Placeholder illustration: avatar with purple glow -->
-          <div class="fedi-feature-icon">
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Remote profile icon">
-              <circle cx="32" cy="26" r="14" fill="none" stroke="#6364ff" stroke-width="2"/>
-              <circle cx="32" cy="26" r="18" fill="none" stroke="#6364ff" stroke-width="1" opacity="0.2"/>
-              <path d="M12 56c0-11 9-20 20-20s20 9 20 20" fill="none" stroke="#6364ff" stroke-width="2"/>
-              <text x="48" y="48" fill="#6364ff" font-size="12">&#x2728;</text>
-            </svg>
-          </div>
-          <h3>Remote Profiles</h3>
-          <p>Tap a federated user to view their full profile — photo grid, follower count, and a distinctive purple glow on their avatar. Follow them with a single tap.</p>
-        </div>
-
-        <div class="fedi-feature-card">
-          <!-- Placeholder illustration: three connected dots (Fediverse icon) -->
-          <div class="fedi-feature-icon">
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Explore icon">
-              <circle cx="32" cy="16" r="8" fill="#6364ff" opacity="0.7"/>
-              <circle cx="16" cy="48" r="8" fill="#6364ff" opacity="0.7"/>
-              <circle cx="48" cy="48" r="8" fill="#6364ff" opacity="0.7"/>
-              <line x1="32" y1="24" x2="16" y2="40" stroke="#6364ff" stroke-width="1.5" opacity="0.5"/>
-              <line x1="32" y1="24" x2="48" y2="40" stroke="#6364ff" stroke-width="1.5" opacity="0.5"/>
-              <line x1="24" y1="48" x2="40" y2="48" stroke="#6364ff" stroke-width="1.5" opacity="0.5"/>
-            </svg>
-          </div>
-          <h3>Fediverse Explore</h3>
-          <p>A dedicated explore screen lets you browse popular servers, discover photographers on Pixelfed, and find communities that match your interests.</p>
-        </div>
-
-        <div class="fedi-feature-card">
-          <!-- Placeholder illustration: lock with toggle -->
           <div class="fedi-feature-icon">
             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Privacy icon">
               <rect x="16" y="28" width="32" height="24" rx="3" fill="none" stroke="#4a82b5" stroke-width="2"/>
@@ -384,31 +173,29 @@
               <circle cx="32" cy="40" r="3" fill="#4a82b5"/>
             </svg>
           </div>
-          <h3>You're in Control</h3>
-          <p>Everything is opt-in. You choose whether to share to the Fediverse, allow remote followers, or auto-accept follows. Private accounts stay private — always.</p>
+          <h3>Completely opt-in</h3>
+          <p>You decide wether to turn it on or not. Nothing changes unless you want it to. Private accounts stay private, always.</p>
         </div>
       </div>
     </div>
   </section>
 
 
-  <!-- Chapter 5: The Personal Story -->
+  <!-- The story -->
   <section class="fedi-section fedi-section--light">
     <div class="fedi-section-inner">
-      <span class="fedi-chapter-label">Chapter 5</span>
-      <h2 class="fedi-section-heading">The Journey</h2>
+      <h2 class="fedi-section-heading">How I built it</h2>
 
       <div class="fedi-journal">
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
-            <h3>The Spark</h3>
+            <h3>The idea</h3>
             <p>
-              I was sitting in a cafe in early 2026 when the idea clicked. I'd built exactly the
-              photo app I wanted to use — chronological, simple, beautiful. And I thought:
-              what if it could connect to the wider world? What if your Infotograf photos
-              could reach people on Mastodon, Pixelfed, and beyond — and theirs could reach you?
-              That was the moment I decided to build federation.
+              I was in a cafe early 2026 and I thought — what if your Infotograf photos could
+              reach people on Mastodon and Pixelfed, and theirs could reach you? What if these
+              apps could just talk to eachother? Turns out theres a protocol for exactly that.
+              It's called ActivityPub.
             </p>
           </div>
         </div>
@@ -416,13 +203,12 @@
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
-            <h3>Reading the Spec</h3>
+            <h3>Making it work</h3>
             <p>
-              The ActivityPub W3C specification is dense. It took me days to fully grasp the difference
-              between an Actor and an Activity, between an Inbox and an Outbox. I read Mastodon's source
-              code. I read Pixelfed's. I traced HTTP requests with curl. Gradually, the protocol started
-              making sense — it's elegant, actually. Just JSON documents, sent between servers, signed
-              with cryptographic keys.
+              I spent weeks reading the specification and studying how Mastodon handles federation.
+              The basic idea is actually quite elegant — servers send JSON messages to eachother,
+              signed with cryptographic keys so you know they're genuine. I built it all from
+              scratch, piece by piece.
             </p>
           </div>
         </div>
@@ -430,12 +216,12 @@
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
-            <h3>The First Handshake</h3>
+            <h3>The first connection</h3>
             <p>
-              The moment I searched <code>@quentin@infotograf.com</code> on Mastodon and saw my profile
-              appear — my avatar, my bio, my photos — I got chills. Two completely independent servers,
-              built by different people, using different languages, talking to each other through an open
-              standard. That's the internet I believe in.
+              The moment I searched <code>@quentin@infotograf.com</code> on Mastodon and saw
+              my profile appear — my avatar, my bio, my photos — that was honestly one of
+              the best feelings. Two completley independent servers, built by different people,
+              talking to each other through an open standard.
             </p>
           </div>
         </div>
@@ -443,40 +229,12 @@
         <div class="fedi-journal-entry">
           <div class="fedi-journal-marker"></div>
           <div class="fedi-journal-content">
-            <h3>The Hard Parts</h3>
+            <h3>Audio — our special thing</h3>
             <p>
-              HTTP Signatures were the trickiest bit. One wrong byte in the signing string and the whole
-              handshake fails silently. I spent three days on a bug that turned out to be a single
-              trailing newline character. But I learnt something valuable: the Fediverse is
-              built on trust, and trust requires precision.
-            </p>
-          </div>
-        </div>
-
-        <div class="fedi-journal-entry">
-          <div class="fedi-journal-marker"></div>
-          <div class="fedi-journal-content">
-            <h3>Audio — Our Unique Touch</h3>
-            <p>
-              Infotograf's signature feature is audio — ambient sound captured with every photo, and
-              voice clips where you talk about the moment. This is something uniquely ours.
-              When your photo travels to Mastodon, they'll see the image and caption beautifully.
-              But the full audio experience — the cafe rain, your voice describing the light —
-              that's something special you get on Infotograf. It's the extra layer
-              that makes our app worth opening.
-            </p>
-          </div>
-        </div>
-
-        <div class="fedi-journal-entry">
-          <div class="fedi-journal-marker"></div>
-          <div class="fedi-journal-content">
-            <h3>What It Means</h3>
-            <p>
-              Building on the Fediverse means choosing a future where social media is open and
-              interconnected. Where your photos can travel freely across platforms. Where apps
-              of all sizes can coexist and collaborate through shared, open standards.
-              That's the internet we're building towards.
+              Infotograf lets you capture ambient sound and voice clips with every photo.
+              That's something unique to us. When your photos travel to Mastodon, people
+              see the image and caption beautifully — but the audio experience, the cafe
+              rain or your voice describing the light, thats something you only get on Infotograf.
             </p>
           </div>
         </div>
@@ -485,11 +243,10 @@
   </section>
 
 
-  <!-- Chapter 6: The Technical Identity -->
+  <!-- Your identity -->
   <section class="fedi-section fedi-section--dark">
     <div class="fedi-section-inner">
-      <span class="fedi-chapter-label fedi-chapter-label--dark">Chapter 6</span>
-      <h2 class="fedi-section-heading fedi-section-heading--dark">Your Fediverse Identity</h2>
+      <h2 class="fedi-section-heading fedi-section-heading--dark">Your Fediverse identity</h2>
 
       <div class="fedi-identity-card">
         <div class="fedi-identity-avatar">
@@ -508,27 +265,23 @@
 
       <div class="fedi-prose fedi-prose--dark fedi-prose--centered">
         <p>
-          When you enable the Fediverse on Infotograf, your identity becomes
-          <strong>@yourname@infotograf.com</strong> — recognised across every Fediverse platform.
-          Anyone on Mastodon, Pixelfed, Misskey, Friendica, or any other ActivityPub-compatible
-          service can find you, follow you, and interact with your photos.
-        </p>
-        <p>
-          You needn't create another account or understand the protocol.
-          Simply switch it on in settings, and the entire decentralised social web opens up to you.
+          Turn on the Fediverse in your settings and you become
+          <strong>@yourname@infotograf.com</strong>. Anyone on Mastodon, Pixelfed, or
+          any other Fediverse platform can find you and follow you. You don't need
+          another account. Just flip the switch.
         </p>
       </div>
     </div>
   </section>
 
 
-  <!-- Closing CTA -->
+  <!-- CTA -->
   <section class="fedi-section fedi-section--cta">
     <div class="fedi-section-inner">
-      <h2 class="fedi-cta-heading">The Fediverse is coming to <em class="fedi-hero-logo">Infotograf</em></h2>
+      <h2 class="fedi-cta-heading">Coming soon to <em class="fedi-hero-logo">Infotograf</em></h2>
       <p class="fedi-cta-text">
-        Federation is rolling out in phases. Download Infotograf today and be amongst the first
-        to connect your photos to the open social web.
+        Federation is rolling out in phases. Download Infotograf and be amongst
+        the first to connect your photos to the open social web.
       </p>
       <a href="#" class="hero-cta">Download on the App Store</a>
     </div>
