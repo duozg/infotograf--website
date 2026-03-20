@@ -12,7 +12,8 @@ export default async function middleware(request: Request): Promise<Response | u
     };
 
     // Forward signature and content headers for POST (inbox) requests
-    const forwardHeaders = ["content-type", "signature", "digest", "date", "host"];
+    // Note: don't forward "host" — let fetch set it for the Railway target
+    const forwardHeaders = ["content-type", "signature", "digest", "date"];
     for (const h of forwardHeaders) {
       const val = request.headers.get(h);
       if (val) upstreamHeaders[h] = val;
