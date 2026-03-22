@@ -45,12 +45,9 @@ export function PublicProfilePage() {
       setProfile(profileData);
       setIsFollowing(profileData.isFollowing);
 
-      // Check for federation data — if the profile response has a fediverse handle
-      const raw = profileData as unknown as Record<string, unknown>;
-      if (raw.fediverseHandle && typeof raw.fediverseHandle === 'string') {
-        setFediverseHandle(raw.fediverseHandle as string);
-      } else if (raw.federationEnabled) {
-        setFediverseHandle(`@${username}@infotograf.com`);
+      // Show fediverse handle if federation is enabled for this user
+      if (profileData.federationEnabled) {
+        setFediverseHandle(`@${profileData.username}@infotograf.com`);
       }
 
       const { items: postItems, nextCursor } = await api.getPaginated<Post>(`/posts/user/${profileData.id}`);

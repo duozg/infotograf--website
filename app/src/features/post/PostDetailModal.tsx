@@ -56,16 +56,32 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   useEffect(() => {
     if (!postId) return;
     setLoading(true);
-    // Try local post first, then try remote post
-    api.get<Post>(`/posts/${postId}`).then(async (p) => {
+
+    async function fetchPost() {
+      // Try local post first
+      let p: Post | null = null;
+      try {
+        p = await api.get<Post>(`/posts/${postId}`);
+      } catch {
+        // If local post not found, try remote post
+        try {
+          p = await api.get<Post>(`/remote-posts/${postId}`);
+        } catch { /* not found */ }
+      }
+      if (!p) { setLoading(false); return; }
       setPost(p);
-      const endpoint = p.remotePostId
+
+      const commentsEndpoint = p.remotePostId
         ? `/remote-posts/${p.remotePostId}/comments`
-        : `/posts/${postId}/comments`;
-      const c = await api.getPaginated<Comment>(endpoint);
-      setComments(c.items);
-      setCommentCursor(c.nextCursor);
-    }).catch(() => {}).finally(() => setLoading(false));
+        : `/posts/${p.id}/comments`;
+      try {
+        const c = await api.getPaginated<Comment>(commentsEndpoint);
+        setComments(c.items);
+        setCommentCursor(c.nextCursor);
+      } catch { /* no comments */ }
+      setLoading(false);
+    }
+    fetchPost();
   }, [postId]);
 
   useEffect(() => {
@@ -176,8 +192,11 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
       c.id === comment.id ? { ...c, isLiked: !wasLiked, likeCount: newCount } : c
     ));
     try {
-      if (wasLiked) await api.delete(`/posts/${post.id}/comments/${comment.id}/like`);
-      else await api.post(`/posts/${post.id}/comments/${comment.id}/like`);
+      // Comment likes only work on local posts (no remote-posts comment like endpoint)
+      if (!post.remotePostId) {
+        if (wasLiked) await api.delete(`/posts/${post.id}/comments/${comment.id}/like`);
+        else await api.post(`/posts/${post.id}/comments/${comment.id}/like`);
+      }
     } catch {
       setComments(prev => prev.map(c => c.id === comment.id ? comment : c));
     }

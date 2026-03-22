@@ -178,7 +178,9 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
 
   const handlePostClick = () => {
     onPostClick?.(localPost);
-    navigate(`/post/${localPost.id}`);
+    // Remote posts use their remotePostId for the detail view
+    const detailId = localPost.remotePostId || localPost.id;
+    navigate(`/post/${detailId}`);
   };
 
   const handleSaveCaption = useCallback(async () => {
@@ -219,7 +221,8 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
 
   const handleCommentClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/post/${localPost.id}?focus=comment`);
+    const detailId = localPost.remotePostId || localPost.id;
+    navigate(`/post/${detailId}?focus=comment`);
   };
 
   const fetchLikedBy = useCallback(async () => {

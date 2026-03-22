@@ -54,7 +54,16 @@ export function RemoteActorModal({ remoteActorId, onClose }: RemoteActorModalPro
     }
   }, [actor, followLoading, remoteActorId]);
 
-  const bioText = actor?.summary?.replace(/<[^>]+>/g, '') || '';
+  // Strip HTML tags and decode entities
+  const bioText = (() => {
+    if (!actor?.summary) return '';
+    try {
+      const doc = new DOMParser().parseFromString(actor.summary, 'text/html');
+      return doc.body.textContent || '';
+    } catch {
+      return actor.summary.replace(/<[^>]+>/g, '');
+    }
+  })();
 
   const followLabel = actor?.followPending
     ? 'Pending\u2026'
@@ -116,19 +125,21 @@ export function RemoteActorModal({ remoteActorId, onClose }: RemoteActorModalPro
             <button
               className={`${styles.followBtn} ${followClass}`}
               onClick={handleFollow}
-              disabled={followLoading || actor.followPending}
+              disabled={followLoading}
             >
               {followLoading ? 'Loading\u2026' : followLabel}
             </button>
 
-            <a
-              className={styles.viewOnInstance}
-              href={actor.actorUri}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on instance
-            </a>
+            {(actor.profileUrl || actor.actorUri) && (
+              <a
+                className={styles.viewOnInstance}
+                href={actor.profileUrl || actor.actorUri}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on {actor.domain}
+              </a>
+            )}
           </div>
         )}
       </div>

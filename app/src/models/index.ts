@@ -7,6 +7,7 @@ export interface User {
   avatarUrl?: string;
   website?: string;
   isPrivate: boolean;
+  federationEnabled?: boolean;
   createdAt: string;
   postCount: number | string | null;
   followerCount: number | string | null;
@@ -158,8 +159,9 @@ export interface PaginatedResponse<T> {
 
 export interface FederationStatus {
   federationEnabled: boolean;
-  handle?: string;
+  fediverseHandle?: string;
   actorId?: string;
+  isPrivate?: boolean;
 }
 
 export interface FediverseStats {
@@ -188,16 +190,18 @@ export interface RemoteActorSummary {
 
 export interface RemoteActorProfile {
   id: string;
-  actorUri: string;
+  actorUri?: string;
+  profileUrl?: string;
   username: string;
   domain: string;
   displayName?: string;
   summary?: string;
   avatarUrl?: string;
-  inboxUrl: string;
+  inboxUrl?: string;
   isFollowing?: boolean;
   followPending?: boolean;
-  deliveryStatus?: string;
+  followDeliveryStatus?: string;
+  recentComments?: unknown[];
 }
 
 export interface DeliverySummary {
@@ -211,7 +215,7 @@ export interface DeliverySummary {
 export interface DeliveryLogEntry {
   id: string;
   activityType: string;
-  targetInboxUrl: string;
+  targetDomain: string;
   status: 'pending' | 'delivered' | 'failed';
   attempts: number;
   lastError?: string;

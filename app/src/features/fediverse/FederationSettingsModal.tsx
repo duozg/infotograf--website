@@ -8,13 +8,7 @@ import { timeAgo } from '../../utils/timeAgo';
 
 type DeliveryFilter = 'all' | 'delivered' | 'pending' | 'failed';
 
-function extractDomain(inboxUrl: string): string {
-  try {
-    return new URL(inboxUrl).hostname;
-  } catch {
-    return inboxUrl;
-  }
-}
+// No longer needed — API returns targetDomain directly
 
 function statusColor(status: DeliveryLogEntry['status']): string {
   switch (status) {
@@ -92,7 +86,7 @@ export function FederationSettingsModal({ onClose }: { onClose: () => void }) {
 
   // ─── Copy handle ────────────────────────────────────────
   const handleCopy = useCallback(() => {
-    const handle = status?.handle || (user ? `@${user.username}@infotograf.com` : '');
+    const handle = status?.fediverseHandle || (user ? `@${user.username}@infotograf.com` : '');
     if (!handle) return;
     navigator.clipboard.writeText(handle).then(() => {
       setCopied(true);
@@ -138,13 +132,14 @@ export function FederationSettingsModal({ onClose }: { onClose: () => void }) {
     : deliveries.filter(d => d.status === filter);
 
   const federationEnabled = status?.federationEnabled ?? false;
-  const handle = status?.handle || (user ? `@${user.username}@infotograf.com` : '');
+  const handle = status?.fediverseHandle || (user ? `@${user.username}@infotograf.com` : '');
 
   // ─── Summary bar percentages ────────────────────────────
   const summaryTotal = summary?.total || 0;
+  const abandonedCount = summary?.abandoned || 0;
   const deliveredPct = summaryTotal > 0 ? (summary!.delivered / summaryTotal) * 100 : 0;
   const pendingPct = summaryTotal > 0 ? (summary!.pending / summaryTotal) * 100 : 0;
-  const failedPct = summaryTotal > 0 ? (summary!.failed / summaryTotal) * 100 : 0;
+  const failedPct = summaryTotal > 0 ? ((summary!.failed + abandonedCount) / summaryTotal) * 100 : 0;
 
   return (
     <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
@@ -264,7 +259,7 @@ export function FederationSettingsModal({ onClose }: { onClose: () => void }) {
                   <div key={entry.id} className={styles.deliveryRow}>
                     <div className={styles.deliveryInfo}>
                       <span className={styles.activityType}>{entry.activityType}</span>
-                      <span className={styles.targetDomain}>{extractDomain(entry.targetInboxUrl)}</span>
+                      <span className={styles.targetDomain}>{entry.targetDomain}</span>
                     </div>
                     <div className={styles.deliveryMeta}>
                       <span
