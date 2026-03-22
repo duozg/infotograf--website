@@ -279,41 +279,45 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
           </button>
         </span>
 
-        {/* Fediverse (only when enabled) */}
-        {federationEnabled && (
-          <span className={styles.desktopOnly}>
-            <button
-              className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
-              onClick={() => navigate('/fediverse')}
-              aria-label="Fediverse"
-            >
-              <FediverseIcon size={22} />
-            </button>
-          </span>
-        )}
-
-        {/* Home */}
+        {/* Home (desktop only — in TabBar on mobile) */}
         <span className={styles.desktopOnly}>
           <button
             className={`${styles.navBtn} ${isHome ? styles.active : ''}`}
             onClick={() => navigate('/')}
             aria-label="Home"
           >
-            <svg
-              width={22}
-              height={22}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
           </button>
         </span>
+
+        {/* Fediverse (visible on mobile + desktop) */}
+        {federationEnabled && (
+          <button
+            className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
+            onClick={() => navigate('/fediverse')}
+            aria-label="Fediverse"
+          >
+            <FediverseIcon size={22} />
+          </button>
+        )}
+
+        {/* RSS (visible on mobile + desktop) */}
+        {federationEnabled && (
+          <button
+            className={`${styles.navBtn} ${path === '/rss' ? styles.active : ''}`}
+            onClick={() => navigate('/rss')}
+            aria-label="RSS Feeds"
+          >
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="5" cy="19" r="2" fill="currentColor" />
+              <path d="M4 11a8 8 0 0 1 8 8" />
+              <path d="M4 4a15 15 0 0 1 15 15" />
+            </svg>
+          </button>
+        )}
 
         {/* DMs dropdown */}
         <div className={styles.dmWrapper}>
@@ -421,8 +425,8 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
           )}
         </div>
 
-        {/* Heart / Activity dropdown */}
-        <div className={styles.notifWrapper}>
+        {/* Heart / Activity dropdown (desktop only — Activity is in TabBar on mobile) */}
+        <div className={`${styles.notifWrapper} ${styles.desktopOnly}`}>
           <button
             className={`${styles.navBtn} ${showNotifDropdown || isActivity ? styles.active : ''}`}
             onClick={() => {
