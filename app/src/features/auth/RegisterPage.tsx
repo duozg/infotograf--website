@@ -71,8 +71,8 @@ export function RegisterPage() {
 
           <p className={styles.terms}>
             By signing up, you agree to our{' '}
-            <a href="/terms" target="_blank">Terms</a> and{' '}
-            <a href="/privacy" target="_blank">Privacy Policy</a>.
+            <a href="https://infotograf.com/terms" target="_blank" rel="noopener noreferrer">Terms</a> and{' '}
+            <a href="https://infotograf.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
           </p>
 
           <button

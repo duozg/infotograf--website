@@ -299,23 +299,18 @@
 /* ── Heart animation ── */
 .heartFlash {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  font-size: 80px;
-  color: #fff;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
   z-index: 5;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-  opacity: 0;
-}
-.heartFlash.show {
-  animation: heartPop 0.8s ease-out forwards;
 }
 
-/* Keep the wrapper+icon approach used by the TSX */
 .heartFlashIcon {
   font-size: 80px;
+  color: #fff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
   animation: heartPop 0.8s ease-out forwards;
 }
 

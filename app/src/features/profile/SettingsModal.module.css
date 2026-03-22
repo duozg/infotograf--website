@@ -83,7 +83,7 @@
 .row:last-child { border-bottom: none; }
 
 .row:hover {
-  background: #fafafa;
+  background: var(--elevated);
 }
 
 .rowLabel {

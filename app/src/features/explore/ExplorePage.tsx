@@ -140,12 +140,14 @@ export function ExplorePage() {
                       >
                         {thumb && <img src={thumb} alt="" loading="lazy" />}
                         <div className={styles.gridOverlay}>
-                          {toCount(post.likeCount) > 0 && (
-                            <span className={styles.gridLikes}>
-                              <svg viewBox="0 0 24 24" fill="white" width={12} height={12}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                              {toCount(post.likeCount).toLocaleString()}
-                            </span>
-                          )}
+                          <span className={styles.gridStat}>
+                            <svg viewBox="0 0 24 24" fill="white" width={14} height={14}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            {toCount(post.likeCount).toLocaleString()}
+                          </span>
+                          <span className={styles.gridStat}>
+                            <svg viewBox="0 0 24 24" fill="white" width={14} height={14}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            {toCount(post.commentCount).toLocaleString()}
+                          </span>
                         </div>
                         {images.length > 1 && (
                           <div className={styles.multipleIndicator}>
