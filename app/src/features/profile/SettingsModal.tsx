@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './SettingsModal.module.css';
 import { Avatar } from '../../components/Avatar';
 import { useTheme } from '../../context/ThemeContext';
+import { useAppState } from '../../context/AppStateContext';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
 import { User } from '../../models';
@@ -19,6 +20,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { user, logout, updateUser } = useAuth();
+  const { federationEnabled } = useAppState();
   const [blockedUsers, setBlockedUsers] = useState<User[]>([]);
   const [isPrivate, setIsPrivate] = useState(user?.isPrivate || false);
   const [savingPrivate, setSavingPrivate] = useState(false);
@@ -192,6 +194,25 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Quick links (Fediverse + RSS — accessible from settings since sidebar hidden on mobile) */}
+          {federationEnabled && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Features</div>
+              <div className={styles.row} style={{ cursor: 'pointer' }} onClick={() => { onClose(); navigate('/fediverse'); }}>
+                <span className={styles.rowLabel}>Federation</span>
+                <span className={styles.rowValue}>›</span>
+              </div>
+              <div className={styles.row} style={{ cursor: 'pointer' }} onClick={() => { onClose(); navigate('/rss'); }}>
+                <span className={styles.rowLabel}>RSS Feeds</span>
+                <span className={styles.rowValue}>›</span>
+              </div>
+              <div className={styles.row} style={{ cursor: 'pointer' }} onClick={() => { onClose(); navigate('/messages'); }}>
+                <span className={styles.rowLabel}>Messages</span>
+                <span className={styles.rowValue}>›</span>
               </div>
             </div>
           )}

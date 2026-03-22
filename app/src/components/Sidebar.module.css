@@ -150,3 +150,8 @@
 .sidebar:hover .divider {
   margin: 8px 16px;
 }
+
+/* ── Mobile: hide sidebar completely ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+}
