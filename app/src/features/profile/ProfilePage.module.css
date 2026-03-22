@@ -39,19 +39,14 @@
   padding-left: 40px;
 }
 
-/* ── Avatar 150px square ── */
+/* ── Avatar 150px square with 4px radius ── */
 
-.avatarSection img {
-  width: 150px !important;
-  height: 150px !important;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-/* Also handle Avatar component's fallback div */
+.avatarSection img,
 .avatarSection > div {
   width: 150px !important;
   height: 150px !important;
+  border-radius: 4px !important;
+  object-fit: cover;
 }
 
 .profileInfo {
@@ -301,8 +296,8 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  margin-top: 0;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 .gridItem {
