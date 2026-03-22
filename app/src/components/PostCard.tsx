@@ -462,40 +462,63 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
         >
           <div
             style={{
-              background: 'var(--bg-card)', borderRadius: 12, width: 360, maxWidth: '90vw',
+              background: 'var(--card)', borderRadius: 12, width: 360, maxWidth: '90vw',
               maxHeight: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
             }}
             onClick={e => e.stopPropagation()}
           >
             <div style={{
-              padding: '14px 16px', borderBottom: '1px solid var(--divider-card)',
+              padding: '14px 16px', borderBottom: '1px solid var(--divider)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>Liked by</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>Liked by</span>
               <button
                 onClick={() => setLikedByUsers(null)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: 'var(--text-secondary)', lineHeight: 1 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: 'var(--t2)', lineHeight: 1 }}
               >×</button>
             </div>
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {likedByUsers.length === 0 && (
-                <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+                <div style={{ padding: 20, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>
                   Loading…
                 </div>
               )}
-              {likedByUsers.map(u => (
-                <div
-                  key={u.id}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer' }}
-                  onClick={() => { setLikedByUsers(null); navigate(`/profile/${u.username}`); }}
-                >
-                  <Avatar src={u.avatarUrl} username={u.username} size="md" />
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{u.username}</div>
-                    {u.displayName && <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{u.displayName}</div>}
+              {likedByUsers.map((u: any) => {
+                const isRemoteUser = !!(u.remoteDomain);
+                const isSelf = u.username === localPost.username;
+                return (
+                  <div
+                    key={u.id}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px',
+                      cursor: isSelf ? 'default' : 'pointer',
+                      opacity: isSelf ? 0.6 : 1,
+                    }}
+                    onClick={() => {
+                      if (isSelf) return;
+                      if (isRemoteUser) {
+                        setLikedByUsers(null);
+                        setRemoteActorId(u.id);
+                      } else {
+                        setLikedByUsers(null);
+                        navigate(`/profile/${u.username}`);
+                      }
+                    }}
+                  >
+                    <Avatar src={u.avatarUrl} username={u.username} size="md" isRemote={isRemoteUser} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--t1)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {u.username}
+                        {isRemoteUser && (
+                          <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--purple)' }}>@{u.remoteDomain}</span>
+                        )}
+                      </div>
+                      {u.displayName && <div style={{ fontSize: 12, color: 'var(--t2)' }}>{u.displayName}</div>}
+                    </div>
+                    {isSelf && <span style={{ fontSize: 11, color: 'var(--t3)' }}>You</span>}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

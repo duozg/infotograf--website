@@ -21,6 +21,7 @@ interface FollowModalProps {
 
 function FollowModal({ userId, kind, onClose }: FollowModalProps) {
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<(User & { remoteDomain?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
@@ -68,15 +69,19 @@ function FollowModal({ userId, kind, onClose }: FollowModalProps) {
               {kind === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'}
             </div>
           )}
-          {users.map(u => (
+          {users.map(u => {
+            const isSelf = u.username === currentUser?.username;
+            const isRemote = !!u.remoteDomain;
+            return (
             <div
               key={u.id}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px',
-                cursor: 'pointer', transition: 'background 0.1s',
+                cursor: isSelf ? 'default' : 'pointer', opacity: isSelf ? 0.6 : 1,
               }}
               onClick={() => {
-                if (u.remoteDomain) {
+                if (isSelf) return;
+                if (isRemote) {
                   setRemoteActorId(u.id);
                 } else {
                   onClose();
@@ -84,20 +89,22 @@ function FollowModal({ userId, kind, onClose }: FollowModalProps) {
                 }
               }}
             >
-              <Avatar src={u.avatarUrl} username={u.username} size="md" isRemote={!!u.remoteDomain} />
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>
+              <Avatar src={u.avatarUrl} username={u.username} size="md" isRemote={isRemote} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--t1)', display: 'flex', alignItems: 'center', gap: 6 }}>
                   {u.username}
-                  {u.remoteDomain && (
-                    <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--purple)', marginLeft: 4 }}>@{u.remoteDomain}</span>
+                  {isRemote && (
+                    <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--purple)' }}>@{u.remoteDomain}</span>
                   )}
                 </div>
                 {u.displayName && (
-                  <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{u.displayName}</div>
+                  <div style={{ fontSize: 12, color: 'var(--t2)' }}>{u.displayName}</div>
                 )}
               </div>
+              {isSelf && <span style={{ fontSize: 11, color: 'var(--t3)' }}>You</span>}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       {remoteActorId && (
