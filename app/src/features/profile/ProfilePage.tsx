@@ -397,27 +397,19 @@ export function ProfilePage() {
                 {/* Bio */}
                 <div className={styles.bioSection}>
                   {profile.displayName && (
-                    <div className={styles.displayNameRow}>
-                      <span className={styles.displayName}>{profile.displayName}</span>
-                      {isOwnProfile && federationEnabled && (
-                        <span className={styles.fediverseBadge}>
-                          <FediverseIcon size={8} />
-                          Fediverse
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {isOwnProfile && federationEnabled && currentUser?.username && (
-                    <div className={styles.fediverseHandle}>
-                      <FediverseIcon size={10} />
-                      @{currentUser.username}@infotograf.com
-                    </div>
+                    <div className={styles.displayName}>{profile.displayName}</div>
                   )}
                   {profile.bio && <div className={styles.bio}>{profile.bio}</div>}
                   {profile.website && (
                     <a href={profile.website} target="_blank" rel="noopener noreferrer" className={styles.website}>
                       {profile.website.replace(/^https?:\/\//, '')}
                     </a>
+                  )}
+                  {federationEnabled && currentUser?.username && isOwnProfile && (
+                    <div className={styles.fediverseHandle}>
+                      <FediverseIcon size={12} />
+                      @{currentUser.username}@infotograf.com
+                    </div>
                   )}
                 </div>
               </div>

@@ -224,12 +224,13 @@
 }
 
 .fediverseHandle {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--tlink);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--purple);
   display: flex;
   align-items: center;
   gap: 4px;
+  margin-top: 4px;
 }
 
 .fediverseStatSub {
