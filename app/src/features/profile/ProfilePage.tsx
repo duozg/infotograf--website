@@ -11,6 +11,7 @@ import { EditProfileModal } from './EditProfileModal';
 import { SettingsModal } from './SettingsModal';
 import { ReportModal } from '../../components/ReportModal';
 import { FediverseIcon } from '../../components/FediverseIcon';
+import { RemoteActorModal } from '../fediverse/RemoteActorModal';
 
 interface FollowModalProps {
   userId: string;
@@ -20,14 +21,15 @@ interface FollowModalProps {
 
 function FollowModal({ userId, kind, onClose }: FollowModalProps) {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<(User & { remoteDomain?: string })[]>([]);
   const [loading, setLoading] = useState(true);
+  const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
 
   useEffect(() => {
     const endpoint = kind === 'followers'
       ? `/follows/${userId}/followers`
       : `/follows/${userId}/following`;
-    api.getPaginated<User>(endpoint)
+    api.getPaginated<User & { remoteDomain?: string }>(endpoint)
       .then(({ items }) => setUsers(items))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -73,11 +75,23 @@ function FollowModal({ userId, kind, onClose }: FollowModalProps) {
                 display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px',
                 cursor: 'pointer', transition: 'background 0.1s',
               }}
-              onClick={() => { onClose(); navigate(`/profile/${u.username}`); }}
+              onClick={() => {
+                if (u.remoteDomain) {
+                  setRemoteActorId(u.id);
+                } else {
+                  onClose();
+                  navigate(`/profile/${u.username}`);
+                }
+              }}
             >
-              <Avatar src={u.avatarUrl} username={u.username} size="md" />
+              <Avatar src={u.avatarUrl} username={u.username} size="md" isRemote={!!u.remoteDomain} />
               <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{u.username}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>
+                  {u.username}
+                  {u.remoteDomain && (
+                    <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--purple)', marginLeft: 4 }}>@{u.remoteDomain}</span>
+                  )}
+                </div>
                 {u.displayName && (
                   <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{u.displayName}</div>
                 )}
@@ -86,6 +100,9 @@ function FollowModal({ userId, kind, onClose }: FollowModalProps) {
           ))}
         </div>
       </div>
+      {remoteActorId && (
+        <RemoteActorModal remoteActorId={remoteActorId} onClose={() => setRemoteActorId(null)} />
+      )}
     </div>
   );
 }

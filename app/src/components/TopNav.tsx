@@ -8,6 +8,7 @@ import { api, parsePaginated } from '../api/client';
 import { AppNotification, Conversation, User, HashtagSuggestion, RemoteActorSummary } from '../models';
 import { Avatar } from './Avatar';
 import { ChatWidget } from './ChatWidget';
+import { RemoteActorModal } from '../features/fediverse/RemoteActorModal';
 import { timeAgo } from '../utils/timeAgo';
 import { imageUrl } from '../utils/imageUrl';
 
@@ -92,6 +93,9 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
     return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
   }, [searchQuery]);
 
+  // Remote actor modal state
+  const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
+
   const handleSearchResultClick = (type: 'user' | 'hashtag', value: string) => {
     setShowSearchDropdown(false);
     setSearchQuery('');
@@ -165,6 +169,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
   const handleNotifClick = (notif: AppNotification) => {
     setShowNotifDropdown(false);
     if (notif.postId) navigate(`/post/${notif.postId}`);
+    else if (notif.remoteDomain && notif.remoteActorId) setRemoteActorId(notif.remoteActorId);
     else if (notif.actorUsername) navigate(`/profile/${notif.actorUsername}`);
   };
 
@@ -237,7 +242,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
                 <div className={styles.searchSection}>
                   <div className={styles.searchSectionLabel}>Fediverse</div>
                   {searchResults.fediverse.map(actor => (
-                    <div key={actor.id} className={styles.searchItem} onClick={() => { setShowSearchDropdown(false); setSearchQuery(''); navigate(`/profile/${actor.username}`); }}>
+                    <div key={actor.id} className={styles.searchItem} onClick={() => { setShowSearchDropdown(false); setSearchQuery(''); setRemoteActorId(actor.id); }}>
                       <Avatar src={actor.avatarUrl} username={actor.username} size="md" isRemote />
                       <div className={styles.searchItemInfo}>
                         <div className={styles.searchItemName}>{actor.displayName || actor.username}</div>
@@ -506,6 +511,11 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
           otherUser={activeChat.otherUser}
           onClose={() => setActiveChat(null)}
         />
+      )}
+
+      {/* Remote actor modal (fediverse profiles) */}
+      {remoteActorId && (
+        <RemoteActorModal remoteActorId={remoteActorId} onClose={() => setRemoteActorId(null)} />
       )}
     </header>
   );
