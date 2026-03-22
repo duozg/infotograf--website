@@ -115,7 +115,12 @@ const NAV_ITEMS: (NavItem | 'divider')[] = [
   },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -126,10 +131,14 @@ export function Sidebar() {
   };
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       {/* Mini profile card */}
       {user && (
-        <div className={styles.profileCard} onClick={() => navigate('/profile')}>
+        <div
+          className={styles.profileCard}
+          onClick={() => navigate('/profile')}
+          title={collapsed ? `@${user.username}` : undefined}
+        >
           <Avatar src={user.avatarUrl} username={user.username} size="md" />
           <div className={styles.profileInfo}>
             <span className={styles.profileUsername}>{user.username}</span>
@@ -152,6 +161,7 @@ export function Sidebar() {
               key={item.path}
               className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
               onClick={() => navigate(item.path)}
+              title={collapsed ? item.label : undefined}
             >
               <span className={styles.navIcon}>
                 {item.icon(active)}
@@ -161,6 +171,22 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Toggle button */}
+      <div className={styles.toggleSection}>
+        <button
+          className={styles.toggleButton}
+          onClick={onToggle}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <SvgIcon active={false}>
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </SvgIcon>
+          <span className={styles.navLabel}>More</span>
+        </button>
+      </div>
     </aside>
   );
 }

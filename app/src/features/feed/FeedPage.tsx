@@ -9,11 +9,12 @@ import { usePagination } from '../../hooks/usePagination';
 
 interface FeedPageProps {
   onCreatePost?: () => void;
+  onPostClick?: (postId: string) => void;
 }
 
 const LAST_SEEN_KEY = 'infotograf_last_seen_post';
 
-export function FeedPage({ onCreatePost }: FeedPageProps) {
+export function FeedPage({ onCreatePost, onPostClick }: FeedPageProps) {
   const navigate = useNavigate();
   const fetcher = useCallback(
     (cursor: string | null) =>
@@ -116,7 +117,12 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
               <div className={styles.whereYouLeftOffLine} />
             </div>
           )}
-          <PostCard post={post} onUpdate={handleUpdate} onDelete={handleDelete} />
+          <PostCard
+            post={post}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+            onPostClick={onPostClick ? (p) => onPostClick(p.remotePostId || p.id) : undefined}
+          />
         </React.Fragment>
       ))}
 

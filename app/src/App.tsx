@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
@@ -51,30 +51,61 @@ function RequireGuest({ children }: { children: React.ReactNode }) {
 /** Pages where the right aside should be visible */
 const ASIDE_PAGES = ['/', '/explore'];
 
+/** Pages where the sidebar should be collapsed (icons only) */
+const WIDE_PAGES = ['/messages'];
+
 function AuthenticatedApp() {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [postModalId, setPostModalId] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleCreatePost = useCallback(() => setShowCreatePost(true), []);
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
 
   const showAside = ASIDE_PAGES.includes(location.pathname);
+  const autoCollapse = WIDE_PAGES.includes(location.pathname);
+
+  // Open post detail as modal overlay (Instagram-style lightbox)
+  const openPostModal = useCallback((postId: string) => {
+    setPostModalId(postId);
+    // Update URL without navigation so it's shareable
+    window.history.pushState(null, '', `/post/${postId}`);
+  }, []);
+
+  const closePostModal = useCallback(() => {
+    setPostModalId(null);
+    // Restore previous URL
+    window.history.back();
+  }, []);
+
+  // Handle browser back button closing the modal
+  React.useEffect(() => {
+    const handlePopState = () => {
+      if (postModalId) {
+        setPostModalId(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [postModalId]);
 
   return (
     <>
       <TopNav onNewPost={handleCreatePost} />
 
       <div className="app-layout">
-        <Sidebar />
+        <Sidebar collapsed={autoCollapse || sidebarCollapsed} onToggle={() => setSidebarCollapsed(c => !c)} />
 
-        <div className="app-main">
+        <div className="app-main" style={{ marginLeft: (autoCollapse || sidebarCollapsed) ? 72 : 220 }}>
           <div className="app-main-inner">
             <div className="app-feed-col">
               <Routes>
                 <Route
                   path="/"
-                  element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>}
+                  element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} onPostClick={openPostModal} /></ErrorBoundary>}
                 />
                 <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
                 <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
@@ -101,6 +132,11 @@ function AuthenticatedApp() {
           </div>
         </div>
       </div>
+
+      {/* Post detail modal overlay (Instagram lightbox) */}
+      {postModalId && (
+        <PostDetailModal postId={postModalId} onClose={closePostModal} />
+      )}
 
       {showCreatePost && (
         <CreatePostModal

@@ -8,9 +8,44 @@
   border-right: 1px solid var(--border);
   overflow-y: auto;
   z-index: 40;
+  transition: width 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Mini profile card */
+/* ═══ Collapsed state ═══ */
+.sidebar.collapsed {
+  width: 72px;
+}
+
+.sidebar.collapsed .navLabel {
+  display: none;
+}
+
+.sidebar.collapsed .navItem {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+.sidebar.collapsed .profileCard {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebar.collapsed .profileInfo {
+  display: none;
+}
+
+.sidebar.collapsed .divider {
+  margin: 8px 12px;
+}
+
+.sidebar.collapsed .toggleButton {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+/* ═══ Mini profile card ═══ */
 .profileCard {
   display: flex;
   align-items: center;
@@ -48,11 +83,12 @@
   white-space: nowrap;
 }
 
-/* Navigation */
+/* ═══ Navigation ═══ */
 .nav {
   display: flex;
   flex-direction: column;
   padding: 8px 0;
+  flex: 1;
 }
 
 .navItem {
@@ -103,9 +139,36 @@
   white-space: nowrap;
 }
 
-/* Divider */
+/* ═══ Divider ═══ */
 .divider {
   height: 1px;
   background: var(--divider);
   margin: 8px 16px;
+}
+
+/* ═══ Toggle button ═══ */
+.toggleSection {
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.toggleButton:hover {
+  background: var(--elevated);
 }

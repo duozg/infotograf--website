@@ -12,13 +12,14 @@
 }
 
 .modal {
-  background: var(--bg-card);
+  background: var(--card);
   display: flex;
   flex-direction: row;
   width: min(968px, 95vw);
   height: min(620px, 90vh);
   border-radius: 4px;
   overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* ── Page variant (stacks vertically to fit in feed column) ── */

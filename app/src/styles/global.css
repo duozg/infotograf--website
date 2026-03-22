@@ -33,7 +33,6 @@ ul, ol { list-style: none; }
 }
 
 .app-sidebar {
-  width: 220px;
   position: fixed;
   top: 52px;
   bottom: 0;
@@ -45,10 +44,10 @@ ul, ol { list-style: none; }
 }
 
 .app-main {
-  margin-left: 220px;
   flex: 1;
   display: flex;
   justify-content: center;
+  transition: margin-left 0.2s ease;
 }
 
 .app-main-inner {

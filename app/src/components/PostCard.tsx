@@ -184,10 +184,13 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   };
 
   const handlePostClick = () => {
-    onPostClick?.(localPost);
-    // Remote posts use their remotePostId for the detail view
-    const detailId = localPost.remotePostId || localPost.id;
-    navigate(`/post/${detailId}`);
+    if (onPostClick) {
+      onPostClick(localPost);
+    } else {
+      // Fallback: navigate directly (for contexts without modal support)
+      const detailId = localPost.remotePostId || localPost.id;
+      navigate(`/post/${detailId}`);
+    }
   };
 
   const handleSaveCaption = useCallback(async () => {
