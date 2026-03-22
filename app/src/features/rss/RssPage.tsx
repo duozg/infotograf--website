@@ -44,12 +44,18 @@ function loadReadIds(): Set<string> {
 }
 function saveReadIds(ids: Set<string>) { localStorage.setItem('rss_read', JSON.stringify([...ids])); }
 
-// ── Feed search via Feedly ──
+// ── Feed search via Feedly (proxied through allorigins to avoid CORS) ──
 async function searchFeeds(query: string): Promise<FeedlyResult[]> {
-  const res = await fetch(`https://cloud.feedly.com/v3/search/feeds?query=${encodeURIComponent(query)}&count=12`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return (data.results || []) as FeedlyResult[];
+  const feedlyUrl = `https://cloud.feedly.com/v3/search/feeds?query=${encodeURIComponent(query)}&count=12`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedlyUrl)}`;
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.results || []) as FeedlyResult[];
+  } catch {
+    return [];
+  }
 }
 
 // ── CORS proxy for fetching feeds ──
