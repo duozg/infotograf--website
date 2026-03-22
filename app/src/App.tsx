@@ -12,6 +12,7 @@ import { CreatePostModal } from './features/post/CreatePostModal';
 import { MessagesPage } from './features/dms/MessagesPage';
 import { HashtagPage } from './features/explore/HashtagPage';
 import { FediverseDiscoverPage } from './features/fediverse/FediverseDiscoverPage';
+import { RssPage } from './features/rss/RssPage';
 import { PublicProfilePage } from './features/profile/PublicProfilePage';
 import { SettingsModal } from './features/profile/SettingsModal';
 import { TopNav } from './components/TopNav';
@@ -106,6 +107,7 @@ function AuthenticatedApp() {
                 <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
                 <Route path="/activity" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
                 <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
+                <Route path="/rss" element={<ErrorBoundary><RssPage /></ErrorBoundary>} />
                 <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
                 <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
                 <Route path="/settings" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />

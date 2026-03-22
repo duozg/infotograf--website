@@ -1,0 +1,223 @@
+/* ═══ RSS Feeds Page ═══ */
+
+.page {
+  padding: 8px 0;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.headerIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--t1);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--t2);
+  margin: 4px 0 0;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.cardHeader {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 8px;
+}
+
+.cardDesc {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+/* ── Feed URL row ── */
+.feedUrlRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.feedUrlInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--input);
+  color: var(--t1);
+  font-size: 12px;
+  font-family: monospace;
+  outline: none;
+}
+
+.feedUrlInput:focus {
+  border-color: var(--tlink);
+}
+
+.copyBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  border-color: var(--cta-bdr);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.copyBtn:hover {
+  opacity: 0.9;
+}
+
+.previewLink {
+  font-size: 13px;
+  color: var(--tlink);
+  text-decoration: none;
+}
+
+.previewLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Feed list ── */
+.feedList {
+  display: flex;
+  flex-direction: column;
+}
+
+.feedItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.feedItem:last-child {
+  border-bottom: none;
+}
+
+.feedUser {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+}
+
+.feedUser:hover .feedUsername {
+  text-decoration: underline;
+}
+
+.feedUserInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.feedUsername {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.feedDisplayName {
+  font-size: 12px;
+  color: var(--t2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feedActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.feedPreview {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--orange);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.feedPreview:hover {
+  background: rgba(249, 115, 22, 0.08);
+}
+
+/* ── Empty ── */
+.empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--t2);
+  font-size: 14px;
+}
+
+/* ── How it works ── */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--t1);
+}
+
+.stepNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--orange);
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
