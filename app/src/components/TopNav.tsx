@@ -5,7 +5,7 @@ import { useAppState } from '../context/AppStateContext';
 import { useAuth } from '../context/AuthContext';
 import { FediverseIcon } from './FediverseIcon';
 import { api, parsePaginated } from '../api/client';
-import { AppNotification, Conversation } from '../models';
+import { AppNotification, Conversation, User, HashtagSuggestion } from '../models';
 import { Avatar } from './Avatar';
 import { ChatWidget } from './ChatWidget';
 import { timeAgo } from '../utils/timeAgo';
@@ -48,6 +48,48 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
   const [showDmDropdown, setShowDmDropdown] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [dmLoading, setDmLoading] = useState(false);
+
+  // Search state
+  const [searchResults, setSearchResults] = useState<{ users: User[]; hashtags: HashtagSuggestion[] }>({ users: [], hashtags: [] });
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Live search — debounce 300ms
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (!q) {
+      setShowSearchDropdown(false);
+      setSearchResults({ users: [], hashtags: [] });
+      return;
+    }
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(async () => {
+      setSearchLoading(true);
+      setShowSearchDropdown(true);
+      try {
+        const [usersRes, tagsRes] = await Promise.allSettled([
+          api.get<User[]>(`/users/search?q=${encodeURIComponent(q)}`),
+          api.get<HashtagSuggestion[]>(`/explore/hashtags/search?q=${encodeURIComponent(q.replace('#', ''))}`),
+        ]);
+        const users = usersRes.status === 'fulfilled' ? (Array.isArray(usersRes.value) ? usersRes.value : []) : [];
+        const hashtags = tagsRes.status === 'fulfilled' ? (Array.isArray(tagsRes.value) ? tagsRes.value : []) : [];
+        setSearchResults({ users, hashtags });
+      } catch {
+        setSearchResults({ users: [], hashtags: [] });
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 300);
+    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
+  }, [searchQuery]);
+
+  const handleSearchResultClick = (type: 'user' | 'hashtag', value: string) => {
+    setShowSearchDropdown(false);
+    setSearchQuery('');
+    if (type === 'user') navigate(`/profile/${value}`);
+    else navigate(`/explore?q=%23${value}`);
+  };
 
   // Floating chat state
   const [activeChat, setActiveChat] = useState<{
@@ -141,31 +183,65 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
       </div>
 
       {/* Search bar */}
-      <form className={styles.searchForm} onSubmit={handleSearchSubmit}>
-        <div className={styles.searchBar}>
-          <svg
-            width={15}
-            height={15}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={styles.searchIcon}
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            className={styles.searchInput}
-            type="search"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </form>
+      <div className={styles.searchWrapper}>
+        <form className={styles.searchForm} onSubmit={handleSearchSubmit}>
+          <div className={styles.searchBar}>
+            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={styles.searchIcon}>
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              className={styles.searchInput}
+              type="search"
+              placeholder="Search users, #hashtags, @user@instance..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onFocus={() => { if (searchQuery.trim()) setShowSearchDropdown(true); }}
+            />
+            {searchQuery && (
+              <button type="button" className={styles.searchClear} onClick={() => { setSearchQuery(''); setShowSearchDropdown(false); }}>✕</button>
+            )}
+          </div>
+        </form>
+
+        {showSearchDropdown && (
+          <>
+            <div className={styles.searchBackdrop} onClick={() => setShowSearchDropdown(false)} />
+            <div className={styles.searchDropdown}>
+              {searchLoading && <div className={styles.searchLoading}>Searching...</div>}
+              {!searchLoading && searchResults.users.length === 0 && searchResults.hashtags.length === 0 && (
+                <div className={styles.searchEmpty}>No results for "{searchQuery}"</div>
+              )}
+              {searchResults.hashtags.length > 0 && (
+                <div className={styles.searchSection}>
+                  {searchResults.hashtags.map(tag => (
+                    <div key={tag.name} className={styles.searchItem} onClick={() => handleSearchResultClick('hashtag', tag.name)}>
+                      <div className={styles.searchHashIcon}>#</div>
+                      <div className={styles.searchItemInfo}>
+                        <div className={styles.searchItemName}>#{tag.name}</div>
+                        <div className={styles.searchItemSub}>{tag.postCount.toLocaleString()} posts</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {searchResults.users.length > 0 && (
+                <div className={styles.searchSection}>
+                  {searchResults.users.map(u => (
+                    <div key={u.id} className={styles.searchItem} onClick={() => handleSearchResultClick('user', u.username)}>
+                      <Avatar src={u.avatarUrl} username={u.username} size="md" />
+                      <div className={styles.searchItemInfo}>
+                        <div className={styles.searchItemName}>{u.username}</div>
+                        {u.displayName && <div className={styles.searchItemSub}>{u.displayName}</div>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Right-side actions */}
       <nav className={styles.actions}>
