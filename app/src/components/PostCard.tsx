@@ -249,7 +249,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
 
   return (
     <>
-      <article className={styles.card}>
+      <article className={`${styles.card} ${localPost.remoteDomain ? styles.federated : ''}`}>
         {/* Header */}
         <div className={styles.header}>
           <Avatar
@@ -325,9 +325,23 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
           )}
         </div>
 
-        {/* Image */}
+        {/* Image + audio overlay */}
         <div onClick={handlePostClick} onDoubleClick={handleDoubleTap} style={{ cursor: 'pointer', position: 'relative' }}>
           <ImageCarousel images={images} filterName={localPost.filterName} />
+          {localPost.audioUrl && (
+            <div className={styles.audioPill} onClick={e => e.stopPropagation()}>
+              <div className={styles.wave}>
+                {[0, 1, 2, 3, 4].map(i => (
+                  <span
+                    key={i}
+                    className={styles.waveBar}
+                    style={localPost.audioType === 'voice' ? { background: 'var(--voice-blue)' } : undefined}
+                  />
+                ))}
+              </div>
+              {localPost.audioType === 'voice' ? 'Voice note' : 'Ambient'} · {Math.floor((localPost.audioDuration || 0) / 1000)}:{String(Math.floor(((localPost.audioDuration || 0) % 1000) / 10)).padStart(2, '0')}
+            </div>
+          )}
           {showHeart && (
             <div className={styles.heartFlash}>
               <span className={styles.heartFlashIcon}>❤️</span>
@@ -335,18 +349,13 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
           )}
         </div>
 
-        {/* Audio */}
-        {localPost.audioUrl && (
-          <AudioPlayer audioUrl={localPost.audioUrl} />
-        )}
-
         {/* Actions */}
         <div className={styles.actions}>
           <button
             className={`${styles.actionBtn} ${localPost.isLiked ? styles.liked : ''}`}
             onClick={handleLike}
             aria-label={localPost.isLiked ? 'Unlike' : 'Like'}
-            style={{ color: localPost.isLiked ? 'var(--accent-red)' : 'var(--text-primary)' }}
+            style={{ color: localPost.isLiked ? 'var(--red)' : 'var(--t1)' }}
           >
             <HeartIcon filled={localPost.isLiked} />
           </button>
@@ -426,6 +435,27 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
             )}
           </div>
         </div>
+
+        {/* Inline comment bar (desktop) */}
+        {!localPost.commentsDisabled && (
+          <div className={styles.commentBar}>
+            <input
+              placeholder="Add a comment..."
+              onKeyDown={e => {
+                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                  const body = e.currentTarget.value.trim();
+                  e.currentTarget.value = '';
+                  api.post(`/posts/${localPost.id}/comments`, { body }).then(() => {
+                    const updated = { ...localPost, commentCount: (toCount(localPost.commentCount) + 1) };
+                    setLocalPost(updated);
+                    onUpdate?.(updated);
+                  }).catch(() => {});
+                }
+              }}
+            />
+            <button>Post</button>
+          </div>
+        )}
       </article>
 
       {remoteActorId && (
