@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './TopNav.module.css';
 import { useAppState } from '../context/AppStateContext';
+import { useAuth } from '../context/AuthContext';
 import { FediverseIcon } from './FediverseIcon';
 import { api, parsePaginated } from '../api/client';
-import { AppNotification } from '../models';
+import { AppNotification, Conversation } from '../models';
 import { Avatar } from './Avatar';
+import { ChatWidget } from './ChatWidget';
 import { timeAgo } from '../utils/timeAgo';
 import { imageUrl } from '../utils/imageUrl';
 
@@ -35,11 +37,23 @@ function notifText(n: AppNotification): { main: string; action: string } {
 export function TopNav({ onNewPost }: { onNewPost: () => void }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const { unreadNotifications, unreadMessages, clearNotifications } = useAppState();
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [notifItems, setNotifItems] = useState<AppNotification[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
+
+  // DM dropdown state
+  const [showDmDropdown, setShowDmDropdown] = useState(false);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [dmLoading, setDmLoading] = useState(false);
+
+  // Floating chat state
+  const [activeChat, setActiveChat] = useState<{
+    conversationId: string;
+    otherUser: { username: string; avatarUrl?: string };
+  } | null>(null);
 
   const fetchNotifications = useCallback(async () => {
     setNotifLoading(true);
@@ -64,6 +78,39 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
       return () => clearTimeout(timer);
     }
   }, [showNotifDropdown, fetchNotifications, clearNotifications]);
+
+  // Fetch DM conversations when dropdown opens
+  const fetchConversations = useCallback(async () => {
+    setDmLoading(true);
+    try {
+      const { items } = await api.getPaginated<Conversation>('/conversations');
+      setConversations(items);
+    } catch {
+      // ignore
+    } finally {
+      setDmLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showDmDropdown) {
+      fetchConversations();
+    }
+  }, [showDmDropdown, fetchConversations]);
+
+  const getOtherMember = (conv: Conversation) => {
+    if (!user) return conv.members[0];
+    return conv.members.find(m => m.id !== user.id) || conv.members[0];
+  };
+
+  const handleDmConversationClick = (conv: Conversation) => {
+    const other = getOtherMember(conv);
+    setShowDmDropdown(false);
+    setActiveChat({
+      conversationId: conv.id,
+      otherUser: { username: other?.username || 'Unknown', avatarUrl: other?.avatarUrl },
+    });
+  };
 
   const handleNotifClick = (notif: AppNotification) => {
     setShowNotifDropdown(false);
@@ -157,34 +204,120 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
           </svg>
         </button>
 
-        {/* DMs */}
-        <button
-          className={`${styles.navBtn} ${isMessages ? styles.active : ''}`}
-          onClick={() => navigate('/messages')}
-          aria-label="Messages"
-        >
-          <svg
-            width={22}
-            height={22}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {/* DMs dropdown */}
+        <div className={styles.dmWrapper}>
+          <button
+            className={`${styles.navBtn} ${showDmDropdown || isMessages ? styles.active : ''}`}
+            onClick={() => {
+              setShowDmDropdown(prev => !prev);
+              setShowNotifDropdown(false);
+            }}
+            aria-label="Messages"
           >
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          {unreadMessages > 0 && (
-            <span className={`${styles.badge} ${styles.badgeBlue}`} />
+            <svg
+              width={22}
+              height={22}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            {unreadMessages > 0 && (
+              <span className={`${styles.badge} ${styles.badgeBlue}`} />
+            )}
+          </button>
+
+          {showDmDropdown && (
+            <>
+              <div className={styles.dmBackdrop} onClick={() => setShowDmDropdown(false)} />
+              <div className={styles.dmDropdown}>
+                <div className={styles.dmHeader}>
+                  <span className={styles.dmTitle}>Messages</span>
+                  <div className={styles.dmHeaderActions}>
+                    <button
+                      className={styles.dmExpandBtn}
+                      onClick={() => { setShowDmDropdown(false); navigate('/messages'); }}
+                      aria-label="Open full messages"
+                    >
+                      <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 3 21 3 21 9" />
+                        <polyline points="9 21 3 21 3 15" />
+                        <line x1="21" y1="3" x2="14" y2="10" />
+                        <line x1="3" y1="21" x2="10" y2="14" />
+                      </svg>
+                    </button>
+                    <button
+                      className={styles.dmCloseBtn}
+                      onClick={() => setShowDmDropdown(false)}
+                      aria-label="Close"
+                    >
+                      <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.dmList}>
+                  {dmLoading && (
+                    <div className={styles.dmEmpty}>Loading…</div>
+                  )}
+
+                  {!dmLoading && conversations.length === 0 && (
+                    <div className={styles.dmEmpty}>No conversations yet.</div>
+                  )}
+
+                  {!dmLoading && conversations.map(conv => {
+                    const other = getOtherMember(conv);
+                    const lastMsg = conv.lastMessage;
+                    let preview = '';
+                    if (lastMsg) {
+                      const isMyMessage = lastMsg.senderId === user?.id;
+                      const bodyText = lastMsg.body
+                        ? (lastMsg.body === '[heart]' ? '\u2764\uFE0F' : lastMsg.body)
+                        : (lastMsg.imageUrl ? 'Photo' : lastMsg.audioUrl ? 'Voice message' : '');
+                      preview = isMyMessage ? `You: ${bodyText}` : bodyText;
+                    }
+
+                    return (
+                      <div
+                        key={conv.id}
+                        className={styles.dmItem}
+                        onClick={() => handleDmConversationClick(conv)}
+                      >
+                        <Avatar src={other?.avatarUrl} username={other?.username} size="lg" />
+                        <div className={styles.dmItemInfo}>
+                          <div className={styles.dmItemName}>{other?.username || 'Unknown'}</div>
+                          <div className={styles.dmItemRow}>
+                            {preview && <span className={styles.dmItemPreview}>{preview}</span>}
+                            {lastMsg && <span className={styles.dmItemTime}>{timeAgo(lastMsg.createdAt)}</span>}
+                          </div>
+                        </div>
+                        {(conv.unreadCount ?? 0) > 0 && (
+                          <span className={styles.dmUnread} />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
           )}
-        </button>
+        </div>
 
         {/* Heart / Activity dropdown */}
         <div className={styles.notifWrapper}>
           <button
             className={`${styles.navBtn} ${showNotifDropdown || isActivity ? styles.active : ''}`}
-            onClick={() => setShowNotifDropdown(prev => !prev)}
+            onClick={() => {
+              setShowNotifDropdown(prev => !prev);
+              setShowDmDropdown(false);
+            }}
             aria-label="Activity"
           >
             <svg
@@ -267,6 +400,15 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
           </svg>
         </button>
       </nav>
+
+      {/* Floating chat widget */}
+      {activeChat && (
+        <ChatWidget
+          conversationId={activeChat.conversationId}
+          otherUser={activeChat.otherUser}
+          onClose={() => setActiveChat(null)}
+        />
+      )}
     </header>
   );
 }

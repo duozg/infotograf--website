@@ -254,3 +254,148 @@
   font-size: 13px;
   color: var(--t2);
 }
+
+/* ── DM dropdown ── */
+
+.dmWrapper {
+  position: relative;
+}
+
+.dmBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.dmDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 360px;
+  max-height: 500px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dmHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--divider);
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  flex-shrink: 0;
+}
+
+.dmTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.dmHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dmExpandBtn,
+.dmCloseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: var(--t1);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.dmExpandBtn:hover,
+.dmCloseBtn:hover {
+  background: var(--elevated);
+}
+
+.dmList {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.dmItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--divider);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dmItem:hover {
+  background: var(--elevated);
+}
+
+.dmItemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.dmItemName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--t1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dmItemRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.dmItemPreview {
+  font-size: 13px;
+  color: var(--t2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.dmItemTime {
+  font-size: 11px;
+  color: var(--t3);
+  flex-shrink: 0;
+}
+
+.dmUnread {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #64b4ff;
+  flex-shrink: 0;
+}
+
+.dmEmpty {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--t2);
+}
