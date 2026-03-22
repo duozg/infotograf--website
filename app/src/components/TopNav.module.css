@@ -151,22 +151,6 @@
   color: #ffffff;
 }
 
-/* ── Fediverse dot ── */
-
-.fediDot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #c4a5ff, #7b5cbf);
-  box-shadow: 0 0 6px rgba(160, 120, 255, 0.5);
-  font-size: 11px;
-  line-height: 1;
-  color: #ffffff;
-}
-
 /* ── Notification badges (7px dots) ── */
 
 .badge {

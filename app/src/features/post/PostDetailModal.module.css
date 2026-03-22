@@ -21,27 +21,37 @@
   overflow: hidden;
 }
 
-/* ── Page variant ── */
+/* ── Page variant (stacks vertically to fit in feed column) ── */
 
 .page {
-  background: var(--bg-app);
+  background: var(--bg);
   min-height: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 24px 20px;
 }
 
 .pageModal {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
-  max-width: 968px;
-  min-height: 540px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
+  max-width: 600px;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 4px;
   overflow: hidden;
+}
+
+.pageModal .imagePanel {
+  width: 100%;
+  flex: none;
+  aspect-ratio: 4 / 5;
+  max-height: 600px;
+}
+
+.pageModal .rightPanel {
+  width: 100%;
+  max-height: none;
+  flex: none;
+  border-left: none;
+  border-top: 1px solid var(--divider);
 }
 
 /* ── Left: image panel ── */
