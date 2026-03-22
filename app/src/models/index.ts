@@ -192,6 +192,7 @@ export interface RemoteActorSummary {
   bio?: string;
   isFollowing?: boolean;
   followPending?: boolean;
+  isLocal?: boolean;
 }
 
 export interface RemoteActorProfile {

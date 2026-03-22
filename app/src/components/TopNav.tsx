@@ -242,7 +242,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
                 <div className={styles.searchSection}>
                   <div className={styles.searchSectionLabel}>Fediverse</div>
                   {searchResults.fediverse.map(actor => (
-                    <div key={actor.id} className={styles.searchItem} onClick={() => { setShowSearchDropdown(false); setSearchQuery(''); setRemoteActorId(actor.id); }}>
+                    <div key={actor.id} className={styles.searchItem} onClick={() => { setShowSearchDropdown(false); setSearchQuery(''); if (actor.isLocal) navigate(`/profile/${actor.username}`); else setRemoteActorId(actor.id); }}>
                       <Avatar src={actor.avatarUrl} username={actor.username} size="md" isRemote />
                       <div className={styles.searchItemInfo}>
                         <div className={styles.searchItemName}>{actor.displayName || actor.username}</div>
