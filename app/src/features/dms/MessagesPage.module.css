@@ -642,3 +642,20 @@
   color: var(--fediverse-purple);
   font-style: italic;
 }
+
+/* ── Seen / Sent indicator ── */
+
+.seenSentIndicator {
+  text-align: right;
+  padding: 2px 16px 0;
+}
+
+.seenText {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.sentText {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}

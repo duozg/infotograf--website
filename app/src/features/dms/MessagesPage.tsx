@@ -153,7 +153,17 @@ export function MessagesPage() {
     api.post(`/conversations/${activeConversation.id}/read`).catch(() => {});
   }, [activeConversation?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  usePolling(fetchMessages, 800, !!activeConversation);
+  // Poll at 1.5s (matching iOS) to avoid overloading the backend
+  usePolling(fetchMessages, 1500, !!activeConversation);
+
+  // Mark messages as read periodically while chat is open
+  useEffect(() => {
+    if (!activeConversation) return;
+    const readInterval = setInterval(() => {
+      api.post(`/conversations/${activeConversation.id}/read`).catch(() => {});
+    }, 3000);
+    return () => clearInterval(readInterval);
+  }, [activeConversation?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Heartbeat + presence cleanup + typing indicator
   useEffect(() => {
@@ -571,6 +581,22 @@ export function MessagesPage() {
                   })}
                 </React.Fragment>
               ))}
+
+              {/* Seen / Sent indicator */}
+              {(() => {
+                const lastMsg = messages[messages.length - 1];
+                if (lastMsg && lastMsg.senderId === user?.id && lastMsg.sendStatus !== 'failed') {
+                  return (
+                    <div className={styles.seenSentIndicator}>
+                      {lastMsg.readAt
+                        ? <span className={styles.seenText}>Seen</span>
+                        : <span className={styles.sentText}>Sent</span>
+                      }
+                    </div>
+                  );
+                }
+                return null;
+              })()}
 
               {/* Typing indicator bubble */}
               {isOtherUserTyping && (
