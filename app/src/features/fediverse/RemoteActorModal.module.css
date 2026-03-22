@@ -1,0 +1,184 @@
+/* ── Overlay ── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Modal Card ── */
+
+.modal {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  margin: 0 16px;
+}
+
+/* ── Header ── */
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.15s;
+}
+
+.closeBtn:hover {
+  color: var(--text-primary);
+}
+
+/* ── Content ── */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 24px;
+  overflow-y: auto;
+}
+
+/* ── Avatar ── */
+
+.avatarSection {
+  margin-bottom: 12px;
+}
+
+/* ── Display Name ── */
+
+.displayName {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  word-break: break-word;
+}
+
+/* ── Handle ── */
+
+.handle {
+  font-size: 14px;
+  color: var(--fediverse-purple);
+  text-align: center;
+  margin-top: 4px;
+  word-break: break-all;
+}
+
+/* ── Instance Badge ── */
+
+.instanceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--fediverse-purple-bg);
+  border: 1px solid var(--fediverse-purple-border);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  margin-top: 10px;
+}
+
+.instanceDomain {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── Bio ── */
+
+.bio {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 16px;
+  word-break: break-word;
+}
+
+/* ── Follow / Unfollow Button ── */
+
+.followBtn {
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 20px;
+  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
+  border: 1px solid var(--cta-border);
+  border-radius: var(--radius-card);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.followBtn:hover {
+  opacity: 0.9;
+}
+
+.followBtn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.followBtn.following {
+  background: linear-gradient(to bottom, var(--secondary-btn-top), var(--secondary-btn-bottom));
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.followBtn.pending {
+  background: transparent;
+  border-color: var(--border-primary);
+  color: var(--text-secondary);
+}
+
+/* ── View on Instance Link ── */
+
+.viewOnInstance {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-link);
+  text-decoration: none;
+  text-align: center;
+}
+
+.viewOnInstance:hover {
+  text-decoration: underline;
+}
+
+/* ── States ── */
+
+.loadingState {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.errorState {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--accent-red);
+  font-size: 14px;
+}

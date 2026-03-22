@@ -7,6 +7,7 @@ import { TextEntityRenderer } from '../../components/TextEntityRenderer';
 import { api } from '../../api/client';
 import { Post, Comment } from '../../models';
 import { parsePaginated } from '../../api/client';
+import { FediverseIcon } from '../../components/FediverseIcon';
 import { timeAgo } from '../../utils/timeAgo';
 import { toCount } from '../../utils/textParser';
 import { useAuth } from '../../context/AuthContext';
@@ -55,11 +56,13 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   useEffect(() => {
     if (!postId) return;
     setLoading(true);
-    Promise.all([
-      api.get<Post>(`/posts/${postId}`),
-      api.getPaginated<Comment>(`/posts/${postId}/comments`),
-    ]).then(([p, c]) => {
+    // Try local post first, then try remote post
+    api.get<Post>(`/posts/${postId}`).then(async (p) => {
       setPost(p);
+      const endpoint = p.remotePostId
+        ? `/remote-posts/${p.remotePostId}/comments`
+        : `/posts/${postId}/comments`;
+      const c = await api.getPaginated<Comment>(endpoint);
       setComments(c.items);
       setCommentCursor(c.nextCursor);
     }).catch(() => {}).finally(() => setLoading(false));
@@ -71,30 +74,35 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     }
   }, [searchParams]);
 
+  // Remote posts use /remote-posts/:remotePostId/* endpoints
+  const postEndpoint = post?.remotePostId
+    ? `/remote-posts/${post.remotePostId}`
+    : `/posts/${postId}`;
+
   const handleLike = useCallback(async () => {
     if (!post) return;
     const wasLiked = post.isLiked;
     const newCount = toCount(post.likeCount) + (wasLiked ? -1 : 1);
     setPost(p => p ? { ...p, isLiked: !wasLiked, likeCount: newCount } : p);
     try {
-      if (wasLiked) await api.delete(`/posts/${post.id}/like`);
-      else await api.post(`/posts/${post.id}/like`);
+      if (wasLiked) await api.delete(`${postEndpoint}/like`);
+      else await api.post(`${postEndpoint}/like`);
     } catch {
       setPost(p => p ? { ...p, isLiked: wasLiked, likeCount: post.likeCount } : p);
     }
-  }, [post]);
+  }, [post, postEndpoint]);
 
   const handleBookmark = useCallback(async () => {
     if (!post) return;
     const wasBookmarked = post.isBookmarked;
     setPost(p => p ? { ...p, isBookmarked: !wasBookmarked } : p);
     try {
-      if (wasBookmarked) await api.delete(`/posts/${post.id}/bookmark`);
-      else await api.post(`/posts/${post.id}/bookmark`);
+      if (wasBookmarked) await api.delete(`${postEndpoint}/bookmark`);
+      else await api.post(`${postEndpoint}/bookmark`);
     } catch {
       setPost(p => p ? { ...p, isBookmarked: wasBookmarked } : p);
     }
-  }, [post]);
+  }, [post, postEndpoint]);
 
   const handleSendComment = useCallback(async () => {
     if (!post || !commentText.trim() || sendingComment) return;
@@ -104,7 +112,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     const parentId = replyTo?.id;
     setReplyTo(null);
     try {
-      const newComment = await api.post<Comment>(`/posts/${post.id}/comments`, { body, parentId });
+      const newComment = await api.post<Comment>(`${postEndpoint}/comments`, { body, parentId });
       setComments(prev => [...prev, newComment]);
       setPost(p => p ? { ...p, commentCount: toCount(p.commentCount) + 1 } : p);
     } catch {
@@ -112,7 +120,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     } finally {
       setSendingComment(false);
     }
-  }, [post, commentText, sendingComment, replyTo]);
+  }, [post, postEndpoint, commentText, sendingComment, replyTo]);
 
   const handleSaveCaption = useCallback(async () => {
     if (!post) return;
@@ -153,12 +161,12 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     setComments(prev => prev.filter(c => c.id !== comment.id));
     setPost(p => p ? { ...p, commentCount: Math.max(0, toCount(p.commentCount) - 1) } : p);
     try {
-      await api.delete(`/posts/${post.id}/comments/${comment.id}`);
+      await api.delete(`${postEndpoint}/comments/${comment.id}`);
     } catch {
       setComments(prev => [...prev, comment]);
       setPost(p => p ? { ...p, commentCount: toCount(p.commentCount) + 1 } : p);
     }
-  }, [post]);
+  }, [post, postEndpoint]);
 
   const handleLikeComment = useCallback(async (comment: Comment) => {
     if (!post) return;
@@ -179,12 +187,12 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     if (!post || !commentCursor) return;
     try {
       const { items, nextCursor } = await api.getPaginated<Comment>(
-        `/posts/${post.id}/comments?cursor=${commentCursor}`
+        `${postEndpoint}/comments?cursor=${commentCursor}`
       );
       setComments(prev => [...prev, ...items]);
       setCommentCursor(nextCursor);
     } catch {}
-  }, [post, commentCursor]);
+  }, [post, postEndpoint, commentCursor]);
 
   if (!postId) return null;
 
@@ -220,8 +228,20 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
           onClick={() => navigate(`/profile/${post.username}`)}
         />
         <div className={styles.userInfo}>
-          <div className={styles.username} onClick={() => navigate(`/profile/${post.username}`)}>
-            {post.username}
+          <div className={styles.usernameRow}>
+            <span
+              className={styles.username}
+              style={post.remoteDomain ? { color: 'var(--fediverse-purple)' } : undefined}
+              onClick={() => navigate(`/profile/${post.username}`)}
+            >
+              {post.username}
+            </span>
+            {post.remoteDomain && (
+              <span className={styles.domainBadge}>
+                <FediverseIcon size={10} />
+                {post.remoteDomain}
+              </span>
+            )}
           </div>
           {post.locationName && <div className={styles.location}>{post.locationName}</div>}
         </div>

@@ -168,3 +168,34 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
 .overlay-backdrop.centered {
   align-items: center;
 }
+
+/* ── Neon glow animations ── */
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 6px 1px var(--neon-glow);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 14px 3px var(--neon-glow);
+    opacity: 0.7;
+  }
+}
+
+@keyframes neonPulseText {
+  0%, 100% {
+    text-shadow: 0 0 6px var(--neon-glow);
+  }
+  50% {
+    text-shadow: 0 0 14px var(--neon-glow);
+  }
+}
+
+.neon-glow-badge {
+  animation: neonPulse 1.8s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+.neon-glow-icon {
+  animation: neonPulseText 1.8s ease-in-out infinite;
+}

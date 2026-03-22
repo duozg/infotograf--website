@@ -32,12 +32,11 @@
   gap: 18px;
 }
 
-/* Username + action buttons in one row */
+/* Username + RSS in one row */
 .usernameRow {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
 }
 
 .username {
@@ -48,36 +47,29 @@
   line-height: 1;
 }
 
-.editBtn {
-  padding: 6px 16px;
-  background: transparent;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.editBtn:hover { background: var(--bg-elevated); }
-
-.settingsBtn {
+.rssLink {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-primary);
+  width: 28px;
+  height: 28px;
+  color: var(--text-secondary);
   border-radius: 4px;
-  transition: background 0.15s;
+  transition: color 0.15s, background 0.15s;
 }
 
-.settingsBtn:hover { background: var(--bg-elevated); }
-.settingsBtn svg { width: 22px; height: 22px; }
+.rssLink:hover {
+  color: var(--text-link);
+  background: var(--bg-elevated);
+}
+
+/* Action buttons */
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
 .followBtn {
   padding: 7px 20px;
@@ -118,6 +110,35 @@
 
 .messageBtn:hover { background: var(--bg-elevated); }
 
+.editBtn {
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.editBtn:hover { background: var(--bg-elevated); }
+
+.loginPrompt {
+  display: inline-block;
+  padding: 7px 20px;
+  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
+  border: 1px solid var(--cta-border);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.loginPrompt:hover { opacity: 0.9; }
+
 /* Stats row */
 .statsRow {
   display: flex;
@@ -149,28 +170,10 @@
   gap: 3px;
 }
 
-.displayNameRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .displayName {
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
-}
-
-.fediverseBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--fediverse-purple);
-  background: var(--fediverse-purple-bg);
-  padding: 2px 7px;
-  border-radius: var(--radius-card);
 }
 
 .fediverseHandle {
@@ -180,14 +183,6 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--fediverse-purple);
-}
-
-.fediverseStatSub {
-  display: block;
-  font-size: 9px;
-  font-weight: 500;
-  color: var(--fediverse-purple);
-  margin-top: 1px;
 }
 
 .bio {
@@ -204,39 +199,11 @@
   font-weight: 600;
 }
 
-/* ── Grid / List toggle ── */
+/* ── Grid divider ── */
 
-.gridToggle {
-  display: flex;
-  justify-content: center;
+.gridDivider {
   border-top: 1px solid var(--border-primary);
   margin-bottom: 0;
-}
-
-.gridToggleBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 14px 20px;
-  cursor: pointer;
-  border: none;
-  background: none;
-  color: var(--text-tertiary);
-  border-top: 1px solid transparent;
-  margin-top: -1px;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  transition: color 0.15s;
-}
-
-.gridToggleBtn svg { width: 14px; height: 14px; }
-
-.gridToggleBtn.active {
-  color: var(--text-primary);
-  border-top-color: var(--text-primary);
 }
 
 /* ── Photo grid ── */
@@ -265,6 +232,21 @@
 
 .gridItem:hover img { transform: scale(1.03); }
 
+/* ── Load more ── */
+
+.loadMore {
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: color 0.15s;
+}
+
+.loadMore:hover {
+  color: var(--text-link);
+}
+
 /* ── States ── */
 
 .loadingState {
@@ -273,6 +255,39 @@
   color: var(--text-secondary);
   font-size: 15px;
 }
+
+.errorState {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.errorState h2 {
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.errorState p {
+  font-size: 14px;
+  margin: 0 0 20px;
+}
+
+.loginLink {
+  display: inline-block;
+  padding: 8px 24px;
+  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
+  border: 1px solid var(--cta-border);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.loginLink:hover { opacity: 0.9; }
 
 .emptyPosts {
   padding: 60px 20px;
@@ -294,51 +309,29 @@
   margin-bottom: 8px;
 }
 
-/* ── More menu for other users ── */
+/* ── Responsive ── */
 
-.moreMenuBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  background: none;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
-  cursor: pointer;
-  color: var(--text-primary);
-  font-size: 18px;
-  line-height: 1;
-  transition: background 0.15s;
+@media (max-width: 600px) {
+  .profileHeader {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .usernameRow {
+    justify-content: center;
+  }
+
+  .actionRow {
+    justify-content: center;
+  }
+
+  .statsRow {
+    justify-content: center;
+  }
+
+  .bioSection {
+    align-items: center;
+  }
 }
-
-.moreMenuBtn:hover { background: var(--bg-elevated); }
-
-.profileMenu {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  min-width: 160px;
-  z-index: 50;
-  overflow: hidden;
-}
-
-.profileMenuItem {
-  display: block;
-  width: 100%;
-  padding: 11px 16px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-primary);
-  text-align: left;
-  transition: background 0.1s;
-}
-
-.profileMenuItem:hover { background: var(--bg-elevated); }
-.profileMenuItemDanger { color: var(--accent-red) !important; }

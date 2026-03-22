@@ -8,11 +8,12 @@ interface AvatarProps {
   src?: string | null;
   username?: string;
   size?: AvatarSize;
+  isRemote?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
-export function Avatar({ src, username, size = 'md', className, onClick }: AvatarProps) {
+export function Avatar({ src, username, size = 'md', isRemote, className, onClick }: AvatarProps) {
   const url = imageUrl(src);
   const letter = username ? username[0] : '?';
   const sizeClass = styles[`size-${size}`];
@@ -26,7 +27,7 @@ export function Avatar({ src, username, size = 'md', className, onClick }: Avata
 
   return (
     <div
-      className={`${styles.avatar} ${sizeClass} ${className || ''}`}
+      className={`${styles.avatar} ${sizeClass} ${isRemote ? styles.remote : ''} ${className || ''}`}
       onClick={onClick}
       style={onClick ? { cursor: 'pointer' } : undefined}
     >

@@ -127,6 +127,39 @@
   text-decoration: underline;
 }
 
+/* ── Fediverse remote post indicators ── */
+
+.usernameRemote {
+  color: var(--fediverse-purple);
+}
+
+.domainBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  background: var(--fediverse-purple-bg);
+  color: var(--fediverse-purple);
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.timestampDomain {
+  color: var(--text-tertiary);
+  font-size: 10px;
+  text-transform: none;
+}
+
+.headerNameRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
 .viewComments {
   font-size: 14px;
   color: var(--text-secondary);

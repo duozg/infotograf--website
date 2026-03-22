@@ -10,6 +10,7 @@ import { imageUrl } from '../utils/imageUrl';
 import { toCount } from '../utils/textParser';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import { FediverseIcon } from './FediverseIcon';
 
 interface PostCardProps {
   post: Post;
@@ -96,6 +97,12 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   const likeCount = toCount(localPost.likeCount);
   const commentCount = toCount(localPost.commentCount);
 
+  // Remote posts use /remote-posts/:remotePostId/* endpoints
+  const postEndpoint = localPost.remotePostId
+    ? `/remote-posts/${localPost.remotePostId}`
+    : `/posts/${localPost.id}`;
+  const isRemote = !!localPost.remotePostId;
+
   const handleLike = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (likeInProgressRef.current) return;
@@ -107,9 +114,9 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     onUpdate?.(updated);
     try {
       if (wasLiked) {
-        await api.delete(`/posts/${localPost.id}/like`);
+        await api.delete(`${postEndpoint}/like`);
       } else {
-        await api.post(`/posts/${localPost.id}/like`);
+        await api.post(`${postEndpoint}/like`);
       }
     } catch {
       setLocalPost(localPost);
@@ -117,7 +124,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     } finally {
       likeInProgressRef.current = false;
     }
-  }, [localPost, likeCount, onUpdate]);
+  }, [localPost, likeCount, onUpdate, postEndpoint]);
 
   // Double-tap on image: only adds a like, never removes
   const handleDoubleTap = useCallback(async (e: React.MouseEvent) => {
@@ -130,14 +137,14 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     setShowHeart(true);
     setTimeout(() => setShowHeart(false), 800);
     try {
-      await api.post(`/posts/${localPost.id}/like`);
+      await api.post(`${postEndpoint}/like`);
     } catch {
       setLocalPost(localPost);
       onUpdate?.(localPost);
     } finally {
       likeInProgressRef.current = false;
     }
-  }, [localPost, likeCount, onUpdate]);
+  }, [localPost, likeCount, onUpdate, postEndpoint]);
 
   const handleBookmark = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -149,9 +156,9 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     onUpdate?.(updated);
     try {
       if (wasBookmarked) {
-        await api.delete(`/posts/${localPost.id}/bookmark`);
+        await api.delete(`${postEndpoint}/bookmark`);
       } else {
-        await api.post(`/posts/${localPost.id}/bookmark`);
+        await api.post(`${postEndpoint}/bookmark`);
       }
     } catch {
       setLocalPost(localPost);
@@ -159,7 +166,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
     } finally {
       bookmarkInProgressRef.current = false;
     }
-  }, [localPost, onUpdate]);
+  }, [localPost, onUpdate, postEndpoint]);
 
   const handleUserClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -217,12 +224,12 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
 
   const fetchLikedBy = useCallback(async () => {
     try {
-      const { items } = await api.getPaginated<User>(`/posts/${localPost.id}/liked-by`);
+      const { items } = await api.getPaginated<User>(`${postEndpoint}/liked-by`);
       setLikedByUsers(items);
     } catch {
       setLikedByUsers(null);
     }
-  }, [localPost.id]);
+  }, [postEndpoint]);
 
   // Build images array
   const images = localPost.imageUrls && localPost.imageUrls.length > 0
@@ -238,6 +245,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
             src={localPost.avatarUrl}
             username={localPost.username}
             size="md"
+            isRemote={!!localPost.remoteDomain}
             onClick={() => {
               if (localPost.username) {
                 onUserClick?.(localPost.username);
@@ -246,8 +254,19 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
             }}
           />
           <div className={styles.headerInfo}>
-            <div className={styles.username} onClick={handleUserClick}>
-              {localPost.username || localPost.displayName || 'user'}
+            <div className={styles.headerNameRow}>
+              <div
+                className={`${styles.username} ${localPost.remoteDomain ? styles.usernameRemote : ''}`}
+                onClick={handleUserClick}
+              >
+                {localPost.username || localPost.displayName || 'user'}
+              </div>
+              {localPost.remoteDomain && (
+                <span className={styles.domainBadge}>
+                  <FediverseIcon size={10} />
+                  {localPost.remoteDomain}
+                </span>
+              )}
             </div>
             {localPost.locationName && (
               <div className={styles.location}>{localPost.locationName}</div>
@@ -362,7 +381,10 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
             </div>
           ) : localPost.caption ? (
             <div className={styles.caption}>
-              <span className={styles.captionUsername} onClick={handleUserClick}>
+              <span
+                className={`${styles.captionUsername} ${localPost.remoteDomain ? styles.usernameRemote : ''}`}
+                onClick={handleUserClick}
+              >
                 {localPost.username}
               </span>
               <TextEntityRenderer text={localPost.caption} />
@@ -375,7 +397,12 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
               View all {commentCount.toLocaleString()} comments
             </div>
           ) : null}
-          <div className={styles.timestamp}>{timeAgo(localPost.createdAt)}</div>
+          <div className={styles.timestamp}>
+            {timeAgo(localPost.createdAt)}
+            {localPost.remoteDomain && (
+              <span className={styles.timestampDomain}> · {localPost.remoteDomain}</span>
+            )}
+          </div>
         </div>
       </article>
 

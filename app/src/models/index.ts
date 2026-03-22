@@ -45,6 +45,12 @@ export interface Post {
   commentsDisabled?: boolean;
   createdAt: string;
   updatedAt?: string;
+  // Fediverse fields (present on remote posts in feed)
+  remoteDomain?: string;
+  remoteActorId?: string;
+  isRemotePost?: boolean;
+  remotePostId?: string;
+  remoteLikeCount?: number;
 }
 
 export interface Comment {
@@ -146,4 +152,78 @@ export interface HashtagSuggestion {
 export interface PaginatedResponse<T> {
   items: T[];
   nextCursor: string | null;
+}
+
+// ─── Fediverse Models ──────────────────────────────────
+
+export interface FederationStatus {
+  federationEnabled: boolean;
+  handle?: string;
+  actorId?: string;
+}
+
+export interface FediverseStats {
+  remoteFollowers: number;
+  remoteLikes: number;
+  remoteBoosts: number;
+  connectedInstances: number;
+  instances?: ConnectedInstance[];
+}
+
+export interface ConnectedInstance {
+  domain: string;
+  followerCount: number;
+}
+
+export interface RemoteActorSummary {
+  id: string;
+  username: string;
+  displayName?: string;
+  avatarUrl?: string;
+  domain: string;
+  bio?: string;
+  isFollowing?: boolean;
+  followPending?: boolean;
+}
+
+export interface RemoteActorProfile {
+  id: string;
+  actorUri: string;
+  username: string;
+  domain: string;
+  displayName?: string;
+  summary?: string;
+  avatarUrl?: string;
+  inboxUrl: string;
+  isFollowing?: boolean;
+  followPending?: boolean;
+  deliveryStatus?: string;
+}
+
+export interface DeliverySummary {
+  total: number;
+  delivered: number;
+  pending: number;
+  failed: number;
+  abandoned?: number;
+}
+
+export interface DeliveryLogEntry {
+  id: string;
+  activityType: string;
+  targetInboxUrl: string;
+  status: 'pending' | 'delivered' | 'failed';
+  attempts: number;
+  lastError?: string;
+  lastAttemptAt?: string;
+  createdAt: string;
+}
+
+export interface NotificationPreferences {
+  likes: boolean;
+  comments: boolean;
+  follows: boolean;
+  mentions: boolean;
+  commentLikes: boolean;
+  dmMessages: boolean;
 }

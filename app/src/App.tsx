@@ -13,6 +13,8 @@ import { MessagesPage } from './features/dms/MessagesPage';
 import { HashtagPage } from './features/explore/HashtagPage';
 import { NavBar } from './components/NavBar';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { FediverseDiscoverPage } from './features/fediverse/FediverseDiscoverPage';
+import { PublicProfilePage } from './features/profile/PublicProfilePage';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, initialized } = useAuth();
@@ -65,6 +67,7 @@ function AuthenticatedApp() {
             element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>}
           />
           <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
+          <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
           <Route path="/notifications" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
           <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
           <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
@@ -98,6 +101,10 @@ export default function App() {
       <Route
         path="/register"
         element={<RequireGuest><RegisterPage /></RequireGuest>}
+      />
+      <Route
+        path="/@:username"
+        element={<ErrorBoundary><PublicProfilePage /></ErrorBoundary>}
       />
       <Route
         path="/*"

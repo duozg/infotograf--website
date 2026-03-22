@@ -11,6 +11,30 @@
   --chat-bubble-mine-dark: #2d4a6b;
   --chat-bubble-theirs-dark: #3a3839;
   --neon-glow-dark: #b24dff;
+  --neon-glow-light: #9333ea;
+
+  /* Fediverse accent (invariant) */
+  --fediverse-purple: #a078ff;
+  --fediverse-purple-bg: rgba(160, 120, 255, 0.12);
+  --fediverse-purple-border: rgba(160, 120, 255, 0.4);
+
+  /* RSS accent */
+  --rss-orange: #f97316;
+
+  /* Audio colors */
+  --ambient-green: #4caf50;
+  --voice-blue: #82aaff;
+  --voice-orange: #ffa032;
+
+  /* Presence */
+  --presence-green: #7ed47e;
+
+  /* Secondary buttons (invariant) */
+  --secondary-btn-top-dark: #3a3839;
+  --secondary-btn-bottom-dark: #2e2d2e;
+  --secondary-btn-top-light: #f0f0f0;
+  --secondary-btn-bottom-light: #e0e0e0;
+
   --radius-button: 3px;
   --radius-card: 4px;
   --radius-pill: 20px;
@@ -39,6 +63,11 @@ html.dark, html[data-theme="dark"] {
   --chat-bubble-theirs: #3a3839;
   --skeleton-base: #2c2a2b;
   --skeleton-highlight: #3a3839;
+  --bg-search-bar: #2a2829;
+  --bg-unread-notif: #1e2a36;
+  --neon-glow: #b24dff;
+  --secondary-btn-top: #3a3839;
+  --secondary-btn-bottom: #2e2d2e;
 }
 
 /* Light mode */
@@ -57,6 +86,11 @@ html[data-theme="light"] {
   --chat-bubble-theirs: #ffffff;
   --skeleton-base: #e8e8e8;
   --skeleton-highlight: #f5f5f5;
+  --bg-search-bar: #ececec;
+  --bg-unread-notif: #e6f0fa;
+  --neon-glow: #9333ea;
+  --secondary-btn-top: #f0f0f0;
+  --secondary-btn-bottom: #e0e0e0;
 }
 
 /* System preference fallback */
@@ -76,6 +110,11 @@ html[data-theme="light"] {
     --chat-bubble-theirs: #3a3839;
     --skeleton-base: #2c2a2b;
     --skeleton-highlight: #3a3839;
+    --bg-search-bar: #2a2829;
+    --bg-unread-notif: #1e2a36;
+    --neon-glow: #b24dff;
+    --secondary-btn-top: #3a3839;
+    --secondary-btn-bottom: #2e2d2e;
   }
 }
 
@@ -95,5 +134,10 @@ html[data-theme="light"] {
     --chat-bubble-theirs: #ffffff;
     --skeleton-base: #e8e8e8;
     --skeleton-highlight: #f5f5f5;
+    --bg-search-bar: #ececec;
+    --bg-unread-notif: #e6f0fa;
+    --neon-glow: #9333ea;
+    --secondary-btn-top: #f0f0f0;
+    --secondary-btn-bottom: #e0e0e0;
   }
 }

@@ -127,6 +127,8 @@ function Sidebar({ onCreatePost }: { onCreatePost?: () => void }) {
   );
 }
 
+const LAST_SEEN_KEY = 'infotograf_last_seen_post';
+
 export function FeedPage({ onCreatePost }: FeedPageProps) {
   const fetcher = useCallback(
     (cursor: string | null) =>
@@ -135,10 +137,29 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
   );
 
   const { items: posts, loading, loadingMore, error, hasMore, loadMore, refresh, setItems } = usePagination({ fetcher });
+  const [lastSeenId, setLastSeenId] = useState<string | null>(() => localStorage.getItem(LAST_SEEN_KEY));
+  const [newPostCount, setNewPostCount] = useState(0);
+  const markerDismissed = React.useRef(false);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Calculate new posts above the "where you left off" marker
+  useEffect(() => {
+    if (!lastSeenId || posts.length === 0 || markerDismissed.current) return;
+    const idx = posts.findIndex(p => p.id === lastSeenId);
+    if (idx > 0) setNewPostCount(idx);
+  }, [posts, lastSeenId]);
+
+  // Save the top post ID when leaving the page
+  useEffect(() => {
+    return () => {
+      if (posts.length > 0) {
+        localStorage.setItem(LAST_SEEN_KEY, posts[0].id);
+      }
+    };
+  }, [posts]);
 
   const handleUpdate = useCallback((updated: Post) => {
     setItems(prev => prev.map(p => p.id === updated.id ? updated : p));
@@ -186,7 +207,21 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
           )}
 
           {posts.map(post => (
-            <PostCard key={post.id} post={post} onUpdate={handleUpdate} onDelete={handleDelete} />
+            <React.Fragment key={post.id}>
+              {!markerDismissed.current && lastSeenId === post.id && newPostCount > 0 && (
+                <div
+                  className={styles.whereYouLeftOff}
+                  onClick={() => { markerDismissed.current = true; setNewPostCount(0); }}
+                >
+                  <div className={styles.allCaughtUpLine} />
+                  <span className={styles.whereYouLeftOffText}>
+                    {newPostCount} new {newPostCount === 1 ? 'post' : 'posts'}
+                  </span>
+                  <div className={styles.allCaughtUpLine} />
+                </div>
+              )}
+              <PostCard post={post} onUpdate={handleUpdate} onDelete={handleDelete} />
+            </React.Fragment>
           ))}
 
           {loadingMore && (

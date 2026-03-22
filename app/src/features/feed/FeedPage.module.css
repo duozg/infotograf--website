@@ -248,3 +248,18 @@
   white-space: nowrap;
   font-weight: 500;
 }
+
+.whereYouLeftOff {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 12px;
+  cursor: pointer;
+}
+
+.whereYouLeftOffText {
+  font-size: 13px;
+  color: var(--text-link);
+  white-space: nowrap;
+  font-weight: 600;
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './NavBar.module.css';
 import { Avatar } from './Avatar';
+import { FediverseIcon } from './FediverseIcon';
 import { useAuth } from '../context/AuthContext';
 import { useAppState } from '../context/AppStateContext';
 
@@ -63,6 +64,7 @@ export function NavBar({ onCreatePost }: NavBarProps) {
   const path = location.pathname;
   const isHome = path === '/';
   const isExplore = path.startsWith('/explore');
+  const isFediverse = path.startsWith('/fediverse');
   const isNotifications = path.startsWith('/notifications');
   const isProfile = path === '/profile' || (path.startsWith('/profile/') && !path.includes('/followers') && !path.includes('/following'));
   const isMessages = path.startsWith('/messages');
@@ -123,24 +125,32 @@ export function NavBar({ onCreatePost }: NavBarProps) {
           </button>
 
           <button
+            className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
+            onClick={() => navigate('/fediverse')}
+            aria-label="Fediverse"
+          >
+            <FediverseIcon size={22} />
+          </button>
+
+          <button
             className={`${styles.navBtn} ${isMessages ? styles.active : ''}`}
             onClick={() => navigate('/messages')}
             aria-label="Messages"
           >
             <MessagesIcon active={isMessages} />
             {unreadMessages > 0 && (
-              <span className={styles.badge}>{unreadMessages > 9 ? '9+' : unreadMessages}</span>
+              <span className={`${styles.badge} neon-glow-badge`}>{unreadMessages > 9 ? '9+' : unreadMessages}</span>
             )}
           </button>
 
           <button
-            className={`${styles.navBtn} ${isNotifications ? styles.active : ''}`}
+            className={`${styles.navBtn} ${isNotifications ? styles.active : ''} ${unreadNotifications > 0 ? 'neon-glow-icon' : ''}`}
             onClick={() => navigate('/notifications')}
             aria-label="Notifications"
           >
-            <HeartIcon active={isNotifications} />
+            <HeartIcon active={isNotifications || unreadNotifications > 0} />
             {unreadNotifications > 0 && (
-              <span className={styles.badge}>{unreadNotifications > 9 ? '9+' : unreadNotifications}</span>
+              <span className={`${styles.badge} neon-glow-badge`}>{unreadNotifications > 9 ? '9+' : unreadNotifications}</span>
             )}
           </button>
 

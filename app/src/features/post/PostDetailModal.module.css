@@ -90,6 +90,25 @@
 
 .username:hover { text-decoration: underline; }
 
+.usernameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.domainBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  background: var(--fediverse-purple-bg);
+  color: var(--fediverse-purple);
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .location {
   font-size: 11px;
   color: var(--text-secondary);

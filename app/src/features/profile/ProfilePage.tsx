@@ -3,13 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from './ProfilePage.module.css';
 import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
-import { User, Post } from '../../models';
+import { User, Post, FederationStatus, FediverseStats } from '../../models';
 import { imageUrl } from '../../utils/imageUrl';
 import { toCount } from '../../utils/textParser';
 import { useAuth } from '../../context/AuthContext';
 import { EditProfileModal } from './EditProfileModal';
 import { SettingsModal } from './SettingsModal';
 import { ReportModal } from '../../components/ReportModal';
+import { FediverseIcon } from '../../components/FediverseIcon';
 
 interface FollowModalProps {
   userId: string;
@@ -140,6 +141,8 @@ export function ProfilePage() {
   const [isBlocked, setIsBlocked] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [federationEnabled, setFederationEnabled] = useState(false);
+  const [fediverseStats, setFediverseStats] = useState<FediverseStats | null>(null);
 
   const fetchProfile = useCallback(async () => {
     if (!targetUsername) return;
@@ -163,6 +166,17 @@ export function ProfilePage() {
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  // Fetch federation status for own profile
+  useEffect(() => {
+    if (!isOwnProfile) return;
+    api.get<FederationStatus>('/federation/status')
+      .then(s => setFederationEnabled(s.federationEnabled))
+      .catch(() => {});
+    api.get<FediverseStats>('/federation/stats')
+      .then(s => setFediverseStats(s))
+      .catch(() => {});
+  }, [isOwnProfile]);
 
   const handleFollow = useCallback(async () => {
     if (!profile) return;
@@ -340,6 +354,9 @@ export function ProfilePage() {
                   >
                     <span className={styles.statValue}>{toCount(profile.followerCount).toLocaleString()}</span>
                     <span className={styles.statLabel}>followers</span>
+                    {isOwnProfile && federationEnabled && fediverseStats && fediverseStats.remoteFollowers > 0 && (
+                      <span className={styles.fediverseStatSub}>+{fediverseStats.remoteFollowers} fediverse</span>
+                    )}
                   </div>
                   <div
                     className={styles.statItem}
@@ -353,7 +370,23 @@ export function ProfilePage() {
 
                 {/* Bio */}
                 <div className={styles.bioSection}>
-                  {profile.displayName && <div className={styles.displayName}>{profile.displayName}</div>}
+                  {profile.displayName && (
+                    <div className={styles.displayNameRow}>
+                      <span className={styles.displayName}>{profile.displayName}</span>
+                      {isOwnProfile && federationEnabled && (
+                        <span className={styles.fediverseBadge}>
+                          <FediverseIcon size={8} />
+                          Fediverse
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {isOwnProfile && federationEnabled && currentUser?.username && (
+                    <div className={styles.fediverseHandle}>
+                      <FediverseIcon size={10} />
+                      @{currentUser.username}@infotograf.com
+                    </div>
+                  )}
                   {profile.bio && <div className={styles.bio}>{profile.bio}</div>}
                   {profile.website && (
                     <a href={profile.website} target="_blank" rel="noopener noreferrer" className={styles.website}>

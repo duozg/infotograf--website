@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
 import { User } from '../../models';
+import { FederationSettingsModal } from '../fediverse/FederationSettingsModal';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -23,8 +24,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [savingPrivate, setSavingPrivate] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showFederation, setShowFederation] = useState(false);
   const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({
-    likes: true, comments: true, follows: true, messages: true,
+    likes: true, comments: true, follows: true, mentions: true, commentLikes: true, dmMessages: true,
   });
   const [loadingPrefs, setLoadingPrefs] = useState(true);
 
@@ -67,11 +69,11 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const handleNotifPref = useCallback(async (key: string, value: boolean) => {
     setNotifPrefs(prev => ({ ...prev, [key]: value }));
     try {
-      await api.post('/users/notification-preferences', { ...notifPrefs, [key]: value });
+      await api.patch('/users/notification-preferences', { [key]: value });
     } catch {
       setNotifPrefs(prev => ({ ...prev, [key]: !value }));
     }
-  }, [notifPrefs]);
+  }, []);
 
   const handleDeleteAccount = useCallback(async () => {
     setDeleting(true);
@@ -119,6 +121,15 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             </div>
           </div>
 
+          {/* Federation */}
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Fediverse</div>
+            <div className={styles.row} style={{ cursor: 'pointer' }} onClick={() => setShowFederation(true)}>
+              <span className={styles.rowLabel}>Federation Settings</span>
+              <span className={styles.rowValue}>›</span>
+            </div>
+          </div>
+
           {/* Notifications */}
           <div className={styles.section}>
             <div className={styles.sectionTitle}>Notifications</div>
@@ -126,7 +137,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               { key: 'likes', label: 'Likes' },
               { key: 'comments', label: 'Comments' },
               { key: 'follows', label: 'New Followers' },
-              { key: 'messages', label: 'Messages' },
+              { key: 'mentions', label: 'Mentions' },
+              { key: 'commentLikes', label: 'Comment Likes' },
+              { key: 'dmMessages', label: 'Messages' },
             ] as { key: string; label: string }[]).map(({ key, label }) => (
               <div key={key} className={styles.row}>
                 <span className={styles.rowLabel}>{label}</span>
@@ -244,6 +257,10 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           <div style={{ height: 40 }} />
         </div>
       </div>
+
+      {showFederation && (
+        <FederationSettingsModal onClose={() => setShowFederation(false)} />
+      )}
     </div>
   );
 }
