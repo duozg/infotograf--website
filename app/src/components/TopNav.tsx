@@ -39,7 +39,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const { unreadNotifications, unreadMessages, clearNotifications } = useAppState();
+  const { unreadNotifications, unreadMessages, clearNotifications, federationEnabled } = useAppState();
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [notifItems, setNotifItems] = useState<AppNotification[]>([]);
@@ -277,14 +277,16 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
           + New Post
         </button>
 
-        {/* Fediverse */}
-        <button
-          className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
-          onClick={() => navigate('/fediverse')}
-          aria-label="Fediverse"
-        >
-          <FediverseIcon size={22} />
-        </button>
+        {/* Fediverse (only when enabled) */}
+        {federationEnabled && (
+          <button
+            className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
+            onClick={() => navigate('/fediverse')}
+            aria-label="Fediverse"
+          >
+            <FediverseIcon size={22} />
+          </button>
+        )}
 
         {/* Home */}
         <button

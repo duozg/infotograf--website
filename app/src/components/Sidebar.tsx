@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 import { Avatar } from './Avatar';
 import { useAuth } from '../context/AuthContext';
+import { useAppState } from '../context/AppStateContext';
 import { FediverseIcon } from './FediverseIcon';
 
 interface NavItem {
   icon: (active: boolean) => React.ReactNode;
   label: string;
   path: string;
+  fedOnly?: boolean;
 }
 
 function SvgIcon({
@@ -81,9 +83,10 @@ const NAV_ITEMS: (NavItem | 'divider')[] = [
     icon: () => <FediverseIcon size={20} />,
     label: 'Federation',
     path: '/fediverse',
+    fedOnly: true,
   },
   {
-    icon: (active) => (
+    icon: (active: boolean) => (
       <SvgIcon active={active} color="#f5a623">
         <circle cx="12" cy="12" r="2" />
         <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14" />
@@ -91,6 +94,7 @@ const NAV_ITEMS: (NavItem | 'divider')[] = [
     ),
     label: 'RSS Feeds',
     path: '/rss',
+    fedOnly: true,
   },
   'divider',
   {
@@ -119,6 +123,11 @@ export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { federationEnabled } = useAppState();
+
+  const visibleItems = federationEnabled
+    ? NAV_ITEMS
+    : NAV_ITEMS.filter(item => item === 'divider' || !item.fedOnly);
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -143,7 +152,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className={styles.nav}>
-        {NAV_ITEMS.map((item, i) => {
+        {visibleItems.map((item, i) => {
           if (item === 'divider') {
             return <div key={`div-${i}`} className={styles.divider} />;
           }

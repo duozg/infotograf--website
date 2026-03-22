@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styles from './FederationSettingsModal.module.css';
 import { api } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { useAppState } from '../../context/AppStateContext';
 import { FediverseIcon } from '../../components/FediverseIcon';
 import { FederationStatus, DeliverySummary, DeliveryLogEntry } from '../../models';
 import { timeAgo } from '../../utils/timeAgo';
@@ -20,6 +21,7 @@ function statusColor(status: DeliveryLogEntry['status']): string {
 
 export function FederationSettingsModal({ onClose }: { onClose: () => void }) {
   const { user } = useAuth();
+  const { setFederationEnabled: setGlobalFederation } = useAppState();
 
   // Federation status
   const [status, setStatus] = useState<FederationStatus | null>(null);
@@ -77,8 +79,10 @@ export function FederationSettingsModal({ onClose }: { onClose: () => void }) {
     try {
       const res = await api.post<FederationStatus>('/federation/toggle', { enabled: !prev });
       setStatus(res);
+      setGlobalFederation(res.federationEnabled);
     } catch {
       setStatus(s => s ? { ...s, federationEnabled: prev } : s);
+      setGlobalFederation(prev);
     } finally {
       setToggling(false);
     }
