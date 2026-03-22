@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './FeedPage.module.css';
 import { PostCard } from '../../components/PostCard';
@@ -43,6 +43,22 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
       }
     };
   }, [posts]);
+
+  // Infinite scroll — auto-load more when near bottom
+  const loadingRef = useRef(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loadingRef.current || !hasMore) return;
+      const scrollBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+      if (scrollBottom < 400) {
+        loadingRef.current = true;
+        loadMore();
+        setTimeout(() => { loadingRef.current = false; }, 1000);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMore, loadMore]);
 
   const handleUpdate = useCallback((updated: Post) => {
     setItems(prev => prev.map(p => p.id === updated.id ? updated : p));

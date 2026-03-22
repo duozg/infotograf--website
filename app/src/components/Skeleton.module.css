@@ -21,11 +21,11 @@
 }
 
 .avatar {
-  border-radius: 50%;
+  border-radius: 4px;
 }
 
 .image {
   width: 100%;
-  padding-bottom: 100%;
+  padding-bottom: 125%; /* 4:5 ratio */
   position: relative;
 }

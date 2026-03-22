@@ -440,12 +440,13 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
         {!localPost.commentsDisabled && (
           <div className={styles.commentBar}>
             <input
+              id={`comment-${localPost.id}`}
               placeholder="Add a comment..."
               onKeyDown={e => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   const body = e.currentTarget.value.trim();
                   e.currentTarget.value = '';
-                  api.post(`/posts/${localPost.id}/comments`, { body }).then(() => {
+                  api.post(`${postEndpoint}/comments`, { body }).then(() => {
                     const updated = { ...localPost, commentCount: (toCount(localPost.commentCount) + 1) };
                     setLocalPost(updated);
                     onUpdate?.(updated);
@@ -453,7 +454,17 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
                 }
               }}
             />
-            <button>Post</button>
+            <button onClick={() => {
+              const input = document.getElementById(`comment-${localPost.id}`) as HTMLInputElement;
+              if (!input || !input.value.trim()) return;
+              const body = input.value.trim();
+              input.value = '';
+              api.post(`${postEndpoint}/comments`, { body }).then(() => {
+                const updated = { ...localPost, commentCount: (toCount(localPost.commentCount) + 1) };
+                setLocalPost(updated);
+                onUpdate?.(updated);
+              }).catch(() => {});
+            }}>Post</button>
           </div>
         )}
       </article>

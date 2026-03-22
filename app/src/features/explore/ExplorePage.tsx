@@ -90,6 +90,18 @@ export function ExplorePage() {
           </div>
         </div>
 
+        {/* Category pills (when not searching) */}
+        {!isSearching && (
+          <div className={styles.explorePills}>
+            {['All', '🎞 Film', '🏙 Street', '🌄 Landscape', '👤 Portrait', '🌙 Night'].map(label => (
+              <button key={label} className={`${styles.epill} ${label === 'All' ? styles.active : ''}`}>
+                {label}
+              </button>
+            ))}
+            <button className={`${styles.epill} ${styles.fedi}`}>⬡ Fediverse</button>
+          </div>
+        )}
+
         {/* Tabs (when searching) */}
         {isSearching && (
           <div className={styles.tabs}>
