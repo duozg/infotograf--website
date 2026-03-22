@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './TopNav.module.css';
 import { useAppState } from '../context/AppStateContext';
@@ -40,7 +40,6 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [notifItems, setNotifItems] = useState<AppNotification[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const fetchNotifications = useCallback(async () => {
     setNotifLoading(true);
@@ -182,7 +181,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
         </button>
 
         {/* Heart / Activity dropdown */}
-        <div className={styles.notifWrapper} ref={dropdownRef}>
+        <div className={styles.notifWrapper}>
           <button
             className={`${styles.navBtn} ${showNotifDropdown || isActivity ? styles.active : ''}`}
             onClick={() => setShowNotifDropdown(prev => !prev)}
@@ -229,7 +228,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
                       className={styles.notifItem}
                       onClick={() => handleNotifClick(notif)}
                     >
-                      <Avatar src={notif.actorAvatarUrl} username={notif.actorUsername} size={32} />
+                      <Avatar src={notif.actorAvatarUrl} username={notif.actorUsername} size="sm" />
 
                       <div className={styles.notifText}>
                         <b>{main}</b>{action}

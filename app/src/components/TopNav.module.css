@@ -179,8 +179,9 @@
 
 .notifDropdown {
   position: absolute;
-  top: 52px;
-  right: 20px;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
   width: 400px;
   max-height: 500px;
   overflow-y: auto;
