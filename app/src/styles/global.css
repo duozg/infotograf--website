@@ -53,7 +53,7 @@ ul, ol { list-style: none; }
 
 .app-main-inner {
   width: 100%;
-  max-width: 935px;
+  max-width: 975px;
   display: flex;
   gap: 28px;
   padding: 20px;
@@ -61,8 +61,12 @@ ul, ol { list-style: none; }
 
 .app-feed-col {
   flex: 1;
-  max-width: 600px;
   min-width: 0;
+}
+
+/* Only constrain feed to 600px — other pages use full width */
+.app-feed-col.narrow {
+  max-width: 600px;
 }
 
 .app-aside-col {

@@ -96,7 +96,7 @@ function AuthenticatedApp() {
 
         <div className="app-main">
           <div className="app-main-inner">
-            <div className="app-feed-col">
+            <div className={`app-feed-col${showAside ? ' narrow' : ''}`}>
               <Routes>
                 <Route
                   path="/"
