@@ -75,7 +75,7 @@ export function FederationSettingsModal({ onClose }: { onClose: () => void }) {
     setToggling(true);
     setStatus(s => s ? { ...s, federationEnabled: !prev } : s);
     try {
-      const res = await api.post<FederationStatus>('/federation/toggle');
+      const res = await api.post<FederationStatus>('/federation/toggle', { enabled: !prev });
       setStatus(res);
     } catch {
       setStatus(s => s ? { ...s, federationEnabled: prev } : s);
