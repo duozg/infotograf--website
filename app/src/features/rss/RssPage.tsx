@@ -44,12 +44,10 @@ function loadReadIds(): Set<string> {
 }
 function saveReadIds(ids: Set<string>) { localStorage.setItem('rss_read', JSON.stringify([...ids])); }
 
-// ── Feed search via Feedly (proxied through allorigins to avoid CORS) ──
+// ── Feed search via our Vercel proxy → Feedly ──
 async function searchFeeds(query: string): Promise<FeedlyResult[]> {
-  const feedlyUrl = `https://cloud.feedly.com/v3/search/feeds?query=${encodeURIComponent(query)}&count=12`;
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedlyUrl)}`;
   try {
-    const res = await fetch(proxyUrl);
+    const res = await fetch(`/api/rss/search?q=${encodeURIComponent(query)}&count=12`);
     if (!res.ok) return [];
     const data = await res.json();
     return (data.results || []) as FeedlyResult[];
@@ -58,17 +56,9 @@ async function searchFeeds(query: string): Promise<FeedlyResult[]> {
   }
 }
 
-// ── CORS proxy for fetching feeds ──
+// ── Fetch feeds via our Vercel proxy ──
 async function fetchFeedXml(url: string): Promise<string> {
-  try {
-    const res = await fetch(url);
-    if (res.ok) {
-      const text = await res.text();
-      if (text.includes('<rss') || text.includes('<feed') || text.includes('<channel')) return text;
-    }
-  } catch { /* CORS blocked */ }
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-  const res = await fetch(proxyUrl);
+  const res = await fetch(`/api/rss/fetch?url=${encodeURIComponent(url)}`);
   if (!res.ok) throw new Error('Failed to fetch');
   return res.text();
 }

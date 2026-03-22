@@ -106,6 +106,54 @@ export default async function middleware(request: Request): Promise<Response | u
     return undefined;
   }
 
+  // ── RSS feed search proxy (Feedly API) ──
+  if (url.pathname === "/api/rss/search") {
+    const query = url.searchParams.get("q") || "";
+    const count = url.searchParams.get("count") || "12";
+    const feedlyUrl = `https://cloud.feedly.com/v3/search/feeds?query=${encodeURIComponent(query)}&count=${count}`;
+    try {
+      const res = await fetch(feedlyUrl);
+      const body = await res.text();
+      return new Response(body, {
+        status: res.status,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "public, max-age=300",
+        },
+      });
+    } catch {
+      return new Response(JSON.stringify({ results: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      });
+    }
+  }
+
+  // ── RSS feed fetch proxy ──
+  if (url.pathname === "/api/rss/fetch") {
+    const feedUrl = url.searchParams.get("url");
+    if (!feedUrl) {
+      return new Response("Missing url parameter", { status: 400 });
+    }
+    try {
+      const res = await fetch(feedUrl, {
+        headers: { Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml" },
+      });
+      const body = await res.text();
+      return new Response(body, {
+        status: res.status,
+        headers: {
+          "Content-Type": res.headers.get("Content-Type") || "text/xml",
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "public, max-age=300",
+        },
+      });
+    } catch {
+      return new Response("Failed to fetch feed", { status: 502 });
+    }
+  }
+
   if (url.pathname.startsWith("/.well-known/") || url.pathname.startsWith("/nodeinfo/") || url.pathname.startsWith("/ap/")) {
     const target = `${RAILWAY_BASE}${url.pathname}${url.search}`;
 
@@ -144,5 +192,5 @@ export default async function middleware(request: Request): Promise<Response | u
 }
 
 export const config = {
-  matcher: ["/@:path*", "/.well-known/:path*", "/nodeinfo/:path*", "/ap/:path*"],
+  matcher: ["/@:path*", "/.well-known/:path*", "/nodeinfo/:path*", "/ap/:path*", "/api/rss/:path*"],
 };
