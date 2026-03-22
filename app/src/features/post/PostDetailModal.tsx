@@ -249,9 +249,10 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
 
   if (!post) return null;
 
+  const hasImage = !!(post.imageUrl || (post.imageUrls && post.imageUrls.length > 0));
   const images = post.imageUrls && post.imageUrls.length > 0
     ? post.imageUrls
-    : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl, filterName: post.filterName }];
+    : post.imageUrl ? [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl, filterName: post.filterName }] : [];
 
   /* ── Shared right panel content ── */
   const rightPanel = (
@@ -518,11 +519,13 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     return (
       <>
         <div className={styles.page}>
-          <div className={styles.pageModal}>
-            <div className={styles.imagePanel}>
-              <ImageCarousel images={images} filterName={post.filterName} />
-            </div>
-            <div className={styles.rightPanel}>
+          <div className={styles.pageModal} style={hasImage ? undefined : { maxWidth: 600 }}>
+            {hasImage && (
+              <div className={styles.imagePanel}>
+                <ImageCarousel images={images} filterName={post.filterName} />
+              </div>
+            )}
+            <div className={styles.rightPanel} style={hasImage ? undefined : { flex: 1 }}>
               {rightPanel}
             </div>
           </div>
@@ -536,11 +539,13 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   return (
     <>
       <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose?.(); }}>
-        <div className={styles.modal}>
-          <div className={styles.imagePanel}>
-            <ImageCarousel images={images} filterName={post.filterName} />
-          </div>
-          <div className={styles.rightPanel}>
+        <div className={styles.modal} style={hasImage ? undefined : { maxWidth: 500 }}>
+          {hasImage && (
+            <div className={styles.imagePanel}>
+              <ImageCarousel images={images} filterName={post.filterName} />
+            </div>
+          )}
+          <div className={styles.rightPanel} style={hasImage ? undefined : { flex: 1 }}>
             {rightPanel}
           </div>
         </div>

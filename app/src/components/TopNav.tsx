@@ -5,7 +5,7 @@ import { useAppState } from '../context/AppStateContext';
 import { useAuth } from '../context/AuthContext';
 import { FediverseIcon } from './FediverseIcon';
 import { api, parsePaginated } from '../api/client';
-import { AppNotification, Conversation, User, HashtagSuggestion } from '../models';
+import { AppNotification, Conversation, User, HashtagSuggestion, RemoteActorSummary } from '../models';
 import { Avatar } from './Avatar';
 import { ChatWidget } from './ChatWidget';
 import { timeAgo } from '../utils/timeAgo';
@@ -50,7 +50,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
   const [dmLoading, setDmLoading] = useState(false);
 
   // Search state
-  const [searchResults, setSearchResults] = useState<{ users: User[]; hashtags: HashtagSuggestion[] }>({ users: [], hashtags: [] });
+  const [searchResults, setSearchResults] = useState<{ users: User[]; hashtags: HashtagSuggestion[]; fediverse: RemoteActorSummary[] }>({ users: [], hashtags: [], fediverse: [] });
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const searchTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,7 +60,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
     const q = searchQuery.trim();
     if (!q) {
       setShowSearchDropdown(false);
-      setSearchResults({ users: [], hashtags: [] });
+      setSearchResults({ users: [], hashtags: [], fediverse: [] });
       return;
     }
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
@@ -68,15 +68,23 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
       setSearchLoading(true);
       setShowSearchDropdown(true);
       try {
-        const [usersRes, tagsRes] = await Promise.allSettled([
+        const isFediQuery = q.includes('@');
+        const promises: [Promise<unknown>, Promise<unknown>, Promise<unknown>] = [
           api.get<User[]>(`/users/search?q=${encodeURIComponent(q)}`),
           api.get<HashtagSuggestion[]>(`/explore/hashtags/search?q=${encodeURIComponent(q.replace('#', ''))}`),
-        ]);
-        const users = usersRes.status === 'fulfilled' ? (Array.isArray(usersRes.value) ? usersRes.value : []) : [];
-        const hashtags = tagsRes.status === 'fulfilled' ? (Array.isArray(tagsRes.value) ? tagsRes.value : []) : [];
-        setSearchResults({ users, hashtags });
+          isFediQuery ? api.get<RemoteActorSummary | RemoteActorSummary[]>(`/federation/search?q=${encodeURIComponent(q)}`) : Promise.resolve(null),
+        ];
+        const [usersRes, tagsRes, fediRes] = await Promise.allSettled(promises);
+        const users = usersRes.status === 'fulfilled' ? (Array.isArray(usersRes.value) ? usersRes.value as User[] : []) : [];
+        const hashtags = tagsRes.status === 'fulfilled' ? (Array.isArray(tagsRes.value) ? tagsRes.value as HashtagSuggestion[] : []) : [];
+        let fediverse: RemoteActorSummary[] = [];
+        if (fediRes.status === 'fulfilled' && fediRes.value) {
+          const v = fediRes.value;
+          fediverse = Array.isArray(v) ? v : [v as RemoteActorSummary];
+        }
+        setSearchResults({ users, hashtags, fediverse });
       } catch {
-        setSearchResults({ users: [], hashtags: [] });
+        setSearchResults({ users: [], hashtags: [], fediverse: [] });
       } finally {
         setSearchLoading(false);
       }
@@ -209,21 +217,8 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
             <div className={styles.searchBackdrop} onClick={() => setShowSearchDropdown(false)} />
             <div className={styles.searchDropdown}>
               {searchLoading && <div className={styles.searchLoading}>Searching...</div>}
-              {!searchLoading && searchResults.users.length === 0 && searchResults.hashtags.length === 0 && (
+              {!searchLoading && searchResults.users.length === 0 && searchResults.hashtags.length === 0 && searchResults.fediverse.length === 0 && (
                 <div className={styles.searchEmpty}>No results for "{searchQuery}"</div>
-              )}
-              {searchResults.hashtags.length > 0 && (
-                <div className={styles.searchSection}>
-                  {searchResults.hashtags.map(tag => (
-                    <div key={tag.name} className={styles.searchItem} onClick={() => handleSearchResultClick('hashtag', tag.name)}>
-                      <div className={styles.searchHashIcon}>#</div>
-                      <div className={styles.searchItemInfo}>
-                        <div className={styles.searchItemName}>#{tag.name}</div>
-                        <div className={styles.searchItemSub}>{tag.postCount.toLocaleString()} posts</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               )}
               {searchResults.users.length > 0 && (
                 <div className={styles.searchSection}>
@@ -233,6 +228,33 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
                       <div className={styles.searchItemInfo}>
                         <div className={styles.searchItemName}>{u.username}</div>
                         {u.displayName && <div className={styles.searchItemSub}>{u.displayName}</div>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {searchResults.fediverse.length > 0 && (
+                <div className={styles.searchSection}>
+                  <div className={styles.searchSectionLabel}>Fediverse</div>
+                  {searchResults.fediverse.map(actor => (
+                    <div key={actor.id} className={styles.searchItem} onClick={() => { setShowSearchDropdown(false); setSearchQuery(''); navigate(`/profile/${actor.username}`); }}>
+                      <Avatar src={actor.avatarUrl} username={actor.username} size="md" isRemote />
+                      <div className={styles.searchItemInfo}>
+                        <div className={styles.searchItemName}>{actor.displayName || actor.username}</div>
+                        <div className={styles.searchItemSub} style={{ color: 'var(--purple)' }}>@{actor.username}@{actor.domain}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {searchResults.hashtags.length > 0 && (
+                <div className={styles.searchSection}>
+                  {searchResults.hashtags.map(tag => (
+                    <div key={tag.name} className={styles.searchItem} onClick={() => handleSearchResultClick('hashtag', tag.name)}>
+                      <div className={styles.searchHashIcon}>#</div>
+                      <div className={styles.searchItemInfo}>
+                        <div className={styles.searchItemName}>#{tag.name}</div>
+                        <div className={styles.searchItemSub}>{tag.postCount.toLocaleString()} posts</div>
                       </div>
                     </div>
                   ))}
