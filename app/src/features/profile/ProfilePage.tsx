@@ -181,6 +181,7 @@ export function ProfilePage() {
   const handleFollow = useCallback(async () => {
     if (!profile) return;
     const wasFollowing = isFollowing;
+    if (wasFollowing && !window.confirm(`Unfollow @${profile.username}?`)) return;
     setIsFollowing(!wasFollowing);
     setProfile(p => p ? {
       ...p,
@@ -202,6 +203,7 @@ export function ProfilePage() {
 
   const handleBlock = useCallback(async () => {
     if (!profile) return;
+    if (!isBlocked && !window.confirm(`Block @${profile.username}? They won't be able to see your profile or posts.`)) return;
     setShowMoreMenu(false);
     const wasBlocked = isBlocked;
     setIsBlocked(!wasBlocked);
@@ -487,6 +489,22 @@ export function ProfilePage() {
                       onClick={() => navigate(`/post/${post.id}`)}
                     >
                       {thumb && <img src={thumb} alt="" loading="lazy" />}
+                      {images.length > 1 && (
+                        <div className={styles.carouselBadge}>
+                          <svg viewBox="0 0 24 24" fill="white" width={16} height={16}>
+                            <rect x="2" y="2" width="15" height="15" rx="2" fill="none" stroke="white" strokeWidth="2"/>
+                            <rect x="7" y="7" width="15" height="15" rx="2" fill="rgba(0,0,0,0.5)" stroke="white" strokeWidth="2"/>
+                          </svg>
+                        </div>
+                      )}
+                      <div className={styles.gridOverlay}>
+                        {toCount(post.likeCount) > 0 && (
+                          <span className={styles.gridLikes}>
+                            <svg viewBox="0 0 24 24" fill="white" width={12} height={12}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            {toCount(post.likeCount).toLocaleString()}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

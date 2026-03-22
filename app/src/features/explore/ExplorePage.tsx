@@ -5,6 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
 import { Post, User, HashtagSuggestion } from '../../models';
 import { imageUrl } from '../../utils/imageUrl';
+import { toCount } from '../../utils/textParser';
 
 type SearchTab = 'posts' | 'users' | 'tags';
 
@@ -126,6 +127,14 @@ export function ExplorePage() {
                         onClick={() => navigate(`/post/${post.id}`)}
                       >
                         {thumb && <img src={thumb} alt="" loading="lazy" />}
+                        <div className={styles.gridOverlay}>
+                          {toCount(post.likeCount) > 0 && (
+                            <span className={styles.gridLikes}>
+                              <svg viewBox="0 0 24 24" fill="white" width={12} height={12}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                              {toCount(post.likeCount).toLocaleString()}
+                            </span>
+                          )}
+                        </div>
                         {images.length > 1 && (
                           <div className={styles.multipleIndicator}>
                             <svg viewBox="0 0 24 24" fill="white" width={18} height={18}>

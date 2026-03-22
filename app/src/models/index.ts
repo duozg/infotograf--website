@@ -65,6 +65,8 @@ export interface Comment {
   createdAt: string;
   likeCount: number | string | null;
   isLiked?: boolean;
+  remoteDomain?: string;
+  remoteActorId?: string;
 }
 
 export interface MessageReaction {
@@ -118,6 +120,8 @@ export interface CoalescedActor {
   actorId?: string;
   actorUsername?: string;
   actorAvatarUrl?: string;
+  remoteDomain?: string;
+  remoteActorId?: string;
 }
 
 export interface AppNotification {
@@ -137,6 +141,8 @@ export interface AppNotification {
   coalescedActors?: CoalescedActor[];
   coalescedCount?: number;
   targetUsername?: string;
+  remoteDomain?: string;
+  remoteActorId?: string;
 }
 
 export interface AuthResponse {

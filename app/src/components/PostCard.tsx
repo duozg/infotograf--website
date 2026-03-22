@@ -11,6 +11,7 @@ import { toCount } from '../utils/textParser';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { FediverseIcon } from './FediverseIcon';
+import { RemoteActorModal } from '../features/fediverse/RemoteActorModal';
 
 interface PostCardProps {
   post: Post;
@@ -87,7 +88,9 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   const [editingCaption, setEditingCaption] = useState(false);
   const [captionDraft, setCaptionDraft] = useState('');
   const [showHeart, setShowHeart] = useState(false);
+  const [captionExpanded, setCaptionExpanded] = useState(false);
   const [likedByUsers, setLikedByUsers] = useState<User[] | null>(null);
+  const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
 
   // Sync with parent
   React.useEffect(() => {
@@ -170,7 +173,11 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
 
   const handleUserClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (localPost.username) {
+    if (localPost.remoteDomain && localPost.remoteActorId) {
+      setRemoteActorId(localPost.remoteActorId);
+    } else if (localPost.remoteDomain && localPost.userId) {
+      setRemoteActorId(localPost.userId);
+    } else if (localPost.username) {
       onUserClick?.(localPost.username);
       navigate(`/profile/${localPost.username}`);
     }
@@ -212,6 +219,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   }, [localPost, onUpdate]);
 
   const handleDeletePost = useCallback(async () => {
+    if (!window.confirm('Delete this post? This cannot be undone.')) return;
     setShowMenu(false);
     try {
       await api.delete(`/posts/${localPost.id}`);
@@ -250,7 +258,11 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
             size="md"
             isRemote={!!localPost.remoteDomain}
             onClick={() => {
-              if (localPost.username) {
+              if (localPost.remoteDomain && localPost.remoteActorId) {
+                setRemoteActorId(localPost.remoteActorId);
+              } else if (localPost.remoteDomain && localPost.userId) {
+                setRemoteActorId(localPost.userId);
+              } else if (localPost.username) {
                 onUserClick?.(localPost.username);
                 navigate(`/profile/${localPost.username}`);
               }
@@ -383,14 +395,21 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
               </div>
             </div>
           ) : localPost.caption ? (
-            <div className={styles.caption}>
+            <div className={`${styles.caption} ${!captionExpanded && localPost.caption.length > 120 ? styles.captionTruncated : ''}`}>
               <span
                 className={`${styles.captionUsername} ${localPost.remoteDomain ? styles.usernameRemote : ''}`}
                 onClick={handleUserClick}
               >
                 {localPost.username}
               </span>
-              <TextEntityRenderer text={localPost.caption} />
+              {captionExpanded || localPost.caption.length <= 120 ? (
+                <TextEntityRenderer text={localPost.caption} />
+              ) : (
+                <>
+                  <TextEntityRenderer text={localPost.caption.slice(0, 120) + '...'} />
+                  <button className={styles.moreBtn2} onClick={() => setCaptionExpanded(true)}>more</button>
+                </>
+              )}
             </div>
           ) : null}
           {localPost.commentsDisabled ? (
@@ -408,6 +427,13 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
           </div>
         </div>
       </article>
+
+      {remoteActorId && (
+        <RemoteActorModal
+          remoteActorId={remoteActorId}
+          onClose={() => setRemoteActorId(null)}
+        />
+      )}
 
       {likedByUsers !== null && (
         <div

@@ -390,3 +390,9 @@
   display: flex;
   gap: 8px;
 }
+
+/* ── Reply threading + OP badge + remote ── */
+
+.replyComment { padding-left: 40px; }
+.opBadge { font-size: 10px; font-weight: 700; color: var(--text-link); margin-left: 4px; }
+.remoteUsername { color: var(--fediverse-purple); }

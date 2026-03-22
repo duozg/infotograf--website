@@ -8,6 +8,7 @@ import { parsePaginated } from '../../api/client';
 import { timeAgo } from '../../utils/timeAgo';
 import { imageUrl } from '../../utils/imageUrl';
 import { useAppState } from '../../context/AppStateContext';
+import { RemoteActorModal } from '../fediverse/RemoteActorModal';
 
 type NotifTab = 'you' | 'friends';
 
@@ -43,6 +44,7 @@ export function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [friendsLoading, setFriendsLoading] = useState(false);
   const [followingStates, setFollowingStates] = useState<Record<string, boolean>>({});
+  const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
 
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
@@ -167,11 +169,12 @@ export function NotificationsPage() {
                   className={`${styles.notifItem} ${!notif.read ? styles.unread : ''}`}
                   onClick={() => {
                     if (notif.postId) navigate(`/post/${notif.postId}`);
+                    else if (notif.remoteDomain && notif.remoteActorId) setRemoteActorId(notif.remoteActorId);
                     else if (notif.actorUsername) navigate(`/profile/${notif.actorUsername}`);
                   }}
                 >
                   <div className={styles.avatarStack}>
-                    <Avatar src={notif.actorAvatarUrl} username={notif.actorUsername} size="lg" />
+                    <Avatar src={notif.actorAvatarUrl} username={notif.actorUsername} size="lg" isRemote={!!notif.remoteDomain} />
                   </div>
 
                   <div className={styles.notifContent}>
@@ -204,6 +207,13 @@ export function NotificationsPage() {
           </div>
         ))}
       </div>
+
+      {remoteActorId && (
+        <RemoteActorModal
+          remoteActorId={remoteActorId}
+          onClose={() => setRemoteActorId(null)}
+        />
+      )}
     </div>
   );
 }

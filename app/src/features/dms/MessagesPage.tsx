@@ -460,7 +460,7 @@ export function MessagesPage() {
         ) : (
           <>
             {/* Chat header */}
-            <div className={styles.chatHeader}>
+            <div className={`${styles.chatHeader} ${isOtherUserOnline ? styles.chatHeaderPresent : ''}`}>
               <div
                 className={styles.chatHeaderInfo}
                 onClick={() => navigate(`/profile/${otherMember?.username}`)}

@@ -11,6 +11,7 @@ import { FediverseIcon } from '../../components/FediverseIcon';
 import { timeAgo } from '../../utils/timeAgo';
 import { toCount } from '../../utils/textParser';
 import { useAuth } from '../../context/AuthContext';
+import { RemoteActorModal } from '../fediverse/RemoteActorModal';
 
 interface PostDetailModalProps {
   postId?: string;
@@ -52,6 +53,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
   const [showOwnerMenu, setShowOwnerMenu] = useState(false);
   const [editingCaption, setEditingCaption] = useState(false);
   const [captionDraft, setCaptionDraft] = useState('');
+  const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!postId) return;
@@ -213,6 +215,22 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     } catch {}
   }, [post, postEndpoint, commentCursor]);
 
+  const handleCommentUserClick = (comment: Comment) => {
+    if (comment.remoteDomain && comment.remoteActorId) {
+      setRemoteActorId(comment.remoteActorId);
+    } else {
+      navigate(`/profile/${comment.username}`);
+    }
+  };
+
+  const handlePostUserClick = () => {
+    if (post && post.remoteDomain && (post.remoteActorId || post.userId)) {
+      setRemoteActorId(post.remoteActorId || post.userId);
+    } else {
+      navigate(`/profile/${post?.username}`);
+    }
+  };
+
   if (!postId) return null;
 
   if (loading) {
@@ -244,14 +262,15 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
           src={post.avatarUrl}
           username={post.username}
           size="md"
-          onClick={() => navigate(`/profile/${post.username}`)}
+          isRemote={!!post.remoteDomain}
+          onClick={handlePostUserClick}
         />
         <div className={styles.userInfo}>
           <div className={styles.usernameRow}>
             <span
               className={styles.username}
               style={post.remoteDomain ? { color: 'var(--fediverse-purple)' } : undefined}
-              onClick={() => navigate(`/profile/${post.username}`)}
+              onClick={handlePostUserClick}
             >
               {post.username}
             </span>
@@ -370,63 +389,85 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
         </div>
 
         <div className={styles.comments}>
-          {comments.map(comment => (
-            <div key={comment.id} className={styles.comment}>
-              <Avatar
-                src={comment.avatarUrl}
-                username={comment.username}
-                size="sm"
-                onClick={() => navigate(`/profile/${comment.username}`)}
-              />
-              <div className={styles.commentBody}>
-                <div>
-                  <span
-                    className={styles.commentUser}
-                    onClick={() => navigate(`/profile/${comment.username}`)}
-                  >
-                    {comment.username}
-                  </span>
-                  <TextEntityRenderer text={comment.body} className={styles.commentText} />
-                </div>
-                <div className={styles.commentMeta}>
-                  <span className={styles.commentTime}>{timeAgo(comment.createdAt)}</span>
-                  {toCount(comment.likeCount) > 0 && (
-                    <span className={styles.commentTime}>{toCount(comment.likeCount)} likes</span>
-                  )}
-                  <button
-                    className={`${styles.commentLikeBtn} ${comment.isLiked ? styles.liked : ''}`}
-                    onClick={() => handleLikeComment(comment)}
-                    aria-label={comment.isLiked ? 'Unlike comment' : 'Like comment'}
-                  >
-                    <svg viewBox="0 0 24 24" fill={comment.isLiked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} style={{ width: 12, height: 12 }}>
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                  </button>
-                  {!post.commentsDisabled && (
-                    <button
-                      className={styles.replyBtn}
-                      onClick={() => {
-                        setReplyTo(comment);
-                        setCommentText(`@${comment.username} `);
-                        commentInputRef.current?.focus();
-                      }}
+          {(() => {
+            const topLevel = comments.filter(c => !c.parentId);
+            const repliesByParent: Record<string, Comment[]> = {};
+            comments.forEach(c => {
+              if (c.parentId) {
+                if (!repliesByParent[c.parentId]) repliesByParent[c.parentId] = [];
+                repliesByParent[c.parentId].push(c);
+              }
+            });
+
+            const renderComment = (comment: Comment, isReply: boolean) => (
+              <div key={comment.id} className={`${styles.comment} ${isReply ? styles.replyComment : ''}`}>
+                <Avatar
+                  src={comment.avatarUrl}
+                  username={comment.username}
+                  size={isReply ? 'sm' : 'sm'}
+                  isRemote={!!comment.remoteDomain}
+                  onClick={() => handleCommentUserClick(comment)}
+                />
+                <div className={styles.commentBody}>
+                  <div>
+                    <span
+                      className={`${styles.commentUser} ${comment.remoteDomain ? styles.remoteUsername : ''}`}
+                      onClick={() => handleCommentUserClick(comment)}
                     >
-                      Reply
-                    </button>
-                  )}
-                  {comment.userId === user?.id && (
+                      {comment.username}
+                    </span>
+                    {comment.userId === post.userId && (
+                      <span className={styles.opBadge}>[OP]</span>
+                    )}
+                    <TextEntityRenderer text={comment.body} className={styles.commentText} />
+                  </div>
+                  <div className={styles.commentMeta}>
+                    <span className={styles.commentTime}>{timeAgo(comment.createdAt)}</span>
+                    {toCount(comment.likeCount) > 0 && (
+                      <span className={styles.commentTime}>{toCount(comment.likeCount)} likes</span>
+                    )}
                     <button
-                      className={styles.replyBtn}
-                      style={{ color: 'var(--accent-red)' }}
-                      onClick={() => handleDeleteComment(comment)}
+                      className={`${styles.commentLikeBtn} ${comment.isLiked ? styles.liked : ''}`}
+                      onClick={() => handleLikeComment(comment)}
+                      aria-label={comment.isLiked ? 'Unlike comment' : 'Like comment'}
                     >
-                      Delete
+                      <svg viewBox="0 0 24 24" fill={comment.isLiked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} style={{ width: 12, height: 12 }}>
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
                     </button>
-                  )}
+                    {!post.commentsDisabled && (
+                      <button
+                        className={styles.replyBtn}
+                        onClick={() => {
+                          setReplyTo(comment);
+                          setCommentText(`@${comment.username} `);
+                          commentInputRef.current?.focus();
+                        }}
+                      >
+                        Reply
+                      </button>
+                    )}
+                    {comment.userId === user?.id && (
+                      <button
+                        className={styles.replyBtn}
+                        style={{ color: 'var(--accent-red)' }}
+                        onClick={() => handleDeleteComment(comment)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+
+            return topLevel.map(comment => (
+              <React.Fragment key={comment.id}>
+                {renderComment(comment, false)}
+                {(repliesByParent[comment.id] || []).map(reply => renderComment(reply, true))}
+              </React.Fragment>
+            ));
+          })()}
           {commentCursor && (
             <button className={styles.loadMoreComments} onClick={loadMoreComments}>
               Load more comments…
@@ -465,11 +506,37 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
     </>
   );
 
+  const remoteActorModal = remoteActorId ? (
+    <RemoteActorModal
+      remoteActorId={remoteActorId}
+      onClose={() => setRemoteActorId(null)}
+    />
+  ) : null;
+
   /* ── Page variant: centered column ── */
   if (asPage) {
     return (
-      <div className={styles.page}>
-        <div className={styles.pageModal}>
+      <>
+        <div className={styles.page}>
+          <div className={styles.pageModal}>
+            <div className={styles.imagePanel}>
+              <ImageCarousel images={images} filterName={post.filterName} />
+            </div>
+            <div className={styles.rightPanel}>
+              {rightPanel}
+            </div>
+          </div>
+        </div>
+        {remoteActorModal}
+      </>
+    );
+  }
+
+  /* ── Modal overlay: side-by-side ── */
+  return (
+    <>
+      <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose?.(); }}>
+        <div className={styles.modal}>
           <div className={styles.imagePanel}>
             <ImageCarousel images={images} filterName={post.filterName} />
           </div>
@@ -478,20 +545,7 @@ export function PostDetailModal({ postId: propPostId, onClose, asPage }: PostDet
           </div>
         </div>
       </div>
-    );
-  }
-
-  /* ── Modal overlay: side-by-side ── */
-  return (
-    <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose?.(); }}>
-      <div className={styles.modal}>
-        <div className={styles.imagePanel}>
-          <ImageCarousel images={images} filterName={post.filterName} />
-        </div>
-        <div className={styles.rightPanel}>
-          {rightPanel}
-        </div>
-      </div>
-    </div>
+      {remoteActorModal}
+    </>
   );
 }
