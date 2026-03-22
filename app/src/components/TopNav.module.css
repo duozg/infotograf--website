@@ -170,3 +170,86 @@
 .badgeRed {
   background: #ff6e78;
 }
+
+/* ── Notification dropdown ── */
+
+.notifWrapper {
+  position: relative;
+}
+
+.notifDropdown {
+  position: absolute;
+  top: 52px;
+  right: 20px;
+  width: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+}
+
+.notifHeader {
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--t1);
+  border-bottom: 1px solid var(--divider);
+  position: sticky;
+  top: 0;
+  background: var(--card);
+}
+
+.notifItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--divider);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.notifItem:hover {
+  background: var(--elevated);
+}
+
+.notifText {
+  flex: 1;
+  font-size: 13px;
+  color: var(--t1);
+  line-height: 1.4;
+}
+
+.notifText b {
+  font-weight: 700;
+}
+
+.notifTime {
+  font-size: 11px;
+  color: var(--t2);
+}
+
+.notifThumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.notifBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.notifLoading,
+.notifEmpty {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--t2);
+}

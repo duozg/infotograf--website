@@ -5,10 +5,8 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--card);
-  min-height: 600px;
+  height: calc(100vh - 72px);
   overflow: hidden;
-  max-width: 935px;
-  margin: 16px auto 0;
 }
 
 /* ── Left panel: conversation list ── */
@@ -234,7 +232,6 @@
 .bubbleCol.mine { align-items: flex-end; }
 
 .bubble {
-  width: fit-content;
   max-width: 65%;
   padding: 10px 14px;
   border-radius: 18px;
@@ -242,6 +239,7 @@
   line-height: 1.5;
   word-break: break-word;
   white-space: pre-wrap;
+  min-width: 0;
 }
 
 .bubble.mine {

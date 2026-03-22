@@ -139,6 +139,13 @@
 }
 .searchBar:focus-within { border-color: var(--tlink); }
 
+.searchIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--t2);
+}
+
 .searchInput {
   flex: 1;
   background: none;

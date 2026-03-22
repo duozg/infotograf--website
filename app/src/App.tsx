@@ -51,14 +51,10 @@ function RequireGuest({ children }: { children: React.ReactNode }) {
 /** Pages where the right aside should be visible */
 const ASIDE_PAGES = ['/', '/explore'];
 
-/** Pages where the sidebar should be collapsed (icons only) */
-const WIDE_PAGES = ['/messages'];
-
 function AuthenticatedApp() {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [postModalId, setPostModalId] = useState<string | null>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -66,7 +62,6 @@ function AuthenticatedApp() {
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
 
   const showAside = ASIDE_PAGES.includes(location.pathname);
-  const autoCollapse = WIDE_PAGES.includes(location.pathname);
 
   // Open post detail as modal overlay (Instagram-style lightbox)
   const openPostModal = useCallback((postId: string) => {
@@ -97,9 +92,9 @@ function AuthenticatedApp() {
       <TopNav onNewPost={handleCreatePost} />
 
       <div className="app-layout">
-        <Sidebar collapsed={autoCollapse || sidebarCollapsed} onToggle={() => setSidebarCollapsed(c => !c)} />
+        <Sidebar />
 
-        <div className="app-main" style={{ marginLeft: (autoCollapse || sidebarCollapsed) ? 72 : 220 }}>
+        <div className="app-main">
           <div className="app-main-inner">
             <div className="app-feed-col">
               <Routes>

@@ -1,5 +1,5 @@
 .sidebar {
-  width: 220px;
+  width: 72px;
   position: fixed;
   top: 52px;
   bottom: 0;
@@ -7,57 +7,75 @@
   background: var(--card);
   border-right: 1px solid var(--border);
   overflow-y: auto;
-  z-index: 40;
+  z-index: 50;
   transition: width 0.2s ease;
   display: flex;
   flex-direction: column;
 }
 
-/* ═══ Collapsed state ═══ */
-.sidebar.collapsed {
-  width: 72px;
+.sidebar:hover {
+  width: 220px;
 }
 
-.sidebar.collapsed .navLabel {
-  display: none;
+/* ═══ Nav labels: hidden when collapsed, visible on hover ═══ */
+.sidebar:not(:hover) .navLabel {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
 }
 
-.sidebar.collapsed .navItem {
-  justify-content: center;
+.sidebar:hover .navLabel {
+  opacity: 1;
+  width: auto;
+  transition: opacity 0.15s ease 0.1s;
+}
+
+/* ═══ Collapsed defaults (icons only) ═══ */
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
   padding: 14px 0;
-}
-
-.sidebar.collapsed .profileCard {
   justify-content: center;
-  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s;
 }
 
-.sidebar.collapsed .profileInfo {
-  display: none;
+.sidebar:hover .navItem {
+  justify-content: flex-start;
+  padding: 11px 20px;
 }
 
-.sidebar.collapsed .divider {
-  margin: 8px 12px;
-}
-
-.sidebar.collapsed .toggleButton {
-  justify-content: center;
-  padding: 14px 0;
-}
-
-/* ═══ Mini profile card ═══ */
 .profileCard {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 20px;
+  padding: 12px 0;
+  justify-content: center;
   border-bottom: 1px solid var(--border);
   cursor: pointer;
   transition: background 0.15s;
 }
 
+.sidebar:hover .profileCard {
+  padding: 16px 20px;
+  justify-content: flex-start;
+}
+
 .profileCard:hover {
   background: var(--elevated);
+}
+
+.sidebar:not(:hover) .profileInfo {
+  display: none;
 }
 
 .profileInfo {
@@ -89,23 +107,6 @@
   flex-direction: column;
   padding: 8px 0;
   flex: 1;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 11px 20px;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-primary);
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  transition: background 0.15s;
 }
 
 .navItem:hover {
@@ -143,32 +144,9 @@
 .divider {
   height: 1px;
   background: var(--divider);
+  margin: 8px 12px;
+}
+
+.sidebar:hover .divider {
   margin: 8px 16px;
-}
-
-/* ═══ Toggle button ═══ */
-.toggleSection {
-  border-top: 1px solid var(--border);
-  padding: 8px 0;
-}
-
-.toggleButton {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 11px 20px;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-primary);
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  transition: background 0.15s;
-}
-
-.toggleButton:hover {
-  background: var(--elevated);
 }

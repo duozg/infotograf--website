@@ -115,12 +115,7 @@ const NAV_ITEMS: (NavItem | 'divider')[] = [
   },
 ];
 
-interface SidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
-}
-
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -131,13 +126,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   };
 
   return (
-    <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
+    <aside className={styles.sidebar}>
       {/* Mini profile card */}
       {user && (
         <div
           className={styles.profileCard}
           onClick={() => navigate('/profile')}
-          title={collapsed ? `@${user.username}` : undefined}
         >
           <Avatar src={user.avatarUrl} username={user.username} size="md" />
           <div className={styles.profileInfo}>
@@ -161,7 +155,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               key={item.path}
               className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
               onClick={() => navigate(item.path)}
-              title={collapsed ? item.label : undefined}
             >
               <span className={styles.navIcon}>
                 {item.icon(active)}
@@ -171,22 +164,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           );
         })}
       </nav>
-
-      {/* Toggle button */}
-      <div className={styles.toggleSection}>
-        <button
-          className={styles.toggleButton}
-          onClick={onToggle}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          <SvgIcon active={false}>
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </SvgIcon>
-          <span className={styles.navLabel}>More</span>
-        </button>
-      </div>
     </aside>
   );
 }

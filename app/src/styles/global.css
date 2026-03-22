@@ -47,6 +47,7 @@ ul, ol { list-style: none; }
   flex: 1;
   display: flex;
   justify-content: center;
+  margin-left: 72px;
   transition: margin-left 0.2s ease;
 }
 
