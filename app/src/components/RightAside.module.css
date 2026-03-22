@@ -1,0 +1,135 @@
+.aside {
+  width: 260px;
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Sections ── */
+
+.section {
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+
+/* ── Suggestion items ── */
+
+.suggestItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.suggestAvatar {
+  flex-shrink: 0;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+}
+
+/* Override Avatar size to 32px square */
+.suggestAvatar > div {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.suggestInfo {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.suggestName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestName:hover {
+  text-decoration: underline;
+}
+
+.suggestReason {
+  font-size: 10px;
+  color: var(--t2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.followBtn {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tlink);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.followBtn:hover {
+  text-decoration: underline;
+}
+
+.followBtnFollowing {
+  color: var(--t2);
+}
+
+/* ── Trending tags ── */
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagPill {
+  padding: 4px 10px;
+  background: rgba(59, 105, 148, 0.08);
+  color: var(--tlink);
+  border-radius: 3px;
+  font-size: 11px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.tagPill:hover {
+  background: rgba(59, 105, 148, 0.15);
+}
+
+/* ── Footer ── */
+
+.footer {
+  font-size: 11px;
+  color: var(--t3);
+  line-height: 2;
+}
+
+.footerLinks a {
+  color: var(--t3);
+  text-decoration: none;
+}
+
+.footerLinks a:hover {
+  color: var(--t2);
+}
+
+.footerCopy {
+  display: block;
+  margin-top: 2px;
+}

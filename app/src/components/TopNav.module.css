@@ -1,0 +1,188 @@
+/* ═══ TopNav — fixed desktop navigation bar ═══ */
+
+.topnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 52px;
+  background: linear-gradient(to bottom, var(--hdr-top), var(--hdr-bot));
+  border-bottom: 1px solid var(--hdr-bdr);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+}
+
+/* ── Brand logo ── */
+
+.brand {
+  font-family: var(--font-logo);
+  font-style: italic;
+  color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.brand:hover {
+  opacity: 0.85;
+}
+
+.bi {
+  font-size: 26px;
+}
+
+.bt {
+  font-size: 22px;
+}
+
+/* ── Search bar ── */
+
+.searchForm {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 12px;
+  transition: background 0.15s;
+}
+
+.searchBar:focus-within {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.searchIcon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  opacity: 0.5;
+  color: #fff;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.searchInput::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* ── Right-side actions ── */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── + New Post button ── */
+
+.newPostBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-btn);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.newPostBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Nav buttons (40 x 40) ── */
+
+.navBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.navBtn.active {
+  color: #ffffff;
+}
+
+/* ── Fediverse dot ── */
+
+.fediDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c4a5ff, #7b5cbf);
+  box-shadow: 0 0 6px rgba(160, 120, 255, 0.5);
+  font-size: 11px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+/* ── Notification badges (7px dots) ── */
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.badgeBlue {
+  background: #64b4ff;
+}
+
+.badgeRed {
+  background: #ff6e78;
+}

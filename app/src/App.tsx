@@ -11,10 +11,13 @@ import { PostDetailModal } from './features/post/PostDetailModal';
 import { CreatePostModal } from './features/post/CreatePostModal';
 import { MessagesPage } from './features/dms/MessagesPage';
 import { HashtagPage } from './features/explore/HashtagPage';
-import { NavBar } from './components/NavBar';
-import { ErrorBoundary } from './components/ErrorBoundary';
 import { FediverseDiscoverPage } from './features/fediverse/FediverseDiscoverPage';
 import { PublicProfilePage } from './features/profile/PublicProfilePage';
+import { SettingsModal } from './features/profile/SettingsModal';
+import { TopNav } from './components/TopNav';
+import { Sidebar } from './components/Sidebar';
+import { RightAside } from './components/RightAside';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, initialized } = useAuth();
@@ -23,13 +26,8 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   if (!initialized) {
     return (
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        background: 'var(--bg-app)',
-        color: 'var(--text-secondary)',
-        fontSize: 15,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        height: '100vh', background: 'var(--bg)', color: 'var(--t2)', fontSize: 15,
       }}>
         Loading…
       </div>
@@ -50,35 +48,58 @@ function RequireGuest({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/** Pages where the right aside should be visible */
+const ASIDE_PAGES = ['/', '/explore'];
+
 function AuthenticatedApp() {
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const location = useLocation();
 
   const handleCreatePost = useCallback(() => setShowCreatePost(true), []);
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
 
-  return (
-    <div className="app-layout">
-      <NavBar onCreatePost={handleCreatePost} />
+  const showAside = ASIDE_PAGES.includes(location.pathname);
 
-      <div className="app-main">
-        <Routes>
-          <Route
-            path="/"
-            element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>}
-          />
-          <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
-          <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
-          <Route path="/notifications" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
-          <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
-          <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
-          <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
-          <Route
-            path="/post/:postId"
-            element={<ErrorBoundary><PostDetailModal asPage /></ErrorBoundary>}
-          />
-          <Route path="/hashtag/:tag" element={<ErrorBoundary><HashtagPage /></ErrorBoundary>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+  return (
+    <>
+      <TopNav onNewPost={handleCreatePost} />
+
+      <div className="app-layout">
+        <Sidebar />
+
+        <div className="app-main">
+          <div className="app-main-inner">
+            <div className="app-feed-col">
+              <Routes>
+                <Route
+                  path="/"
+                  element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>}
+                />
+                <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
+                <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
+                <Route path="/activity" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
+                <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
+                <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+                <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+                <Route path="/settings" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+                <Route
+                  path="/post/:postId"
+                  element={<ErrorBoundary><PostDetailModal asPage /></ErrorBoundary>}
+                />
+                <Route path="/hashtag/:tag" element={<ErrorBoundary><HashtagPage /></ErrorBoundary>} />
+                <Route path="/upload" element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+
+            {showAside && (
+              <div className="app-aside-col">
+                <RightAside />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {showCreatePost && (
@@ -87,7 +108,11 @@ function AuthenticatedApp() {
           onSuccess={handleCloseCreatePost}
         />
       )}
-    </div>
+
+      {showSettings && (
+        <SettingsModal onClose={() => setShowSettings(false)} />
+      )}
+    </>
   );
 }
 

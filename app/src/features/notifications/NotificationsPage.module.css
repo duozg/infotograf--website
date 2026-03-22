@@ -1,5 +1,7 @@
+/* ═══ Notifications page ═══ */
+
 .page {
-  background: var(--bg-app);
+  background: var(--bg);
   min-height: 100%;
 }
 
@@ -12,23 +14,25 @@
 .pageTitle {
   font-size: 22px;
   font-weight: 300;
-  color: var(--text-primary);
+  color: var(--t1);
   margin-bottom: 20px;
 }
 
-/* ── Tabs ── */
+/* ── Toggle bar ── */
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid var(--border-primary);
-  margin-bottom: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
 }
 
 .tab {
-  padding: 10px 20px;
+  flex: 1;
+  padding: 12px;
+  text-align: center;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--t2);
   cursor: pointer;
   border: none;
   background: none;
@@ -38,8 +42,8 @@
 }
 
 .tab.active {
-  color: var(--text-primary);
-  border-bottom-color: var(--text-primary);
+  color: var(--t1);
+  border-bottom-color: var(--t1);
 }
 
 /* ── Sections ── */
@@ -52,7 +56,7 @@
   padding: 8px 0 4px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--t2);
 }
 
 /* ── Notification items ── */
@@ -60,20 +64,43 @@
 .notifItem {
   display: flex;
   align-items: center;
+  gap: 10px;
   padding: 10px 0;
-  gap: 12px;
   cursor: pointer;
-  border-bottom: 1px solid var(--divider-card);
+  border-bottom: 1px solid var(--divider);
   transition: background 0.1s;
 }
 
-.notifItem:hover { background: var(--bg-elevated); padding-left: 12px; padding-right: 12px; margin: 0 -12px; }
+.notifItem:hover {
+  background: var(--elevated);
+  margin: 0 -4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 4px;
+}
 
-.notifItem.unread { background: var(--bg-elevated); }
-.notifItem.unread:hover { background: var(--bg-input); }
+.notifItem.unread {
+  background: rgba(59, 105, 148, 0.06);
+  margin: 0 -4px;
+  padding: 10px 4px;
+  border-radius: 4px;
+}
+
+.notifItem.unread:hover {
+  background: var(--elevated);
+}
 
 .avatarStack {
   flex-shrink: 0;
+}
+
+/* ── Avatar (40px square, 4px radius) ── */
+
+.avatarStack img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
 }
 
 .notifContent {
@@ -82,31 +109,35 @@
 }
 
 .notifText {
-  font-size: 14px;
-  color: var(--text-primary);
-  line-height: 1.4;
+  font-size: 13px;
+  color: var(--t1);
+  line-height: 1.5;
 }
 
-.notifText strong { font-weight: 600; }
+.notifText strong { font-weight: 700; }
 
 .notifTime {
-  font-size: 12px;
-  color: var(--text-tertiary);
+  font-size: 11px;
+  color: var(--t2);
   margin-top: 2px;
 }
+
+/* ── Post thumbnail (44px square, 3px radius) ── */
 
 .postThumb {
   width: 44px;
   height: 44px;
   object-fit: cover;
-  border-radius: var(--radius-card);
+  border-radius: 3px;
   flex-shrink: 0;
 }
 
+/* ── Follow button ── */
+
 .followBtn {
-  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
-  border: 1px solid var(--cta-border);
-  border-radius: var(--radius-button);
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  border: 1px solid var(--cta-bdr);
+  border-radius: var(--radius-btn);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -121,15 +152,15 @@
 
 .followBtn.following {
   background: transparent;
-  border-color: var(--border-primary);
-  color: var(--text-primary);
+  border-color: var(--border);
+  color: var(--t1);
 }
 
 .unreadDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--text-link);
+  background: var(--tlink);
   flex-shrink: 0;
 }
 
@@ -138,13 +169,13 @@
 .emptyState {
   padding: 60px 0;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--t2);
   font-size: 15px;
 }
 
 .loadingState {
   padding: 40px 0;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--t2);
   font-size: 14px;
 }

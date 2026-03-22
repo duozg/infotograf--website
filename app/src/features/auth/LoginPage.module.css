@@ -1,114 +1,36 @@
-/* Full-page wrapper */
+/* ── Login page — standalone, centered card ── */
+
 .page {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  background: var(--bg-app);
-}
-
-/* Two-column layout */
-.layout {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 64px;
-  padding: 48px 40px;
-  max-width: 960px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* ── Left: marketing panel ── */
-.marketing {
-  flex: 1;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 28px;
-}
-
-/* Photo mosaic grid */
-.photoGrid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 3px;
-  border-radius: 8px;
-  overflow: hidden;
-  aspect-ratio: 5 / 4;
-  opacity: 0.85;
-}
-
-.photoTile {
-  aspect-ratio: 1;
-  border-radius: 2px;
-  transition: opacity 0.3s;
-}
-
-.photoTile:hover {
-  opacity: 0.7;
-}
-
-.marketingText {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.wordmark {
-  font-family: var(--font-logo);
-  font-style: italic;
-  font-size: 52px;
-  color: var(--text-primary);
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-.tagline {
-  font-size: 26px;
-  font-weight: 200;
-  color: var(--text-primary);
-  line-height: 1.2;
-  letter-spacing: -0.3px;
-}
-
-.subTagline {
-  font-size: 15px;
-  font-weight: 300;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-/* ── Right: form side ── */
-.formSide {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  width: 100%;
-  max-width: 360px;
+  background: var(--bg);
+  padding: 20px;
 }
 
 .card {
   width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-card);
-  padding: 36px 28px 24px;
+  max-width: 380px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px 32px;
 }
 
 .logo {
+  text-align: center;
+  margin-bottom: 28px;
   font-family: var(--font-logo);
   font-style: italic;
-  font-size: 44px;
-  color: var(--text-primary);
-  text-align: center;
-  margin-bottom: 24px;
-  line-height: 1;
-  letter-spacing: -0.5px;
+  font-size: 36px;
+  color: var(--t1);
+  cursor: default;
+}
+
+.logoI {
+  font-weight: 700;
+  font-size: 42px;
 }
 
 .form {
@@ -120,39 +42,29 @@
 .input {
   width: 100%;
   padding: 10px 12px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
-  color: var(--text-primary);
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--t1);
   font-size: 14px;
   outline: none;
-  transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 
-.input:focus {
-  border-color: var(--text-link);
-}
-
-.input::placeholder {
-  color: var(--text-secondary);
-}
+.input::placeholder { color: var(--t2); }
+.input:focus { border-color: var(--tlink); }
 
 .submitBtn {
   width: 100%;
   padding: 10px;
-  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
-  border: 1px solid var(--cta-border);
-  border-radius: var(--radius-button);
-  color: #ffffff;
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  border: 1px solid var(--cta-bdr);
+  border-radius: var(--radius-btn);
+  color: #fff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 4px;
-  transition: opacity 0.15s;
-}
-
-.submitBtn:hover:not(:disabled) {
-  opacity: 0.9;
 }
 
 .submitBtn:disabled {
@@ -161,79 +73,50 @@
 }
 
 .error {
-  background: rgba(237, 73, 86, 0.1);
-  border: 1px solid rgba(237, 73, 86, 0.3);
-  border-radius: var(--radius-button);
-  padding: 10px 12px;
-  color: var(--accent-red);
+  color: var(--red);
   font-size: 13px;
   text-align: center;
+  margin-top: 4px;
 }
 
-.signupLink {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.signupLink a {
-  color: var(--text-link);
-  font-weight: 500;
-}
-
-/* App Store link row */
-.appLinks {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-card);
-  padding: 16px 20px;
+.divider {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.storeBtn {
-  font-size: 13px;
+  gap: 16px;
+  margin: 20px 0;
+  color: var(--t3);
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-link);
 }
 
-.storeBtn:hover {
-  text-decoration: underline;
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
-/* ── Mobile: stack vertically, hide photo grid ── */
-@media (max-width: 700px) {
-  .layout {
-    flex-direction: column;
-    gap: 24px;
-    padding: 32px 20px;
-    align-items: center;
-  }
-
-  .marketing {
-    max-width: 100%;
-    align-items: center;
-    text-align: center;
-  }
-
-  .photoGrid {
-    display: none;
-  }
-
-  .wordmark {
-    font-size: 42px;
-  }
-
-  .tagline {
-    font-size: 20px;
-  }
-
-  .formSide {
-    max-width: 100%;
-  }
+.link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--t2);
 }
+
+.link a {
+  color: var(--tlink);
+  font-weight: 600;
+}
+
+/* ── Backward compat aliases ── */
+.layout { display: contents; }
+.leftSide { display: none; }
+.rightSide { display: contents; }
+.formCard { display: contents; }
+.brandLogo { display: none; }
+.formSection { display: contents; }
+.brandRow { display: contents; }
+.brandI { display: none; }
+.brandText { display: none; }
+.orDivider { display: contents; }

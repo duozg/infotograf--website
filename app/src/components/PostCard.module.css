@@ -1,178 +1,26 @@
+/* ── Post card ── */
 .card {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--divider-card);
-  margin-bottom: 1px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.card.federated {
+  border-left: 3px solid var(--purple);
 }
 
+/* ── Header ── */
 .header {
   display: flex;
   align-items: center;
+  gap: 8px;
   padding: 10px 12px;
-  gap: 10px;
 }
 
 .headerInfo {
   flex: 1;
   min-width: 0;
-}
-
-.username {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.username:hover {
-  text-decoration: underline;
-}
-
-.location {
-  font-size: 11px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.moreBtn {
-  color: var(--text-secondary);
-  font-size: 20px;
-  padding: 4px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.imageContainer {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  background: #000;
-  position: relative;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px 4px;
-  gap: 16px;
-}
-
-.actionBtn {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: var(--text-primary);
-  transition: transform 0.1s;
-}
-
-.actionBtn:active {
-  transform: scale(0.85);
-}
-
-.actionBtn svg {
-  width: 24px;
-  height: 24px;
-}
-
-.actionBtn.liked svg {
-  fill: var(--accent-red);
-  stroke: var(--accent-red);
-}
-
-.actionBtn.bookmarked svg {
-  fill: var(--text-primary);
-}
-
-.spacer { flex: 1; }
-
-.meta {
-  padding: 0 12px 8px;
-}
-
-.likeCount {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-}
-
-.caption {
-  font-size: 14px;
-  color: var(--text-primary);
-  line-height: 1.4;
-  margin-bottom: 4px;
-}
-
-.captionUsername {
-  font-weight: 600;
-  margin-right: 4px;
-  cursor: pointer;
-}
-
-.captionUsername:hover {
-  text-decoration: underline;
-}
-
-.captionTruncated {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.moreBtn2 {
-  color: var(--text-secondary);
-  font-size: 14px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  margin-left: 2px;
-}
-
-.moreBtn2:hover {
-  color: var(--text-primary);
-}
-
-/* ── Fediverse remote post indicators ── */
-
-.usernameRemote {
-  color: var(--fediverse-purple);
-}
-
-.domainBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
-  background: var(--fediverse-purple-bg);
-  color: var(--fediverse-purple);
-  border-radius: var(--radius-pill);
-  font-size: 10px;
-  font-weight: 500;
-  margin-left: 6px;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-
-.timestampDomain {
-  color: var(--text-tertiary);
-  font-size: 10px;
-  text-transform: none;
 }
 
 .headerNameRow {
@@ -181,40 +29,312 @@
   gap: 0;
 }
 
-.viewComments {
-  font-size: 14px;
-  color: var(--text-secondary);
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  flex-shrink: 0;
   cursor: pointer;
-  margin-bottom: 4px;
 }
 
+.username {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  cursor: pointer;
+}
+.username:hover {
+  text-decoration: underline;
+}
+
+.location {
+  font-size: 10px;
+  color: var(--t2);
+}
+
+.moreBtn {
+  margin-left: auto;
+  color: var(--t2);
+  cursor: pointer;
+  font-size: 16px;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+}
+
+/* ── Image — 4:5 aspect ratio ── */
+.imageWrap {
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: #e0e0e0;
+}
+.imageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Audio pill overlay on image ── */
+.audioPill {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 10px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(4px);
+}
+
+.wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 14px;
+}
+
+.waveBar {
+  width: 2px;
+  background: var(--ambient-green);
+  border-radius: 1px;
+  animation: wav 0.8s ease-in-out infinite alternate;
+}
+.waveBar:nth-child(1) { height: 4px; animation-delay: 0s; }
+.waveBar:nth-child(2) { height: 8px; animation-delay: 0.15s; }
+.waveBar:nth-child(3) { height: 12px; animation-delay: 0.3s; }
+.waveBar:nth-child(4) { height: 6px; animation-delay: 0.45s; }
+.waveBar:nth-child(5) { height: 10px; animation-delay: 0.1s; }
+
+@keyframes wav {
+  to { height: 14px; }
+}
+
+/* ── Actions bar ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--t1);
+  transition: transform 0.15s;
+}
+.actionBtn:hover {
+  transform: scale(1.15);
+}
+.actionBtn:active {
+  transform: scale(1.3);
+}
+.actionBtn svg {
+  width: 24px;
+  height: 24px;
+}
+.actionBtn.liked {
+  color: var(--red);
+}
+.actionBtn.liked svg {
+  fill: var(--red);
+  stroke: var(--red);
+}
+.actionBtn.bookmarked svg {
+  fill: var(--t1);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ── Meta ── */
+.meta {
+  /* no padding needed, children have their own */
+}
+
+.likeCount {
+  padding: 2px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  cursor: pointer;
+}
+
+.caption {
+  padding: 2px 12px 4px;
+  font-size: 13px;
+  color: var(--t1);
+  line-height: 1.6;
+}
+
+.captionUsername {
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 4px;
+}
+.captionUsername:hover {
+  text-decoration: underline;
+}
+
+.hashtag {
+  color: var(--tlink);
+  cursor: pointer;
+}
+.hashtag:hover {
+  text-decoration: underline;
+}
+
+.captionTruncated {
+  /* handled via JS now, not CSS line clamp */
+}
+
+.moreBtn2 {
+  color: var(--t2);
+  font-size: 13px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 2px;
+}
+.moreBtn2:hover {
+  color: var(--t1);
+}
+
+.viewComments {
+  padding: 2px 12px;
+  font-size: 13px;
+  color: var(--t2);
+  cursor: pointer;
+}
 .viewComments:hover {
-  color: var(--text-primary);
+  color: var(--t1);
 }
 
 .timestamp {
+  padding: 2px 12px 12px;
   font-size: 10px;
-  color: var(--text-tertiary);
+  color: var(--t2);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+}
+
+.timestampDomain {
+  color: var(--t2);
+  font-size: 10px;
+  text-transform: none;
 }
 
 .commentsDisabled {
   font-size: 13px;
-  color: var(--text-tertiary);
-  margin-bottom: 4px;
+  color: var(--t3);
+  padding: 2px 12px 4px;
 }
 
-/* ── Owner card menu ── */
+/* ── Comment input bar below each post ── */
+.commentBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--divider);
+}
+.commentBar input {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 13px;
+  outline: none;
+  color: var(--t1);
+}
+.commentBar button {
+  background: none;
+  border: none;
+  color: var(--tlink);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0.5;
+}
 
+/* ── Federated post indicators ── */
+.usernameRemote {
+  color: var(--purple);
+}
+
+.fedTag {
+  font-size: 9px;
+  color: var(--purple);
+  background: rgba(160, 120, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* Backward-compat alias for domainBadge */
+.domainBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  color: var(--purple);
+  background: rgba(160, 120, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-weight: 600;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* ── Heart animation ── */
+.heartFlash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  color: #fff;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  opacity: 0;
+}
+.heartFlash.show {
+  animation: heartPop 0.8s ease-out forwards;
+}
+
+/* Keep the wrapper+icon approach used by the TSX */
+.heartFlashIcon {
+  font-size: 80px;
+  animation: heartPop 0.8s ease-out forwards;
+}
+
+@keyframes heartPop {
+  0%   { transform: scale(0.3); opacity: 1; }
+  40%  { transform: scale(1.2); opacity: 1; }
+  70%  { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+
+/* ── Card menu ── */
 .cardMenu {
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   min-width: 160px;
   z-index: 10;
   overflow: hidden;
@@ -228,41 +348,79 @@
   border: none;
   cursor: pointer;
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--t1);
   text-align: left;
-  transition: background 0.1s;
+}
+.cardMenuItem:hover {
+  background: var(--elevated);
 }
 
-.cardMenuItem:hover { background: var(--bg-elevated); }
-.cardMenuItemDanger { color: var(--accent-red) !important; }
+.cardMenuItemDanger {
+  color: var(--red) !important;
+}
 
-/* ── Inline caption editing ── */
+/* ── Audio player fallback ── */
+.audioPlayer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--divider);
+}
 
+.audioPlayBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--t1);
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.audioBarWrap {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.audioBarFill {
+  height: 100%;
+  background: var(--tlink);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* ── Edit caption inline ── */
 .editCaptionWrap {
-  margin-bottom: 4px;
+  margin: 0 12px 4px;
 }
 
 .editCaptionInput {
   width: 100%;
   padding: 8px 10px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  color: var(--text-primary);
-  font-size: 14px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--t1);
+  font-size: 13px;
   font-family: var(--font-body);
   outline: none;
   resize: vertical;
   box-sizing: border-box;
 }
-
-.editCaptionInput:focus { border-color: var(--text-link); }
+.editCaptionInput:focus {
+  border-color: var(--tlink);
+}
 
 .editCaptionSave {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-link);
+  color: var(--tlink);
   font-size: 13px;
   font-weight: 600;
   padding: 0;
@@ -272,68 +430,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--t2);
   font-size: 13px;
   padding: 0;
-}
-
-/* ── Double-tap heart animation ── */
-
-.heartFlash {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.heartFlashIcon {
-  font-size: 80px;
-  animation: heartPop 0.8s ease-out forwards;
-}
-
-@keyframes heartPop {
-  0%   { transform: scale(0.3); opacity: 1; }
-  40%  { transform: scale(1.2); opacity: 1; }
-  70%  { transform: scale(1.0); opacity: 1; }
-  100% { transform: scale(1.1); opacity: 0; }
-}
-
-/* ── Audio player on post ── */
-
-.audioPlayer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-top: 1px solid var(--divider-card);
-  background: var(--bg-card);
-}
-
-.audioPlayBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: var(--text-primary);
-  flex-shrink: 0;
-  width: 28px;
-  text-align: center;
-}
-
-.audioBarWrap {
-  flex: 1;
-  height: 3px;
-  background: var(--border-primary);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.audioBarFill {
-  height: 100%;
-  background: var(--text-link);
-  border-radius: 2px;
-  transition: width 0.1s linear;
 }

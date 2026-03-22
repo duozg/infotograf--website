@@ -1,265 +1,156 @@
+/* ── Feed page ── */
 .page {
-  height: 100%;
-  overflow-y: auto;
-  background: var(--bg-app);
+  /* feed-col is already constrained by the layout shell */
 }
 
-.layout {
-  max-width: 935px;
-  margin: 0 auto;
-  padding: 24px 20px;
-  display: grid;
-  grid-template-columns: 470px 1fr;
-  gap: 32px;
-  align-items: start;
-}
-
-.feedColumn {
-  min-width: 0;
-}
-
-/* ── Sidebar ── */
-
-.sidebar {
-  position: sticky;
-  top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.userCard {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 4px;
-}
-
-.userCardAvatar { cursor: pointer; flex-shrink: 0; }
-
-.userCardInfo {
-  flex: 1;
-  min-width: 0;
-}
-
-.userCardUsername {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.userCardUsername:hover { text-decoration: underline; }
-
-.userCardName {
-  font-size: 13px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.switchBtn {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-link);
-  flex-shrink: 0;
-}
-
-/* ── Suggestions ── */
-
-.suggestions {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.suggestionsHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.suggestionsTitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.seeAllBtn {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.suggestItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-}
-
-.suggestAvatarWrap { cursor: pointer; flex-shrink: 0; }
-
-.suggestInfo {
-  flex: 1;
-  min-width: 0;
-  cursor: pointer;
-}
-
-.suggestUsername {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.suggestUsername:hover { text-decoration: underline; }
-
-.suggestSub {
-  font-size: 12px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.followBtn {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-link);
-  flex-shrink: 0;
-}
-
-.followBtn.following {
-  color: var(--text-secondary);
-}
-
-/* ── Footer ── */
-
-.sidebarFooter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  padding-top: 4px;
-}
-
-.footerLink {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  text-decoration: none;
-}
-
-.footerLink:hover { color: var(--text-secondary); text-decoration: none; }
-
-.footerCopy {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  width: 100%;
-  margin-top: 4px;
-}
-
-/* ── Feed states ── */
-
-.emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 20px;
+/* ── New posts pill ── */
+.newPostsPill {
   text-align: center;
-  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pill {
+  display: inline-block;
+  background: linear-gradient(to right, var(--cta-top), var(--cta-bot));
+  color: #fff;
+  padding: 7px 20px;
+  border-radius: 18px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(59, 125, 192, 0.35);
+  transition: transform 0.2s;
+  border: none;
+}
+
+.pill:hover {
+  transform: scale(1.05);
+}
+
+/* ── "Where you left off" marker ── */
+.whereYouLeftOff {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #e8f0f8;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.whereYouLeftOffLine {
+  flex: 1;
+  height: 1px;
+  background: var(--tlink);
+}
+
+.whereYouLeftOffText {
+  font-size: 11px;
+  color: var(--tlink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── "All caught up" card ── */
+.allCaughtUp {
+  text-align: center;
+  padding: 32px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.allCaughtUpTitle {
+  font-size: 15px;
+  color: var(--t1);
+  margin-bottom: 4px;
+}
+
+.allCaughtUpSubtitle {
+  font-size: 12px;
+  color: var(--t2);
+  margin-bottom: 14px;
+}
+
+.allCaughtUpBtn {
+  display: inline-block;
+  padding: 8px 24px;
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  color: #fff;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--cta-bdr);
+}
+
+/* ── Backward compat aliases ── */
+.allCaughtUpLine { flex: 1; height: 1px; background: var(--tlink); }
+.allCaughtUpText { font-size: 11px; color: var(--tlink); font-weight: 600; white-space: nowrap; }
+
+/* ── States ── */
+.loadingState,
+.errorState,
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--t2);
+  font-size: 14px;
 }
 
 .emptyIcon {
   font-size: 48px;
-  opacity: 0.4;
+  margin-bottom: 12px;
 }
 
 .emptyTitle {
-  font-size: 22px;
-  font-weight: 300;
-  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 4px;
 }
 
 .emptyText {
-  font-size: 15px;
-  color: var(--text-secondary);
-  max-width: 280px;
+  font-size: 14px;
+  color: var(--t2);
+}
+
+.retryBtn {
+  margin-top: 12px;
+  padding: 8px 20px;
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  color: #fff;
+  border: 1px solid var(--cta-bdr);
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .loadMoreBtn {
   display: block;
   width: 100%;
-  padding: 16px;
+  padding: 12px;
   text-align: center;
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.loadMoreBtn:hover { color: var(--text-primary); }
-
-.errorState {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--accent-red);
-  font-size: 15px;
-}
-
-.retryBtn {
-  margin-top: 12px;
-  display: inline-block;
-  padding: 8px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
-  color: var(--text-primary);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* ── All caught up ── */
-
-.allCaughtUp {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 12px;
-  margin: 8px 0;
-}
-
-.allCaughtUpLine {
-  flex: 1;
-  height: 1px;
-  background: var(--border-primary);
-}
-
-.allCaughtUpText {
+  color: var(--tlink);
   font-size: 13px;
-  color: var(--text-tertiary);
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-.whereYouLeftOff {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 12px;
-  cursor: pointer;
-}
-
-.whereYouLeftOffText {
-  font-size: 13px;
-  color: var(--text-link);
-  white-space: nowrap;
   font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 16px;
 }
+
+.loadMoreBtn:hover {
+  background: var(--elevated);
+}
+
+/* ── Legacy sidebar styles (removed — sidebar is now a separate component) ── */
+.layout { /* removed */ }
+.feedColumn { /* removed */ }
+.sidebar { display: none; }
+.userCard { display: none; }
+.suggestions { display: none; }
+.sidebarFooter { display: none; }

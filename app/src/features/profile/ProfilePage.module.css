@@ -1,5 +1,7 @@
+/* ═══ Profile page ═══ */
+
 .page {
-  background: var(--bg-app);
+  background: var(--bg);
   min-height: 100%;
 }
 
@@ -9,19 +11,33 @@
   padding: 30px 20px;
 }
 
-/* ── Profile header ── */
+/* ── Profile card ── */
 
 .profileHeader {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.profTop {
   display: flex;
-  align-items: flex-start;
-  gap: 80px;
-  padding-bottom: 44px;
-  border-bottom: 1px solid var(--border-primary);
-  margin-bottom: 0;
+  gap: 28px;
+  align-items: center;
 }
 
 .avatarSection {
   flex-shrink: 0;
+}
+
+/* ── Avatar (96px square, 4px radius) ── */
+
+.avatarSection img {
+  width: 96px;
+  height: 96px;
+  border-radius: 4px;
+  object-fit: cover;
 }
 
 .profileInfo {
@@ -29,7 +45,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
 }
 
 /* Username + action buttons in one row */
@@ -41,9 +57,9 @@
 }
 
 .username {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 300;
-  color: var(--text-primary);
+  color: var(--t1);
   margin: 0;
   line-height: 1;
 }
@@ -51,16 +67,16 @@
 .editBtn {
   padding: 6px 16px;
   background: transparent;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--t1);
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.editBtn:hover { background: var(--bg-elevated); }
+.editBtn:hover { background: var(--elevated); }
 
 .settingsBtn {
   display: flex;
@@ -71,17 +87,17 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-primary);
+  color: var(--t1);
   border-radius: 4px;
   transition: background 0.15s;
 }
 
-.settingsBtn:hover { background: var(--bg-elevated); }
+.settingsBtn:hover { background: var(--elevated); }
 .settingsBtn svg { width: 22px; height: 22px; }
 
 .followBtn {
   padding: 7px 20px;
-  border-radius: var(--radius-button);
+  border-radius: var(--radius-btn);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -89,8 +105,8 @@
 }
 
 .followBtn.notFollowing {
-  background: linear-gradient(to bottom, var(--cta-gradient-top), var(--cta-gradient-bottom));
-  border: 1px solid var(--cta-border);
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  border: 1px solid var(--cta-bdr);
   color: #fff;
 }
 
@@ -98,51 +114,55 @@
 
 .followBtn.following {
   background: transparent;
-  border: 1px solid var(--border-primary);
-  color: var(--text-primary);
+  border: 1px solid var(--border);
+  color: var(--t1);
 }
 
-.followBtn.following:hover { background: var(--bg-elevated); }
+.followBtn.following:hover { background: var(--elevated); }
 
 .messageBtn {
   padding: 7px 16px;
   background: transparent;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--t1);
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.messageBtn:hover { background: var(--bg-elevated); }
+.messageBtn:hover { background: var(--elevated); }
 
-/* Stats row */
+/* ── Stats row ── */
+
 .statsRow {
   display: flex;
-  gap: 40px;
+  gap: 28px;
+  margin-bottom: 10px;
 }
 
 .statItem {
   display: flex;
   gap: 5px;
   align-items: baseline;
+  cursor: pointer;
 }
 
 .statValue {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--t1);
 }
 
 .statLabel {
   font-size: 16px;
-  color: var(--text-primary);
+  color: var(--t1);
   font-weight: 400;
 }
 
-/* Bio */
+/* ── Bio ── */
+
 .bioSection {
   display: flex;
   flex-direction: column;
@@ -158,8 +178,10 @@
 .displayName {
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--t1);
 }
+
+/* ── Badges ── */
 
 .fediverseBadge {
   display: inline-flex;
@@ -167,32 +189,49 @@
   gap: 3px;
   font-size: 10px;
   font-weight: 600;
-  color: var(--fediverse-purple);
-  background: var(--fediverse-purple-bg);
+  color: var(--purple);
+  background: rgba(160, 120, 255, 0.1);
   padding: 2px 7px;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius);
+}
+
+.rssBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--orange);
+  background: rgba(249, 115, 22, 0.1);
+  padding: 2px 7px;
+  border-radius: var(--radius);
+}
+
+.badges {
+  display: flex;
+  gap: 6px;
 }
 
 .fediverseHandle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tlink);
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--fediverse-purple);
 }
 
 .fediverseStatSub {
   display: block;
   font-size: 9px;
   font-weight: 500;
-  color: var(--fediverse-purple);
+  color: var(--purple);
   margin-top: 1px;
 }
 
 .bio {
   font-size: 14px;
-  color: var(--text-primary);
+  color: var(--t1);
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
@@ -200,17 +239,16 @@
 
 .website {
   font-size: 14px;
-  color: var(--text-link);
+  color: var(--tlink);
   font-weight: 600;
 }
 
-/* ── Grid / List toggle ── */
+/* ── Profile tabs ── */
 
 .gridToggle {
   display: flex;
-  justify-content: center;
-  border-top: 1px solid var(--border-primary);
-  margin-bottom: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
 }
 
 .gridToggleBtn {
@@ -218,25 +256,25 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 14px 20px;
+  padding: 12px 20px;
   cursor: pointer;
   border: none;
   background: none;
-  color: var(--text-tertiary);
-  border-top: 1px solid transparent;
-  margin-top: -1px;
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--t3);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   transition: color 0.15s;
 }
 
 .gridToggleBtn svg { width: 14px; height: 14px; }
 
 .gridToggleBtn.active {
-  color: var(--text-primary);
-  border-top-color: var(--text-primary);
+  color: var(--t1);
+  border-bottom-color: var(--t1);
 }
 
 /* ── Photo grid ── */
@@ -251,7 +289,7 @@
 .gridItem {
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: var(--bg-elevated);
+  background: var(--elevated);
   cursor: pointer;
   position: relative;
 }
@@ -300,27 +338,27 @@
 .loadingState {
   padding: 80px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--t2);
   font-size: 15px;
 }
 
 .emptyPosts {
   padding: 60px 20px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--t2);
   font-size: 15px;
 }
 
 .privateNotice {
   padding: 80px 20px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--t2);
 }
 
 .privateNotice h3 {
   font-size: 20px;
   font-weight: 300;
-  color: var(--text-primary);
+  color: var(--t1);
   margin-bottom: 8px;
 }
 
@@ -333,25 +371,25 @@
   width: 34px;
   height: 34px;
   background: none;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
   cursor: pointer;
-  color: var(--text-primary);
+  color: var(--t1);
   font-size: 18px;
   line-height: 1;
   transition: background 0.15s;
 }
 
-.moreMenuBtn:hover { background: var(--bg-elevated); }
+.moreMenuBtn:hover { background: var(--elevated); }
 
 .profileMenu {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   min-width: 160px;
   z-index: 50;
   overflow: hidden;
@@ -365,10 +403,10 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
-  color: var(--text-primary);
+  color: var(--t1);
   text-align: left;
   transition: background 0.1s;
 }
 
-.profileMenuItem:hover { background: var(--bg-elevated); }
-.profileMenuItemDanger { color: var(--accent-red) !important; }
+.profileMenuItem:hover { background: var(--elevated); }
+.profileMenuItemDanger { color: var(--red) !important; }

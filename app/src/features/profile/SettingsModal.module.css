@@ -1,19 +1,21 @@
+/* ── Settings Page (prototype-aligned) ── */
+
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 200;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 }
 
 .modal {
-  background: var(--bg-card);
+  background: var(--bg);
   width: 100%;
-  max-width: 500px;
-  max-height: 92vh;
-  border-radius: 12px 12px 0 0;
+  max-width: 520px;
+  max-height: 90vh;
+  border-radius: var(--radius);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -23,41 +25,50 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--divider-card);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
 }
 
 .title {
   font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: var(--t1);
 }
 
 .closeBtn {
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--t2);
   font-size: 22px;
   cursor: pointer;
-  padding: 4px;
+  line-height: 1;
 }
 
 .content {
   flex: 1;
   overflow-y: auto;
+  padding: 16px;
 }
 
+/* ── Grouped settings cards (prototype: .settings-card) ── */
+
 .section {
-  padding: 16px 0 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
 }
 
 .sectionTitle {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-tertiary);
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 0 16px 8px;
+  color: var(--t2);
+  background: var(--elevated);
 }
 
 .row {
@@ -65,121 +76,136 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--divider-card);
-  background: var(--bg-card);
+  border-bottom: 1px solid var(--divider);
+  cursor: pointer;
+}
+
+.row:last-child { border-bottom: none; }
+
+.row:hover {
+  background: #fafafa;
 }
 
 .rowLabel {
-  font-size: 15px;
-  color: var(--text-primary);
+  font-size: 14px;
+  color: var(--t1);
 }
 
 .rowValue {
+  color: var(--t3);
   font-size: 14px;
-  color: var(--text-secondary);
 }
 
-/* Toggle switch */
+/* ── Toggle switch (prototype: .toggle) ── */
+
 .toggle {
   position: relative;
-  width: 51px;
-  height: 31px;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
 }
 
 .toggle input {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 
 .toggleSlider {
   position: absolute;
-  cursor: pointer;
   inset: 0;
-  background: var(--border-primary);
-  border-radius: 31px;
+  border-radius: 12px;
+  background: #ccc;
+  cursor: pointer;
   transition: background 0.2s;
 }
 
 .toggleSlider::before {
   content: '';
   position: absolute;
-  width: 27px;
-  height: 27px;
-  left: 2px;
-  bottom: 2px;
-  background: white;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  background: #fff;
+  top: 2px;
+  left: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: left 0.2s;
 }
 
 .toggle input:checked + .toggleSlider {
-  background: var(--success-green);
+  background: var(--green);
 }
 
 .toggle input:checked + .toggleSlider::before {
-  transform: translateX(20px);
+  left: 22px;
 }
+
+/* ── Theme selector ── */
 
 .themeOptions {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 
 .themeOption {
-  padding: 6px 14px;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-pill);
-  font-size: 13px;
-  color: var(--text-secondary);
-  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius-btn);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t2);
   background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
   transition: all 0.15s;
 }
 
 .themeOption.selected {
-  border-color: var(--text-link);
-  color: var(--text-link);
-  background: rgba(106, 159, 212, 0.1);
+  background: var(--tlink);
+  color: #fff;
+  border-color: var(--tlink);
 }
 
-.dangerRow {
-  display: flex;
-  align-items: center;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--divider-card);
-  cursor: pointer;
-  background: var(--bg-card);
-  transition: background 0.1s;
-}
-
-.dangerRow:hover { background: var(--bg-elevated); }
-
-.dangerLabel {
-  font-size: 15px;
-  color: var(--accent-red);
-}
+/* ── Blocked users ── */
 
 .blockedList {
-  padding: 16px;
+  padding: 8px 16px;
 }
 
 .blockedUser {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 8px 0;
-  border-bottom: 1px solid var(--divider-card);
+  border-bottom: 1px solid var(--divider);
 }
 
 .unblockBtn {
-  background: none;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-button);
-  color: var(--text-primary);
-  font-size: 13px;
-  padding: 5px 10px;
-  cursor: pointer;
   margin-left: auto;
+  padding: 5px 12px;
+  border-radius: var(--radius-btn);
+  font-size: 12px;
+  font-weight: 600;
+  background: linear-gradient(to bottom, #f5f5f5, #e5e5e5);
+  border: 1px solid var(--border);
+  color: var(--t1);
+  cursor: pointer;
+}
+
+/* ── Danger actions ── */
+
+.dangerRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--divider);
+  cursor: pointer;
+}
+
+.dangerLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--red);
 }

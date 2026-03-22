@@ -3,133 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import styles from './FeedPage.module.css';
 import { PostCard } from '../../components/PostCard';
 import { PostCardSkeleton } from '../../components/Skeleton';
-import { Avatar } from '../../components/Avatar';
 import { api } from '../../api/client';
-import { Post, User } from '../../models';
+import { Post } from '../../models';
 import { usePagination } from '../../hooks/usePagination';
-import { useAuth } from '../../context/AuthContext';
-import { toCount } from '../../utils/textParser';
 
 interface FeedPageProps {
   onCreatePost?: () => void;
 }
 
-function Sidebar({ onCreatePost }: { onCreatePost?: () => void }) {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const [suggestions, setSuggestions] = useState<User[]>([]);
-  const [followed, setFollowed] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    // /users/suggestions doesn't exist — derive suggested users from explore posts
-    api.getPaginated<Post>('/explore')
-      .then(({ items: posts }) => {
-        const seen = new Set<string>();
-        const derived: User[] = [];
-        for (const p of posts) {
-          if (!p.userId || !p.username || seen.has(p.userId)) continue;
-          seen.add(p.userId);
-          derived.push({
-            id: p.userId,
-            username: p.username,
-            displayName: p.displayName,
-            avatarUrl: p.avatarUrl,
-            isPrivate: false,
-            createdAt: p.createdAt,
-            postCount: 0,
-            followerCount: 0,
-            followingCount: 0,
-            isFollowing: false,
-            isBlocked: false,
-            isMuted: false,
-          });
-          if (derived.length >= 5) break;
-        }
-        setSuggestions(derived);
-      })
-      .catch(() => {});
-  }, []);
-
-  const handleFollow = async (u: User) => {
-    const isFollowing = followed[u.id] ?? u.isFollowing;
-    setFollowed(prev => ({ ...prev, [u.id]: !isFollowing }));
-    try {
-      if (isFollowing) await api.delete(`/follows/${u.id}`);
-      else await api.post(`/follows/${u.id}`);
-    } catch {
-      setFollowed(prev => ({ ...prev, [u.id]: isFollowing }));
-    }
-  };
-
-  return (
-    <aside className={styles.sidebar}>
-      {/* Current user card */}
-      {user && (
-        <div className={styles.userCard}>
-          <div className={styles.userCardAvatar} onClick={() => navigate('/profile')}>
-            <Avatar src={user.avatarUrl} username={user.username} size="lg" />
-          </div>
-          <div className={styles.userCardInfo}>
-            <div className={styles.userCardUsername} onClick={() => navigate('/profile')}>
-              {user.username}
-            </div>
-            {user.displayName && (
-              <div className={styles.userCardName}>{user.displayName}</div>
-            )}
-          </div>
-          <button className={styles.switchBtn} onClick={() => navigate('/profile')}>
-            Profile
-          </button>
-        </div>
-      )}
-
-      {/* Suggestions */}
-      {suggestions.length > 0 && (
-        <div className={styles.suggestions}>
-          <div className={styles.suggestionsHeader}>
-            <span className={styles.suggestionsTitle}>Suggestions For You</span>
-            <button className={styles.seeAllBtn} onClick={() => navigate('/explore')}>
-              See All
-            </button>
-          </div>
-          {suggestions.map(u => {
-            const isFollowing = followed[u.id] ?? u.isFollowing;
-            return (
-              <div key={u.id} className={styles.suggestItem}>
-                <div className={styles.suggestAvatarWrap} onClick={() => navigate(`/profile/${u.username}`)}>
-                  <Avatar src={u.avatarUrl} username={u.username} size="md" />
-                </div>
-                <div className={styles.suggestInfo} onClick={() => navigate(`/profile/${u.username}`)}>
-                  <div className={styles.suggestUsername}>{u.username}</div>
-                  {u.displayName && <div className={styles.suggestSub}>{u.displayName}</div>}
-                </div>
-                <button
-                  className={`${styles.followBtn} ${isFollowing ? styles.following : ''}`}
-                  onClick={() => handleFollow(u)}
-                >
-                  {isFollowing ? 'Following' : 'Follow'}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Footer links */}
-      <div className={styles.sidebarFooter}>
-        <a href="/about" className={styles.footerLink}>About</a>
-        <a href="/privacy" className={styles.footerLink}>Privacy</a>
-        <a href="/terms" className={styles.footerLink}>Terms</a>
-        <a href="/support" className={styles.footerLink}>Help</a>
-        <span className={styles.footerCopy}>© 2025 Infotograf</span>
-      </div>
-    </aside>
-  );
-}
-
 const LAST_SEEN_KEY = 'infotograf_last_seen_post';
 
 export function FeedPage({ onCreatePost }: FeedPageProps) {
+  const navigate = useNavigate();
   const fetcher = useCallback(
     (cursor: string | null) =>
       api.getPaginated<Post>(`/feed${cursor ? `?cursor=${cursor}` : ''}`),
@@ -137,13 +22,11 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
   );
 
   const { items: posts, loading, loadingMore, error, hasMore, loadMore, refresh, setItems } = usePagination({ fetcher });
-  const [lastSeenId, setLastSeenId] = useState<string | null>(() => localStorage.getItem(LAST_SEEN_KEY));
+  const [lastSeenId] = useState<string | null>(() => localStorage.getItem(LAST_SEEN_KEY));
   const [newPostCount, setNewPostCount] = useState(0);
   const markerDismissed = React.useRef(false);
 
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
+  useEffect(() => { refresh(); }, [refresh]);
 
   // Calculate new posts above the "where you left off" marker
   useEffect(() => {
@@ -169,85 +52,80 @@ export function FeedPage({ onCreatePost }: FeedPageProps) {
     setItems(prev => prev.filter(p => p.id !== postId));
   }, [setItems]);
 
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    if (!hasMore || loadingMore) return;
-    if (el.scrollHeight - el.scrollTop - el.clientHeight < 300) {
-      loadMore();
-    }
-  }, [hasMore, loadingMore, loadMore]);
-
   return (
-    <div className={styles.page} onScroll={handleScroll}>
-      <div className={styles.layout}>
-        {/* Feed column */}
-        <div className={styles.feedColumn}>
-          {loading && (
-            <>
-              <PostCardSkeleton />
-              <PostCardSkeleton />
-              <PostCardSkeleton />
-            </>
-          )}
-
-          {!loading && error && (
-            <div className={styles.errorState}>
-              {error}
-              <br />
-              <button className={styles.retryBtn} onClick={refresh}>Retry</button>
-            </div>
-          )}
-
-          {!loading && !error && posts.length === 0 && (
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>📷</div>
-              <div className={styles.emptyTitle}>Your feed is empty</div>
-              <div className={styles.emptyText}>Follow people to see their photos here.</div>
-            </div>
-          )}
-
-          {posts.map(post => (
-            <React.Fragment key={post.id}>
-              {!markerDismissed.current && lastSeenId === post.id && newPostCount > 0 && (
-                <div
-                  className={styles.whereYouLeftOff}
-                  onClick={() => { markerDismissed.current = true; setNewPostCount(0); }}
-                >
-                  <div className={styles.allCaughtUpLine} />
-                  <span className={styles.whereYouLeftOffText}>
-                    {newPostCount} new {newPostCount === 1 ? 'post' : 'posts'}
-                  </span>
-                  <div className={styles.allCaughtUpLine} />
-                </div>
-              )}
-              <PostCard post={post} onUpdate={handleUpdate} onDelete={handleDelete} />
-            </React.Fragment>
-          ))}
-
-          {loadingMore && (
-            <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
-              Loading…
-            </div>
-          )}
-
-          {!loadingMore && hasMore && (
-            <button className={styles.loadMoreBtn} onClick={loadMore}>
-              Load more
-            </button>
-          )}
-
-          {!loading && !loadingMore && !hasMore && posts.length > 0 && (
-            <div className={styles.allCaughtUp}>
-              <div className={styles.allCaughtUpLine} />
-              <span className={styles.allCaughtUpText}>You're all caught up</span>
-              <div className={styles.allCaughtUpLine} />
-            </div>
-          )}
+    <div className={styles.page}>
+      {/* New posts pill */}
+      {newPostCount > 0 && !markerDismissed.current && (
+        <div className={styles.newPostsPill}>
+          <button className={styles.pill} onClick={() => { markerDismissed.current = true; setNewPostCount(0); window.scrollTo(0, 0); }}>
+            ↑ {newPostCount} new {newPostCount === 1 ? 'post' : 'posts'}
+          </button>
         </div>
+      )}
 
-        {/* Sidebar */}
-        <Sidebar onCreatePost={onCreatePost} />
-      </div>
+      {/* Loading skeletons */}
+      {loading && (
+        <>
+          <PostCardSkeleton />
+          <PostCardSkeleton />
+          <PostCardSkeleton />
+        </>
+      )}
+
+      {/* Error state */}
+      {!loading && error && (
+        <div className={styles.errorState}>
+          {error}
+          <br />
+          <button className={styles.retryBtn} onClick={refresh}>Retry</button>
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!loading && !error && posts.length === 0 && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>📷</div>
+          <div className={styles.emptyTitle}>Your feed is empty</div>
+          <div className={styles.emptyText}>Follow people to see their photos here.</div>
+        </div>
+      )}
+
+      {/* Posts */}
+      {posts.map(post => (
+        <React.Fragment key={post.id}>
+          {!markerDismissed.current && lastSeenId === post.id && newPostCount > 0 && (
+            <div className={styles.whereYouLeftOff} onClick={() => { markerDismissed.current = true; setNewPostCount(0); }}>
+              <div className={styles.whereYouLeftOffLine} />
+              <span className={styles.whereYouLeftOffText}>Where you left off</span>
+              <div className={styles.whereYouLeftOffLine} />
+            </div>
+          )}
+          <PostCard post={post} onUpdate={handleUpdate} onDelete={handleDelete} />
+        </React.Fragment>
+      ))}
+
+      {/* Loading more */}
+      {loadingMore && (
+        <div style={{ padding: 16, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>
+          Loading…
+        </div>
+      )}
+
+      {/* Load more button */}
+      {!loadingMore && hasMore && (
+        <button className={styles.loadMoreBtn} onClick={loadMore}>Load more</button>
+      )}
+
+      {/* All caught up */}
+      {!loading && !loadingMore && !hasMore && posts.length > 0 && (
+        <div className={styles.allCaughtUp}>
+          <div className={styles.allCaughtUpTitle}>✓ You're all caught up</div>
+          <div className={styles.allCaughtUpSubtitle}>You've seen all new posts from the last 48 hours</div>
+          <button className={styles.allCaughtUpBtn} onClick={() => navigate('/explore')}>
+            Explore more photos →
+          </button>
+        </div>
+      )}
     </div>
   );
 }
