@@ -429,3 +429,9 @@
   font-size: 13px;
   padding: 0;
 }
+
+@media (max-width: 768px) {
+  .card { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; }
+  .card.federated { border-left: 3px solid var(--purple); }
+  .actionBtn { min-width: 44px; min-height: 44px; }
+}

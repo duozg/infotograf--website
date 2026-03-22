@@ -60,6 +60,11 @@
   --chat-sent: #3b6994;
   --chat-recv: #eee;
 
+  /* ── Tab bar (mobile, always dark chrome) ── */
+  --tab-gradient-top: #393939;
+  --tab-gradient-bottom: #1a1a1a;
+  --tab-border: #555555;
+
   /* ── Aliases for backward compat with existing components ── */
   --bg-app: var(--bg);
   --bg-card: var(--card);

@@ -17,8 +17,10 @@ import { PublicProfilePage } from './features/profile/PublicProfilePage';
 import { SettingsModal } from './features/profile/SettingsModal';
 import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
+import { TabBar } from './components/TabBar';
 import { RightAside } from './components/RightAside';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { useIsMobile } from './hooks/useIsMobile';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, initialized } = useAuth();
@@ -58,6 +60,7 @@ function AuthenticatedApp() {
   const [postModalId, setPostModalId] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleCreatePost = useCallback(() => setShowCreatePost(true), []);
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
@@ -145,6 +148,8 @@ function AuthenticatedApp() {
       {showSettings && (
         <SettingsModal onClose={() => setShowSettings(false)} />
       )}
+
+      {isMobile && <TabBar onCreatePost={handleCreatePost} />}
     </>
   );
 }

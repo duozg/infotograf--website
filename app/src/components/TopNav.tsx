@@ -196,7 +196,7 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
       </div>
 
       {/* Search bar */}
-      <div className={styles.searchWrapper}>
+      <span className={styles.desktopOnly}><div className={styles.searchWrapper}>
         <form className={styles.searchForm} onSubmit={handleSearchSubmit}>
           <div className={styles.searchBar}>
             <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={styles.searchIcon}>
@@ -268,46 +268,52 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
             </div>
           </>
         )}
-      </div>
+      </div></span>
 
       {/* Right-side actions */}
       <nav className={styles.actions}>
         {/* + New Post */}
-        <button className={styles.newPostBtn} onClick={onNewPost}>
-          + New Post
-        </button>
+        <span className={styles.desktopOnly}>
+          <button className={styles.newPostBtn} onClick={onNewPost}>
+            + New Post
+          </button>
+        </span>
 
         {/* Fediverse (only when enabled) */}
         {federationEnabled && (
-          <button
-            className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
-            onClick={() => navigate('/fediverse')}
-            aria-label="Fediverse"
-          >
-            <FediverseIcon size={22} />
-          </button>
+          <span className={styles.desktopOnly}>
+            <button
+              className={`${styles.navBtn} ${isFediverse ? styles.active : ''}`}
+              onClick={() => navigate('/fediverse')}
+              aria-label="Fediverse"
+            >
+              <FediverseIcon size={22} />
+            </button>
+          </span>
         )}
 
         {/* Home */}
-        <button
-          className={`${styles.navBtn} ${isHome ? styles.active : ''}`}
-          onClick={() => navigate('/')}
-          aria-label="Home"
-        >
-          <svg
-            width={22}
-            height={22}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <span className={styles.desktopOnly}>
+          <button
+            className={`${styles.navBtn} ${isHome ? styles.active : ''}`}
+            onClick={() => navigate('/')}
+            aria-label="Home"
           >
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-        </button>
+            <svg
+              width={22}
+              height={22}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </button>
+        </span>
 
         {/* DMs dropdown */}
         <div className={styles.dmWrapper}>
@@ -485,25 +491,27 @@ export function TopNav({ onNewPost }: { onNewPost: () => void }) {
         </div>
 
         {/* Profile */}
-        <button
-          className={`${styles.navBtn} ${isProfile ? styles.active : ''}`}
-          onClick={() => navigate('/profile')}
-          aria-label="Profile"
-        >
-          <svg
-            width={22}
-            height={22}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <span className={styles.desktopOnly}>
+          <button
+            className={`${styles.navBtn} ${isProfile ? styles.active : ''}`}
+            onClick={() => navigate('/profile')}
+            aria-label="Profile"
           >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-        </button>
+            <svg
+              width={22}
+              height={22}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+        </span>
       </nav>
 
       {/* Floating chat widget */}

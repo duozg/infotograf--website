@@ -236,3 +236,14 @@
 .sendBtn:hover:not(:disabled) {
   opacity: 0.8;
 }
+
+/* ── Mobile: position above tab bar ── */
+@media (max-width: 768px) {
+  .widget {
+    bottom: calc(49px + env(safe-area-inset-bottom, 0px) + 8px);
+    right: 8px;
+    left: 8px;
+    width: auto;
+    height: 55vh;
+  }
+}

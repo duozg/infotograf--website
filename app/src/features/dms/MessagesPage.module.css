@@ -679,3 +679,25 @@
   font-size: 11px;
   color: var(--t3);
 }
+
+.backBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  color: var(--t1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .page { height: calc(100vh - 52px - 49px - env(safe-area-inset-bottom, 0px)); border: none; border-radius: 0; }
+  .convPanel { width: 100%; border-right: none; }
+  .chatPanel { display: none; }
+  .page.chatActive .convPanel { display: none; }
+  .page.chatActive .chatPanel { display: flex; width: 100%; }
+  .backBtn { display: flex; }
+}

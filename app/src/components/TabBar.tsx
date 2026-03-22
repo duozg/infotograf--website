@@ -60,7 +60,7 @@ export function TabBar({ onCreatePost }: TabBarProps) {
   const path = location.pathname;
   const isHome = path === '/';
   const isExplore = path.startsWith('/explore');
-  const isNotifications = path.startsWith('/notifications');
+  const isNotifications = path.startsWith('/activity');
   const isProfile = path.startsWith('/profile') || path === '/profile';
 
   return (
@@ -91,7 +91,7 @@ export function TabBar({ onCreatePost }: TabBarProps) {
 
       <button
         className={`${styles.tab} ${isNotifications ? styles.active : ''}`}
-        onClick={() => navigate('/notifications')}
+        onClick={() => navigate('/activity')}
         aria-label="Notifications"
         style={{ position: 'relative' }}
       >

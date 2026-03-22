@@ -428,3 +428,17 @@
 
 .profileMenuItem:hover { background: var(--elevated); }
 .profileMenuItemDanger { color: var(--red) !important; }
+
+@media (max-width: 768px) {
+  .inner { padding: 16px 0 0; }
+  .profileHeader { flex-direction: column; gap: 16px; padding: 16px 16px 24px; }
+  .profTop { flex-direction: column; gap: 16px; align-items: center; }
+  .avatarSection { padding-left: 0; min-width: auto; }
+  .avatarSection img, .avatarSection > div { width: 80px !important; height: 80px !important; }
+  .profileInfo { align-items: center; text-align: center; }
+  .usernameRow { justify-content: center; flex-wrap: wrap; }
+  .statsRow { justify-content: center; }
+  .bioSection { align-items: center; }
+  .grid { gap: 2px; }
+  .gridToggle { margin: 0; }
+}

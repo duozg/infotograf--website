@@ -407,3 +407,11 @@
 .replyComment { padding-left: 40px; }
 .opBadge { font-size: 10px; font-weight: 700; color: var(--text-link); margin-left: 4px; }
 .remoteUsername { color: var(--fediverse-purple); }
+
+@media (max-width: 768px) {
+  .overlay { align-items: flex-end; }
+  .modal { flex-direction: column; width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; }
+  .imagePanel { flex: none; width: 100%; max-height: 50vh; }
+  .rightPanel { width: 100%; flex: 1; min-height: 0; border-left: none; border-top: 1px solid var(--divider-card); }
+  .pageModal { flex-direction: column; max-width: 100%; }
+}

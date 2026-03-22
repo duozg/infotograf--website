@@ -383,7 +383,7 @@ export function MessagesPage() {
   }, []);
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${activeConversation ? styles.chatActive : ''}`}>
       {/* Left panel: conversation list */}
       <div className={styles.convPanel}>
         <div className={styles.convHeader}>
@@ -471,6 +471,11 @@ export function MessagesPage() {
           <>
             {/* Chat header */}
             <div className={`${styles.chatHeader} ${isOtherUserOnline ? styles.chatHeaderPresent : ''}`}>
+              <button className={styles.backBtn} onClick={() => setActiveConversation(null)}>
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
               <div
                 className={styles.chatHeaderInfo}
                 onClick={() => navigate(`/profile/${otherMember?.username}`)}

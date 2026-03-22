@@ -183,8 +183,13 @@ ul, ol { list-style: none; }
 @media (max-width: 768px) {
   .app-sidebar { display: none; }
   .app-main { margin-left: 0; }
-  .app-main-inner { padding: 12px; }
+  .app-main-inner { padding: 8px 0 0; gap: 0; }
   .app-feed-col { max-width: 100%; }
+
+  /* Bottom padding for tab bar */
+  .app-layout {
+    padding-bottom: calc(49px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ═══ Scrollbar (dark mode) ═══ */
