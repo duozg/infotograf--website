@@ -232,14 +232,12 @@
 .bubbleCol.mine { align-items: flex-end; }
 
 .bubble {
-  max-width: 65%;
   padding: 10px 14px;
   border-radius: 18px;
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
   white-space: pre-wrap;
-  min-width: 0;
 }
 
 .bubble.mine {
