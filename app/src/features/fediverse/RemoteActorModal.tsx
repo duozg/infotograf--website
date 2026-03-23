@@ -91,7 +91,13 @@ export function RemoteActorModal({ remoteActorId, onClose }: RemoteActorModalPro
         )}
 
         {error && !loading && (
-          <div className={styles.errorState}>{error}</div>
+          <div className={styles.errorState}>
+            <FediverseIcon size={32} />
+            <div style={{ marginTop: 8, fontWeight: 600 }}>Profile unavailable</div>
+            <div style={{ marginTop: 4, fontSize: 13, color: 'var(--t2)' }}>
+              This user is on a remote fediverse instance and their profile couldn't be loaded.
+            </div>
+          </div>
         )}
 
         {actor && !loading && (

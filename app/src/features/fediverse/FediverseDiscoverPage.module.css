@@ -288,9 +288,9 @@
   border-radius: var(--radius-btn);
   font-size: 11px;
   font-weight: 600;
-  background: linear-gradient(to bottom, #f5f5f5, #e5e5e5);
-  border: 1px solid var(--border);
-  color: var(--t1);
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  border: 1px solid var(--cta-bdr);
+  color: #fff;
   cursor: pointer;
 }
 .copyBtn.copied { color: var(--green); }

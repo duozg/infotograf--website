@@ -431,18 +431,11 @@ export function ProfilePage() {
             {/* ── View toggle ── */}
             <div className={styles.gridToggle}>
               <button
-                className={`${styles.gridToggleBtn} ${activeTab === 'posts' && viewMode === 'grid' ? styles.active : ''}`}
-                onClick={() => { setActiveTab('posts'); setViewMode('grid'); }}
-                aria-label="Grid view"
+                className={`${styles.gridToggleBtn} ${activeTab === 'posts' ? styles.active : ''}`}
+                onClick={() => setActiveTab('posts')}
+                aria-label="Posts"
               >
                 <GridIcon />
-              </button>
-              <button
-                className={`${styles.gridToggleBtn} ${activeTab === 'posts' && viewMode === 'list' ? styles.active : ''}`}
-                onClick={() => { setActiveTab('posts'); setViewMode('list'); }}
-                aria-label="List view"
-              >
-                <ListIcon />
               </button>
               {isOwnProfile && (
                 <button
