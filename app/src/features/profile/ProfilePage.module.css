@@ -15,6 +15,7 @@
 
 .profileHeader {
   display: flex;
+  flex-direction: row;
   gap: 28px;
   align-items: flex-start;
   background: none;
@@ -24,19 +25,9 @@
   margin-bottom: 0;
 }
 
-.profTop {
-  display: flex;
-  gap: 28px;
-  align-items: flex-start;
-}
-
 .avatarSection {
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 150px;
-  padding-left: 0;
+  width: 150px;
 }
 
 /* ── Avatar 150px square with 4px radius ── */

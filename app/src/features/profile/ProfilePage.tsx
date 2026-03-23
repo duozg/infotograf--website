@@ -380,9 +380,6 @@ export function ProfilePage() {
                   >
                     <span className={styles.statValue}>{toCount(profile.followerCount).toLocaleString()}</span>
                     <span className={styles.statLabel}>followers</span>
-                    {isOwnProfile && federationEnabled && fediverseStats && fediverseStats.remoteFollowers > 0 && (
-                      <span className={styles.fediverseStatSub}>+{fediverseStats.remoteFollowers} fediverse</span>
-                    )}
                   </div>
                   <div
                     className={styles.statItem}
@@ -416,12 +413,6 @@ export function ProfilePage() {
                       <FediverseIcon size={12} />
                       @{profile.username}@infotograf.com
                     </div>
-                  )}
-                  {isOwnProfile && federationEnabled && fediverseStats && fediverseStats.remoteFollowers > 0 && (
-                    <span className={styles.fediverseBadge}>
-                      <FediverseIcon size={10} />
-                      {fediverseStats.remoteFollowers} remote followers
-                    </span>
                   )}
                 </div>
               </div>
