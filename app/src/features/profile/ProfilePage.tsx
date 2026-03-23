@@ -405,11 +405,23 @@ export function ProfilePage() {
                       {profile.website.replace(/^https?:\/\//, '')}
                     </a>
                   )}
-                  {federationEnabled && currentUser?.username && isOwnProfile && (
+                  {isOwnProfile && federationEnabled && currentUser?.username && (
                     <div className={styles.fediverseHandle}>
                       <FediverseIcon size={12} />
                       @{currentUser.username}@infotograf.com
                     </div>
+                  )}
+                  {!isOwnProfile && profile.federationEnabled && (
+                    <div className={styles.fediverseHandle}>
+                      <FediverseIcon size={12} />
+                      @{profile.username}@infotograf.com
+                    </div>
+                  )}
+                  {isOwnProfile && federationEnabled && fediverseStats && fediverseStats.remoteFollowers > 0 && (
+                    <span className={styles.fediverseBadge}>
+                      <FediverseIcon size={10} />
+                      {fediverseStats.remoteFollowers} remote followers
+                    </span>
                   )}
                 </div>
               </div>
