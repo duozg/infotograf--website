@@ -33,7 +33,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: #e8f0f8;
+  background: var(--bg-unread-notif);
   border-radius: 4px;
   margin-bottom: 16px;
   cursor: pointer;

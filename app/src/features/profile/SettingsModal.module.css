@@ -209,3 +209,7 @@
   font-weight: 600;
   color: var(--red);
 }
+
+@media (max-width: 768px) {
+  .modal { max-width: 100%; max-height: 100vh; border-radius: 0; }
+}

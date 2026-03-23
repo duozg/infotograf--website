@@ -69,7 +69,7 @@
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  background: #e0e0e0;
+  background: var(--elevated);
 }
 .imageWrap img {
   width: 100%;

@@ -148,12 +148,12 @@
 }
 
 .chatHeaderPresent {
-  background: linear-gradient(135deg, #3a4570, #4a3570);
+  background: linear-gradient(135deg, var(--hdr-bot), #4a3570);
   box-shadow: 0 2px 12px rgba(160, 120, 255, 0.15);
 }
 
 .chatHeaderPresent .chatHeaderName {
-  color: #e8e6e7;
+  color: #fff;
 }
 
 .chatHeaderInfo {

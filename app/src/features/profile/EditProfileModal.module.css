@@ -132,3 +132,7 @@
   color: var(--text-tertiary);
   margin-top: 4px;
 }
+
+@media (max-width: 768px) {
+  .modal { max-width: 100%; max-height: 100vh; border-radius: 0; }
+}
