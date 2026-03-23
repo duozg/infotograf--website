@@ -90,6 +90,7 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   const [showHeart, setShowHeart] = useState(false);
   const [captionExpanded, setCaptionExpanded] = useState(false);
   const [likedByUsers, setLikedByUsers] = useState<User[] | null>(null);
+  const [likedByLoading, setLikedByLoading] = useState(false);
   const [remoteActorId, setRemoteActorId] = useState<string | null>(null);
 
   // Sync with parent
@@ -237,11 +238,14 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
   };
 
   const fetchLikedBy = useCallback(async () => {
+    setLikedByLoading(true);
     try {
       const { items } = await api.getPaginated<User>(`${postEndpoint}/liked-by`);
       setLikedByUsers(items);
     } catch {
       setLikedByUsers(null);
+    } finally {
+      setLikedByLoading(false);
     }
   }, [postEndpoint]);
 
@@ -478,9 +482,14 @@ export function PostCard({ post, onPostClick, onUserClick, onUpdate, onDelete }:
               >×</button>
             </div>
             <div style={{ flex: 1, overflowY: 'auto' }}>
-              {likedByUsers.length === 0 && (
+              {likedByUsers.length === 0 && likedByLoading && (
                 <div style={{ padding: 20, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>
                   Loading…
+                </div>
+              )}
+              {likedByUsers.length === 0 && !likedByLoading && (
+                <div style={{ padding: 20, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>
+                  {localPost.remoteDomain ? 'Likes from fediverse users' : 'No likes yet'}
                 </div>
               )}
               {likedByUsers.map((u: any) => {
