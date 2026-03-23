@@ -304,5 +304,10 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .sidebar { display: none; }
+  .layout { flex-direction: column; height: auto; min-height: calc(100vh - 100px); }
+  .sidebar { width: 100%; max-height: 300px; border-right: none; border-bottom: 1px solid var(--border); overflow-y: auto; }
+  .main { flex: 1; min-height: 400px; }
+  .addBar input { font-size: 16px; }
+  .articleDetail { padding: 16px; }
+  .articleDetail h2 { font-size: 18px; }
 }
