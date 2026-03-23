@@ -19,6 +19,7 @@ import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
 import { TabBar } from './components/TabBar';
 import { RightAside } from './components/RightAside';
+import { AppFooter } from './components/AppFooter';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useIsMobile } from './hooks/useIsMobile';
 
@@ -130,6 +131,8 @@ function AuthenticatedApp() {
               </div>
             )}
           </div>
+
+          {isMobile && <AppFooter />}
         </div>
       </div>
 

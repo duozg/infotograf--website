@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import styles from './ImageCarousel.module.css';
 import { PostImage } from '../models';
 import { imageUrl } from '../utils/imageUrl';
@@ -58,12 +58,35 @@ function cssFilter(filterName?: string): string {
 
 export function ImageCarousel({ images, filterName }: ImageCarouselProps) {
   const [index, setIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchDelta = useRef(0);
 
-  if (!images || images.length === 0) return null;
+  // Filter out images with invalid URLs (API sends `url`, model has `imageUrl`)
+  const validImages = (images || []).filter(img => img.url || img.imageUrl);
+  if (validImages.length === 0) return null;
 
-  if (images.length === 1) {
-    const url = imageUrl(images[0].imageUrl);
-    const filter = cssFilter(images[0].filterName || filterName);
+  const prev = () => setIndex(i => Math.max(0, i - 1));
+  const next = () => setIndex(i => Math.min(validImages.length - 1, i + 1));
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDelta.current = 0;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchDelta.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    const threshold = 50;
+    if (touchDelta.current < -threshold) next();
+    else if (touchDelta.current > threshold) prev();
+    touchDelta.current = 0;
+  };
+
+  if (validImages.length === 1) {
+    const url = imageUrl(validImages[0].url || validImages[0].imageUrl);
+    const filter = cssFilter(validImages[0].filterName || filterName);
     return (
       <div className={styles.carousel}>
         <div className={styles.track}>
@@ -75,17 +98,19 @@ export function ImageCarousel({ images, filterName }: ImageCarouselProps) {
     );
   }
 
-  const prev = () => setIndex(i => Math.max(0, i - 1));
-  const next = () => setIndex(i => Math.min(images.length - 1, i + 1));
-
   return (
-    <div className={styles.carousel}>
+    <div
+      className={styles.carousel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div
         className={styles.track}
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
-        {images.map((img, idx) => {
-          const url = imageUrl(img.imageUrl);
+        {validImages.map((img, idx) => {
+          const url = imageUrl(img.url || img.imageUrl);
           const filter = cssFilter(img.filterName || filterName);
           return (
             <div key={idx} className={styles.slide}>
@@ -100,16 +125,16 @@ export function ImageCarousel({ images, filterName }: ImageCarouselProps) {
           ‹
         </button>
       )}
-      {index < images.length - 1 && (
+      {index < validImages.length - 1 && (
         <button className={`${styles.btn} ${styles.btnNext}`} onClick={next} aria-label="Next">
           ›
         </button>
       )}
 
-      <div className={styles.counter}>{index + 1}/{images.length}</div>
+      <div className={styles.counter}>{index + 1}/{validImages.length}</div>
 
       <div className={styles.dots}>
-        {images.map((_, idx) => (
+        {validImages.map((_, idx) => (
           <div
             key={idx}
             className={`${styles.dot} ${idx === index ? styles.active : ''}`}

@@ -19,7 +19,8 @@ export interface User {
 }
 
 export interface PostImage {
-  imageUrl: string;
+  url?: string;
+  imageUrl?: string;
   thumbnailUrl?: string;
   filterName?: string;
 }

@@ -456,7 +456,7 @@ export function ProfilePage() {
                 <div className={styles.grid}>
                   {bookmarks.map(post => {
                     const imgs = post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
-                    const thumb = imageUrl(imgs[0]?.thumbnailUrl || imgs[0]?.imageUrl);
+                    const thumb = imageUrl(imgs[0]?.thumbnailUrl || imgs[0]?.url || imgs[0]?.imageUrl);
                     return (
                       <div
                         key={post.id}
@@ -493,7 +493,7 @@ export function ProfilePage() {
               <div className={styles.grid}>
                 {posts.map(post => {
                   const images = post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
-                  const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.imageUrl);
+                  const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.url || images[0]?.imageUrl);
                   return (
                     <div
                       key={post.id}
@@ -535,7 +535,7 @@ export function ProfilePage() {
               <div>
                 {posts.map(post => {
                   const images = post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls : [{ imageUrl: post.imageUrl }];
-                  const thumb = imageUrl(images[0]?.imageUrl);
+                  const thumb = imageUrl(images[0]?.url || images[0]?.imageUrl);
                   return (
                     <div
                       key={post.id}

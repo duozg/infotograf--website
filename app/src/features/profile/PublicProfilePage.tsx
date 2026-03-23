@@ -232,7 +232,7 @@ export function PublicProfilePage() {
                 const images = post.imageUrls && post.imageUrls.length > 0
                   ? post.imageUrls
                   : [{ imageUrl: post.imageUrl, thumbnailUrl: post.thumbnailUrl }];
-                const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.imageUrl);
+                const thumb = imageUrl(images[0]?.thumbnailUrl || images[0]?.url || images[0]?.imageUrl);
                 return (
                   <div
                     key={post.id}

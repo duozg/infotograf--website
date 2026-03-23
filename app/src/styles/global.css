@@ -1,7 +1,7 @@
 /* ═══ Global Reset + Base Styles ═══ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
 
 body {
   font-family: var(--font-body);
@@ -10,6 +10,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 #root { min-height: 100vh; }
@@ -183,8 +184,9 @@ ul, ol { list-style: none; }
 @media (max-width: 768px) {
   .app-sidebar { display: none; }
   .app-main { margin-left: 0; }
-  .app-main-inner { padding: 8px 0 0; gap: 0; }
-  .app-feed-col { max-width: 100%; }
+  .app-main-inner { padding: 8px 0 0; gap: 0; max-width: 100%; }
+  .app-feed-col,
+  .app-feed-col.narrow { max-width: 100%; }
 
   /* Bottom padding for tab bar */
   .app-layout {
