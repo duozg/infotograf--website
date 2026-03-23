@@ -220,6 +220,7 @@ export function MessagesPage() {
   }, []);
 
   const handleDeleteConversation = useCallback(async (convId: string) => {
+    if (!window.confirm('Delete this conversation?\n\nThis only removes it from your inbox — the other person will still have their copy.')) return;
     setConversations(prev => prev.filter(c => c.id !== convId));
     if (activeConversation?.id === convId) setActiveConversation(null);
     try {
@@ -297,6 +298,7 @@ export function MessagesPage() {
   }, [activeConversation, user?.id]);
 
   const handleDeleteMessage = useCallback(async (msgId: string) => {
+    if (!window.confirm('Unsend this message?\n\nThis only removes it from your side — the other person may still see it.')) return;
     setMessages(prev => prev.filter(m => m.id !== msgId));
     try {
       await api.delete(`/conversations/${activeConversation!.id}/messages/${msgId}`);
