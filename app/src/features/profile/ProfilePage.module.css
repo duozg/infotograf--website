@@ -423,17 +423,16 @@
 
 @media (max-width: 768px) {
   .inner { padding: 0; }
-  .profileHeader { flex-direction: column; gap: 0; padding: 16px 16px 0; }
-  .profTop { flex-direction: row; gap: 20px; align-items: center; }
-  .avatarSection { padding-left: 0; min-width: auto; }
+  .profileHeader { flex-direction: row; gap: 16px; padding: 16px; }
+  .avatarSection { width: 77px; }
   .avatarSection img, .avatarSection > div { width: 77px !important; height: 77px !important; }
-  .profileInfo { gap: 8px; align-items: stretch; text-align: left; }
+  .profileInfo { gap: 6px; }
   .usernameRow { gap: 8px; flex-wrap: wrap; }
-  .username { font-size: 18px; }
+  .username { font-size: 16px; }
   .statsRow { gap: 16px; margin-bottom: 0; }
   .statItem, .statValue, .statLabel { font-size: 14px; }
   .editBtn, .followBtn, .messageBtn { padding: 5px 12px; font-size: 13px; }
-  .bioSection { padding: 12px 16px; align-items: stretch; }
+  .bioSection { padding: 4px 16px 12px; }
   .displayName { font-size: 13px; }
   .bio { font-size: 13px; }
   .website { font-size: 13px; }

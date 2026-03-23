@@ -370,7 +370,7 @@ export function ProfilePage() {
                 {/* Stats row */}
                 <div className={styles.statsRow}>
                   <div className={styles.statItem}>
-                    <span className={styles.statValue}>{toCount(profile.postCount).toLocaleString()}</span>
+                    <span className={styles.statValue}>{(toCount(profile.postCount) || posts.length).toLocaleString()}</span>
                     <span className={styles.statLabel}>posts</span>
                   </div>
                   <div
