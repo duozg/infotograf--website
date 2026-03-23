@@ -1237,8 +1237,8 @@ body {
   font-size: 19px;
   font-weight: 200;
   color: var(--text-secondary-dark);
-  max-width: 520px;
-  margin: 0 auto;
+  max-width: 560px;
+  margin: 0 auto 48px;
   line-height: 1.6;
 }
 
@@ -1331,15 +1331,150 @@ body {
 }
 
 .about-feature-desc {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 300;
   color: var(--text-secondary-light);
   line-height: 1.8;
-  max-width: 440px;
+  max-width: 480px;
+  margin-bottom: 16px;
 }
 
 .about-feature-desc--dark {
   color: var(--text-secondary-dark);
+}
+
+.about-feature-desc em {
+  font-style: italic;
+  color: var(--text-primary-light);
+}
+
+.about-feature-desc--dark em {
+  color: var(--text-primary-dark);
+}
+
+
+/* ─── Feature Lists ───────────────────────────────────── */
+
+.about-feature-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  max-width: 480px;
+}
+
+.about-feature-list li {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-secondary-light);
+  line-height: 1.6;
+  padding: 6px 0 6px 20px;
+  position: relative;
+}
+
+.about-feature-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cta-gradient-top);
+}
+
+.about-feature-list--dark li {
+  color: var(--text-secondary-dark);
+}
+
+
+/* ─── Dual Phone Layout (Privacy section) ─────────────── */
+
+.about-feature-phones {
+  flex-shrink: 0;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.about-phone-frame--small {
+  width: 200px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 3px solid var(--border-primary-light);
+  background: var(--bg-card-light);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+}
+
+.about-phone-frame--small img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+/* ─── Summary Stats ───────────────────────────────────── */
+
+.about-summary {
+  background: var(--bg-card-dark);
+  padding: 80px var(--section-padding-x);
+}
+
+.about-summary-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+
+.about-summary-item {
+  text-align: center;
+}
+
+.about-summary-number {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 48px;
+  font-weight: 200;
+  color: var(--text-primary-dark);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.about-summary-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-tertiary-dark);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+
+/* ─── About CTA ───────────────────────────────────────── */
+
+.about-cta {
+  background: var(--bg-app-dark);
+  text-align: center;
+  padding: 100px var(--section-padding-x);
+}
+
+.about-cta-heading {
+  font-family: var(--font-body);
+  font-size: 36px;
+  font-weight: 200;
+  color: var(--text-primary-dark);
+  margin-bottom: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-cta-text {
+  font-size: 17px;
+  font-weight: 200;
+  color: var(--text-secondary-dark);
+  margin-bottom: 40px;
 }
 
 
@@ -1365,13 +1500,39 @@ body {
     max-width: none;
   }
 
+  .about-feature-list {
+    max-width: none;
+    text-align: left;
+  }
+
   .about-phone-frame {
     width: 220px;
     margin: 0 auto;
   }
 
+  .about-feature-phones {
+    justify-content: center;
+  }
+
+  .about-phone-frame--small {
+    width: 160px;
+  }
+
   .about-feature-heading,
   .about-feature-heading--dark {
+    font-size: 28px;
+  }
+
+  .about-summary-inner {
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .about-summary-number {
+    font-size: 36px;
+  }
+
+  .about-cta-heading {
     font-size: 28px;
   }
 }
@@ -1389,7 +1550,31 @@ body {
     width: 200px;
   }
 
+  .about-phone-frame--small {
+    width: 140px;
+  }
+
   .about-feature {
     padding: 64px 16px;
+  }
+
+  .about-summary {
+    padding: 56px 16px;
+  }
+
+  .about-summary-inner {
+    gap: 24px;
+  }
+
+  .about-summary-number {
+    font-size: 28px;
+  }
+
+  .about-cta {
+    padding: 64px 16px;
+  }
+
+  .about-cta-heading {
+    font-size: 24px;
   }
 }
