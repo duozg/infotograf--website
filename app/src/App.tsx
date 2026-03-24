@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { ColumnsProvider, useColumns } from './context/ColumnsContext';
 import { LoginPage } from './features/auth/LoginPage';
@@ -58,7 +58,6 @@ function AuthenticatedApp() {
   const [showSettings, setShowSettings] = useState(false);
   const [postModalId, setPostModalId] = useState<string | null>(null);
   const location = useLocation();
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { columns } = useColumns();
 
@@ -66,7 +65,7 @@ function AuthenticatedApp() {
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
 
   const isHome = location.pathname === '/';
-  const useMultiColumn = isHome && !isMobile;
+  const useMultiColumn = isHome && !isMobile && columns.length > 1;
 
   // Open post detail as modal overlay (Instagram-style lightbox)
   const openPostModal = useCallback((postId: string) => {
