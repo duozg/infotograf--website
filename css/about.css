@@ -516,3 +516,39 @@
     font-size: 24px;
   }
 }
+
+
+/* ─── Dark Theme Overrides ─────────────────────────────── */
+
+[data-theme="dark"] .about-section--light {
+  background: var(--bg-card-dark);
+}
+
+[data-theme="dark"] .about-section-heading {
+  color: var(--text-primary-dark);
+}
+
+[data-theme="dark"] .about-section-text {
+  color: var(--text-secondary-dark);
+}
+
+[data-theme="dark"] .about-feature-title {
+  color: var(--text-primary-dark);
+}
+
+[data-theme="dark"] .about-feature-desc {
+  color: var(--text-secondary-dark);
+}
+
+[data-theme="dark"] .about-screenshot-card {
+  background: var(--bg-app-dark);
+  border-color: var(--border-primary-dark);
+}
+
+[data-theme="dark"] .about-feature-list li {
+  color: var(--text-secondary-dark);
+}
+
+[data-theme="dark"] .about-feature-list li::before {
+  color: var(--text-link-dark);
+}
