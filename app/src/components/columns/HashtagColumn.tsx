@@ -19,7 +19,7 @@ export function HashtagColumn({ tag, scrollContainerRef, onPostClick }: HashtagC
     [tag]
   );
 
-  const { items: posts, loading, loadingMore, hasMore, loadMore, refresh } = usePagination({ fetcher });
+  const { items: posts, loading, loadingMore, error, hasMore, loadMore, refresh } = usePagination({ fetcher });
 
   const didLoad = useRef(false);
   useEffect(() => {
@@ -34,7 +34,11 @@ export function HashtagColumn({ tag, scrollContainerRef, onPostClick }: HashtagC
     <div style={{ padding: 12 }}>
       {loading && <div className={exploreStyles.loading}>Loading…</div>}
 
-      {!loading && posts.length === 0 && (
+      {!loading && error && (
+        <div className={exploreStyles.emptyState}>{error}</div>
+      )}
+
+      {!loading && !error && posts.length === 0 && (
         <div className={exploreStyles.emptyState}>No posts yet for #{tag}</div>
       )}
 

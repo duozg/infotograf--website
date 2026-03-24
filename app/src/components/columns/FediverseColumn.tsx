@@ -10,6 +10,7 @@ interface FediverseColumnProps {
 export function FediverseColumn({ scrollContainerRef: _scrollContainerRef }: FediverseColumnProps) {
   const [suggested, setSuggested] = useState<RemoteActorSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [followStates, setFollowStates] = useState<Record<string, { following: boolean; pending: boolean }>>({});
 
   useEffect(() => {
@@ -25,36 +26,44 @@ export function FediverseColumn({ scrollContainerRef: _scrollContainerRef }: Fed
         });
         setFollowStates(states);
       })
-      .catch(() => {})
+      .catch(() => setError('Failed to load suggestions'))
       .finally(() => setLoading(false));
   }, []);
 
   const handleFollow = useCallback(async (actor: RemoteActorSummary) => {
-    const state = followStates[actor.id];
-    if (!state) return;
+    setFollowStates(prev => {
+      const state = prev[actor.id];
+      if (!state) return prev;
 
-    if (state.following || state.pending) {
-      setFollowStates(prev => ({ ...prev, [actor.id]: { following: false, pending: false } }));
-      try { await api.delete(`/federation/following/${actor.id}`); } catch {
-        setFollowStates(prev => ({ ...prev, [actor.id]: state }));
+      if (state.following || state.pending) {
+        // Unfollow optimistically
+        const next = { ...prev, [actor.id]: { following: false, pending: false } };
+        api.delete(`/federation/following/${actor.id}`).catch(() => {
+          setFollowStates(p => ({ ...p, [actor.id]: state }));
+        });
+        return next;
+      } else {
+        // Follow optimistically
+        const next = { ...prev, [actor.id]: { following: false, pending: true } };
+        api.post(`/federation/follow/${actor.id}`).catch(() => {
+          setFollowStates(p => ({ ...p, [actor.id]: state }));
+        });
+        return next;
       }
-    } else {
-      setFollowStates(prev => ({ ...prev, [actor.id]: { following: false, pending: true } }));
-      try { await api.post(`/federation/follow/${actor.id}`); } catch {
-        setFollowStates(prev => ({ ...prev, [actor.id]: state }));
-      }
-    }
-  }, [followStates]);
+    });
+  }, []);
 
   return (
-    <div style={{ padding: 16 }}>
+    <div style={{ padding: 0 }}>
       {loading && (
-        <div style={{ padding: 40, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>
-          Loading…
-        </div>
+        <div style={{ padding: 40, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>Loading…</div>
       )}
 
-      {!loading && suggested.length === 0 && (
+      {!loading && error && (
+        <div style={{ padding: 40, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>{error}</div>
+      )}
+
+      {!loading && !error && suggested.length === 0 && (
         <div style={{ padding: 40, textAlign: 'center', color: 'var(--t2)', fontSize: 14 }}>
           No suggested accounts yet
         </div>
@@ -62,12 +71,13 @@ export function FediverseColumn({ scrollContainerRef: _scrollContainerRef }: Fed
 
       {suggested.map(actor => {
         const state = followStates[actor.id] || { following: false, pending: false };
+        const isActive = state.following || state.pending;
         const btnLabel = state.following ? 'Following' : state.pending ? 'Requested' : 'Follow';
-        const btnClass = state.following || state.pending ? 'btn-grey' : 'btn-follow';
+
         return (
           <div key={actor.id} style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 0', borderBottom: '1px solid var(--border)',
+            padding: '12px 16px', borderBottom: '1px solid var(--border)',
           }}>
             <Avatar src={actor.avatarUrl} username={actor.username} size="md" />
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -78,7 +88,21 @@ export function FediverseColumn({ scrollContainerRef: _scrollContainerRef }: Fed
                 @{actor.username}@{actor.domain}
               </div>
             </div>
-            <button className={btnClass} onClick={() => handleFollow(actor)} style={{ fontSize: 11, padding: '5px 12px' }}>
+            <button
+              onClick={() => handleFollow(actor)}
+              style={{
+                padding: '5px 14px',
+                fontSize: 11,
+                fontWeight: 700,
+                borderRadius: 3,
+                cursor: 'pointer',
+                border: isActive ? '1px solid var(--border)' : '1px solid var(--cta-bdr)',
+                background: isActive
+                  ? 'linear-gradient(to bottom, #f5f5f5, #e5e5e5)'
+                  : 'linear-gradient(to bottom, var(--cta-top), var(--cta-bot))',
+                color: isActive ? 'var(--t1)' : '#fff',
+              }}
+            >
               {btnLabel}
             </button>
           </div>
