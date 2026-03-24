@@ -38,7 +38,7 @@
   font-size: 19px;
   font-weight: 200;
   color: var(--text-secondary-dark);
-  max-width: 560px;
+  max-width: 600px;
   margin: 0 auto 48px;
   line-height: 1.6;
 }
@@ -188,7 +188,7 @@
 }
 
 
-/* ─── Dual Phone Layout (Privacy section) ─────────────── */
+/* ─── Dual Phone Layout (side by side) ────────────────── */
 
 .about-feature-phones {
   flex-shrink: 0;
@@ -206,10 +206,38 @@
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
 }
 
+.about-phone-frame--small.about-phone-frame--dark {
+  border-color: var(--border-primary-dark);
+  background: var(--bg-app-dark);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+}
+
 .about-phone-frame--small img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+
+/* ─── Stacked Phone Layout (Fediverse section) ────────── */
+
+.about-feature-phones-stack {
+  flex-shrink: 0;
+  position: relative;
+  width: 340px;
+  padding-bottom: 40px;
+}
+
+.about-phone-frame--stacked {
+  width: 220px;
+}
+
+.about-phone-frame--overlap {
+  position: absolute;
+  right: 0;
+  top: 60px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+  z-index: 1;
 }
 
 
@@ -225,7 +253,7 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  gap: 80px;
+  gap: 60px;
 }
 
 .about-summary-item {
@@ -319,13 +347,27 @@
     width: 160px;
   }
 
+  .about-feature-phones-stack {
+    width: 280px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+  }
+
+  .about-phone-frame--stacked {
+    width: 180px;
+  }
+
+  .about-phone-frame--overlap {
+    top: 40px;
+  }
+
   .about-feature-heading,
   .about-feature-heading--dark {
     font-size: 28px;
   }
 
   .about-summary-inner {
-    gap: 40px;
+    gap: 32px;
     flex-wrap: wrap;
   }
 
@@ -353,6 +395,19 @@
 
   .about-phone-frame--small {
     width: 140px;
+  }
+
+  .about-feature-phones-stack {
+    width: 240px;
+    padding-bottom: 24px;
+  }
+
+  .about-phone-frame--stacked {
+    width: 160px;
+  }
+
+  .about-phone-frame--overlap {
+    top: 30px;
   }
 
   .about-feature {
