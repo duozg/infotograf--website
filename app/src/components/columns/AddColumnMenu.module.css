@@ -1,32 +1,40 @@
+/* Floating circular add button — bottom right like Threads */
 .addBtn {
-  width: 40px;
-  flex-shrink: 0;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-left: 1px solid var(--border);
+  background: linear-gradient(to bottom, var(--cta-top), var(--cta-bot));
+  border: 1px solid var(--cta-bdr);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 300;
   cursor: pointer;
-  color: var(--t2);
-  font-size: 24px;
-  transition: background 0.15s, color 0.15s;
-  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s, box-shadow 0.15s;
+  z-index: 90;
 }
 
 .addBtn:hover {
-  background: var(--elevated);
-  color: var(--t1);
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
+/* Menu pops up above the button */
 .menu {
-  position: absolute;
-  top: 50%;
-  right: 48px;
-  transform: translateY(-50%);
+  position: fixed;
+  bottom: 90px;
+  right: 32px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  min-width: 180px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  min-width: 200px;
   z-index: 100;
   overflow: hidden;
 }
@@ -34,8 +42,8 @@
 .menuItem {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 14px 18px;
   font-size: 14px;
   color: var(--t1);
   cursor: pointer;
@@ -59,15 +67,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px 12px;
+  padding: 8px 18px 14px;
   border-top: 1px solid var(--border);
 }
 
 .hashtagInput input {
   flex: 1;
-  padding: 6px 10px;
+  padding: 7px 10px;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 13px;
   background: var(--input);
   color: var(--t1);
@@ -79,7 +87,7 @@
 }
 
 .hashtagInput button {
-  padding: 6px 12px;
+  padding: 7px 14px;
   font-size: 12px;
   font-weight: 600;
 }

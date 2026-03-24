@@ -1,18 +1,25 @@
 .container {
   display: flex;
-  flex: 1;
-  min-width: 0;
+  justify-content: center;
+  gap: 1px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   height: calc(100vh - 52px);
   overflow: hidden;
   background: var(--bg);
+  position: relative;
+  padding: 0 20px;
 }
 
 .column {
-  flex: 1;
+  flex: 0 1 600px;
   min-width: 0;
+  max-width: 600px;
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  background: var(--bg);
 }
 
 .column:first-child {
@@ -29,5 +36,8 @@
 @media (max-width: 1024px) {
   .column:nth-child(n+2) {
     display: none;
+  }
+  .container {
+    padding: 0;
   }
 }

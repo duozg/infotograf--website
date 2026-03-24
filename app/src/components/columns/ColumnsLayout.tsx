@@ -12,20 +12,22 @@ export function ColumnsLayout({ onPostClick }: ColumnsLayoutProps) {
   const { columns, addColumn, removeColumn } = useColumns();
 
   return (
-    <div className={styles.container}>
-      {columns.map(col => (
-        <div key={col.id} className={styles.column}>
-          <ColumnShell
-            config={col}
-            canClose={columns.length > 1}
-            onClose={() => removeColumn(col.id)}
-            onPostClick={onPostClick}
-          />
-        </div>
-      ))}
+    <>
+      <div className={styles.container}>
+        {columns.map(col => (
+          <div key={col.id} className={styles.column}>
+            <ColumnShell
+              config={col}
+              canClose={columns.length > 1}
+              onClose={() => removeColumn(col.id)}
+              onPostClick={onPostClick}
+            />
+          </div>
+        ))}
+      </div>
       {columns.length < 3 && (
         <AddColumnMenu onAdd={addColumn} />
       )}
-    </div>
+    </>
   );
 }
