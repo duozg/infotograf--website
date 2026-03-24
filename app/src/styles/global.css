@@ -170,7 +170,7 @@ ul, ol { list-style: none; }
 
 @media (max-width: 768px) {
   .app-sidebar { display: none; }
-  .app-main { margin-left: 0; }
+  .app-main { margin-left: 0; flex-direction: column; }
   .app-main-inner { padding: 8px 0 0; gap: 0; max-width: 100%; }
   .app-feed-col { max-width: 100%; }
 
