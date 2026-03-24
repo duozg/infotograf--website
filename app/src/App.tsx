@@ -66,7 +66,7 @@ function AuthenticatedApp() {
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
 
   const isHome = location.pathname === '/';
-  const useMultiColumn = isHome && !isMobile && columns.length > 1;
+  const useMultiColumn = isHome && !isMobile;
 
   // Open post detail as modal overlay (Instagram-style lightbox)
   const openPostModal = useCallback((postId: string) => {
