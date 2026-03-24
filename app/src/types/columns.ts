@@ -7,7 +7,7 @@ export interface ColumnConfig {
 }
 
 export const COLUMN_LABELS: Record<ColumnType, string> = {
-  home: 'Home',
+  home: 'Feed',
   explore: 'Explore',
   hashtag: 'Hashtag',
   fediverse: 'Fediverse',
