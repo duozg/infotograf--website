@@ -65,18 +65,6 @@ ul, ol { list-style: none; }
   min-width: 0;
 }
 
-/* Only constrain feed to 600px — other pages use full width */
-.app-feed-col.narrow {
-  max-width: 600px;
-}
-
-.app-aside-col {
-  width: 260px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 72px; /* 52px nav + 20px padding */
-  align-self: flex-start;
-}
 
 /* ═══ Auth layout (no sidebar) ═══ */
 .auth-layout {
@@ -177,7 +165,6 @@ ul, ol { list-style: none; }
 
 /* ═══ Responsive ═══ */
 @media (max-width: 1024px) {
-  .app-aside-col { display: none; }
   .app-main-inner { max-width: 640px; }
 }
 
@@ -185,8 +172,7 @@ ul, ol { list-style: none; }
   .app-sidebar { display: none; }
   .app-main { margin-left: 0; }
   .app-main-inner { padding: 8px 0 0; gap: 0; max-width: 100%; }
-  .app-feed-col,
-  .app-feed-col.narrow { max-width: 100%; }
+  .app-feed-col { max-width: 100%; }
 
   /* Bottom padding for tab bar */
   .app-layout {

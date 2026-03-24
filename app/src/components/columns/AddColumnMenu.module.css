@@ -1,0 +1,91 @@
+.addBtn {
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--t2);
+  font-size: 24px;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+
+.addBtn:hover {
+  background: var(--elevated);
+  color: var(--t1);
+}
+
+.menu {
+  position: absolute;
+  top: 50%;
+  right: 48px;
+  transform: translateY(-50%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--t1);
+  cursor: pointer;
+  transition: background 0.1s;
+  width: 100%;
+  text-align: left;
+}
+
+.menuItem:hover {
+  background: var(--elevated);
+}
+
+.menuIcon {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.hashtagInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.hashtagInput input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+  background: var(--input);
+  color: var(--t1);
+  outline: none;
+}
+
+.hashtagInput input:focus {
+  border-color: var(--tlink);
+}
+
+.hashtagInput button {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}

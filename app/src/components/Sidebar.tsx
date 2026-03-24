@@ -173,6 +173,17 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Footer links */}
+      <div className={styles.footerLinks}>
+        <a href="/about">About</a>
+        <span>·</span>
+        <a href="https://infotograf.com/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
+        <span>·</span>
+        <a href="https://infotograf.com/terms" target="_blank" rel="noopener noreferrer">Terms</a>
+        <span>·</span>
+        <a href="https://infotograf.com/support" target="_blank" rel="noopener noreferrer">Support</a>
+      </div>
     </aside>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { ColumnsProvider, useColumns } from './context/ColumnsContext';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
 import { FeedPage } from './features/feed/FeedPage';
@@ -18,9 +19,9 @@ import { SettingsModal } from './features/profile/SettingsModal';
 import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
 import { TabBar } from './components/TabBar';
-import { RightAside } from './components/RightAside';
 import { AppFooter } from './components/AppFooter';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ColumnsLayout } from './components/columns/ColumnsLayout';
 import { useIsMobile } from './hooks/useIsMobile';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -52,9 +53,6 @@ function RequireGuest({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-/** Pages where the right aside should be visible */
-const ASIDE_PAGES = ['/', '/explore'];
-
 function AuthenticatedApp() {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -62,26 +60,25 @@ function AuthenticatedApp() {
   const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { columns } = useColumns();
 
   const handleCreatePost = useCallback(() => setShowCreatePost(true), []);
   const handleCloseCreatePost = useCallback(() => setShowCreatePost(false), []);
 
-  const showAside = ASIDE_PAGES.includes(location.pathname);
+  const isHome = location.pathname === '/';
+  const useMultiColumn = isHome && !isMobile && columns.length > 1;
 
   // Open post detail as modal overlay (Instagram-style lightbox)
   const openPostModal = useCallback((postId: string) => {
     setPostModalId(postId);
-    // Update URL without navigation so it's shareable
     window.history.pushState(null, '', `/post/${postId}`);
   }, []);
 
   const closePostModal = useCallback(() => {
     setPostModalId(null);
-    // Restore previous URL
     window.history.back();
   }, []);
 
-  // Handle browser back button closing the modal
   React.useEffect(() => {
     const handlePopState = () => {
       if (postModalId) {
@@ -100,43 +97,40 @@ function AuthenticatedApp() {
         <Sidebar />
 
         <div className="app-main">
-          <div className="app-main-inner">
-            <div className={`app-feed-col${showAside ? ' narrow' : ''}`}>
-              <Routes>
-                <Route
-                  path="/"
-                  element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} onPostClick={openPostModal} /></ErrorBoundary>}
-                />
-                <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
-                <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
-                <Route path="/activity" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
-                <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
-                <Route path="/rss" element={<ErrorBoundary><RssPage /></ErrorBoundary>} />
-                <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
-                <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
-                <Route path="/settings" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
-                <Route
-                  path="/post/:postId"
-                  element={<ErrorBoundary><PostDetailModal asPage /></ErrorBoundary>}
-                />
-                <Route path="/hashtag/:tag" element={<ErrorBoundary><HashtagPage /></ErrorBoundary>} />
-                <Route path="/upload" element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </div>
-
-            {showAside && (
-              <div className="app-aside-col">
-                <RightAside />
+          {useMultiColumn ? (
+            <ColumnsLayout onPostClick={openPostModal} />
+          ) : (
+            <div className="app-main-inner">
+              <div className="app-feed-col">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} onPostClick={openPostModal} /></ErrorBoundary>}
+                  />
+                  <Route path="/explore" element={<ErrorBoundary><ExplorePage /></ErrorBoundary>} />
+                  <Route path="/fediverse" element={<ErrorBoundary><FediverseDiscoverPage /></ErrorBoundary>} />
+                  <Route path="/activity" element={<ErrorBoundary><NotificationsPage /></ErrorBoundary>} />
+                  <Route path="/messages" element={<ErrorBoundary><MessagesPage /></ErrorBoundary>} />
+                  <Route path="/rss" element={<ErrorBoundary><RssPage /></ErrorBoundary>} />
+                  <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+                  <Route path="/profile/:username" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+                  <Route path="/settings" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+                  <Route
+                    path="/post/:postId"
+                    element={<ErrorBoundary><PostDetailModal asPage /></ErrorBoundary>}
+                  />
+                  <Route path="/hashtag/:tag" element={<ErrorBoundary><HashtagPage /></ErrorBoundary>} />
+                  <Route path="/upload" element={<ErrorBoundary><FeedPage onCreatePost={handleCreatePost} /></ErrorBoundary>} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {isMobile && <AppFooter />}
         </div>
       </div>
 
-      {/* Post detail modal overlay (Instagram lightbox) */}
       {postModalId && (
         <PostDetailModal postId={postModalId} onClose={closePostModal} />
       )}
@@ -174,7 +168,13 @@ export default function App() {
       />
       <Route
         path="/*"
-        element={<RequireAuth><AuthenticatedApp /></RequireAuth>}
+        element={
+          <RequireAuth>
+            <ColumnsProvider>
+              <AuthenticatedApp />
+            </ColumnsProvider>
+          </RequireAuth>
+        }
       />
     </Routes>
   );

@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.column:first-child {
+  border-left: none;
+}
+
+/* Hide extra columns on smaller screens */
+@media (max-width: 1200px) {
+  .column:nth-child(n+3) {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .column:nth-child(n+2) {
+    display: none;
+  }
+}

@@ -151,6 +151,34 @@
   margin: 8px 16px;
 }
 
+/* ═══ Footer links ═══ */
+.footerLinks {
+  padding: 12px;
+  font-size: 11px;
+  color: var(--t3);
+  line-height: 1.8;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.footerLinks a {
+  color: var(--t3);
+  text-decoration: none;
+}
+
+.footerLinks a:hover {
+  text-decoration: underline;
+  color: var(--t2);
+}
+
+.footerLinks span {
+  margin: 0 2px;
+}
+
+.sidebar:not(:hover) .footerLinks {
+  display: none;
+}
+
 /* ── Mobile: hide sidebar completely ── */
 @media (max-width: 768px) {
   .sidebar { display: none; }
