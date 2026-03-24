@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Infotograf — Keep It Ad-Free</title>
+  <meta name="description" content="Infotograf is built by one person and funded by the community. Support the project to keep it ad-free and independent.">
+  <meta name="theme-color" content="#1c1a1b">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Support Infotograf">
+  <meta property="og:description" content="Help keep Infotograf ad-free and independent. Community-funded photo sharing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://infotograf.com/donate">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia' font-style='italic'>i</text></svg>">
+
+  <!-- Mastodon verification & Fediverse author attribution -->
+  <link rel="me" href="https://mastodon.social/@quentin97">
+  <meta name="fediverse:creator" content="@quentin97@mastodon.social">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* ─── Support Hero (dark, with photo) ─── */
+    .support-hero {
+      background: var(--bg-app-dark);
+      color: var(--text-primary-dark);
+      padding: 80px var(--section-padding-x) 64px;
+    }
+
+    .support-hero-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 64px;
+    }
+
+    .support-hero-text {
+      flex: 1;
+    }
+
+    .support-hero-text h1 {
+      font-family: var(--font-body);
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--text-primary-dark);
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    .support-hero-text h1 span {
+      color: #7c6fff;
+    }
+
+    .support-hero-text p {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text-secondary-dark);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .support-hero-cta {
+      display: inline-block;
+      padding: 14px 32px;
+      background: #7c6fff;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .support-hero-cta:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    .support-hero-cta svg {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .support-hero-photo {
+      flex-shrink: 0;
+      width: 380px;
+      height: 380px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 0 4px rgba(124, 111, 255, 0.25), 0 24px 64px rgba(0, 0, 0, 0.4);
+    }
+
+    .support-hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ─── Platforms Section ─── */
+    .donate-body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 56px var(--section-padding-x) 80px;
+    }
+
+    .donate-section-heading {
+      font-family: var(--font-body);
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text-primary-light);
+      margin-bottom: 8px;
+    }
+
+    .donate-section-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-secondary-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .donate-platforms {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    .donate-card {
+      background: var(--bg-card-light);
+      border: 1px solid var(--border-primary-light);
+      border-radius: 8px;
+      padding: 28px 20px;
+      text-align: center;
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .donate-card:hover {
+      border-color: #7c6fff;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(124, 111, 255, 0.12);
+      text-decoration: none;
+    }
+
+    .donate-card-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donate-card-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .donate-card-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary-light);
+    }
+
+    .donate-card-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-secondary-light);
+      line-height: 1.5;
+    }
+
+    .donate-card-cta {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 8px 20px;
+      background: #7c6fff;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ─── Costs ─── */
+    .donate-costs {
+      background: var(--bg-card-light);
+      border: 1px solid var(--border-primary-light);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 56px;
+    }
+
+    .donate-costs h2 {
+      font-family: var(--font-body);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-primary-light);
+      margin-bottom: 20px;
+      margin-top: 0;
+    }
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-primary-light);
+      font-size: 15px;
+      font-weight: 300;
+      color: #666666;
+    }
+
+    .cost-row:last-child {
+      border-bottom: none;
+      font-weight: 500;
+      color: var(--text-primary-light);
+      padding-top: 14px;
+    }
+
+    .cost-amount {
+      font-weight: 400;
+      color: var(--text-primary-light);
+    }
+
+    .cost-row:last-child .cost-amount {
+      font-weight: 600;
+    }
+
+    /* ─── Promise ─── */
+    .donate-promise {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .donate-promise h2 {
+      font-family: var(--font-body);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text-primary-light);
+      margin-bottom: 16px;
+      margin-top: 0;
+    }
+
+    .donate-promise p {
+      font-size: 15px;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .support-hero-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+      }
+
+      .support-hero-text h1 {
+        font-size: 32px;
+      }
+
+      .support-hero-photo {
+        width: 260px;
+        height: 260px;
+        order: -1;
+      }
+
+      .donate-platforms {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .support-hero {
+        padding: 64px 16px 48px;
+      }
+
+      .support-hero-text h1 {
+        font-size: 26px;
+      }
+
+      .donate-body {
+        padding: 32px 16px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">Infotograf</a>
+      <ul class="nav-links">
+        <li><a href="/about">About</a></li>
+        <li><a href="/support">Support</a></li>
+        <li><a href="/fediverse">Fediverse</a></li>
+        <li><a href="/donate" class="nav-link-active">Donate</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero with photo -->
+  <section class="support-hero">
+    <div class="support-hero-inner">
+      <div class="support-hero-text">
+        <h1>We need your support!</h1>
+        <p>We're an open source project that is <span style="color: #7c6fff; font-weight: 500;">funded by people like you!</span></p>
+        <p style="margin-bottom: 32px;">Hi, I'm Quentin. I built Infotograf because I believe social media should be simple, safe, and free from surveillance. No ads, no investors, no data harvesting. Your support keeps it that way.</p>
+        <a href="#platforms" class="support-hero-cta">
+          How to support our project
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="support-hero-photo">
+        <img src="/images/quentin.jpg" alt="Quentin, creator of Infotograf">
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <div class="donate-body" id="platforms">
+
+    <h2 class="donate-section-heading">Support Infotograf</h2>
+    <p class="donate-section-sub">Choose your preferred platform. Every contribution goes directly to keeping the servers running and the project moving forward.</p>
+
+    <!-- Platform Cards -->
+    <div class="donate-platforms">
+      <a href="https://ko-fi.com/infotograf" target="_blank" rel="noopener" class="donate-card">
+        <div class="donate-card-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 8h1a4 4 0 1 1 0 8h-1" stroke="#FF5E5B" stroke-width="1.5"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z" stroke="#FF5E5B" stroke-width="1.5"/><path d="M6 12s1 2 3 2 3-2 3-2" stroke="#FF5E5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="donate-card-name">Ko-fi</div>
+        <div class="donate-card-desc">One-time tips or monthly support</div>
+        <div class="donate-card-cta">Support on Ko-fi</div>
+      </a>
+      <a href="https://www.patreon.com/posts/help-me-build-no-153816672?utm_medium=clipboard_copy&utm_source=copyLink&utm_campaign=postshare_creator&utm_content=join_link" target="_blank" rel="noopener" class="donate-card">
+        <div class="donate-card-icon">
+          <svg viewBox="0 0 24 24" fill="#FF424D"><circle cx="14" cy="7.5" r="5.5"/><rect x="2" y="2" width="3" height="20" rx="1"/></svg>
+        </div>
+        <div class="donate-card-name">Patreon</div>
+        <div class="donate-card-desc">Monthly membership with perks</div>
+        <div class="donate-card-cta">Support on Patreon</div>
+      </a>
+      <a href="https://opencollective.com/infotografcom" target="_blank" rel="noopener" class="donate-card">
+        <div class="donate-card-icon">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7FADF2" stroke-width="1.5"/><path d="M7.5 7.5A6.5 6.5 0 0 0 7.5 16.5" stroke="#297EFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="donate-card-name">Open Collective</div>
+        <div class="donate-card-desc">Transparent finances, one-time or recurring</div>
+        <div class="donate-card-cta">Support on Open Collective</div>
+      </a>
+    </div>
+
+    <!-- Costs -->
+    <div class="donate-costs">
+      <h2>Where the money goes</h2>
+      <div class="cost-row"><span>Server hosting</span><span class="cost-amount">~$50/mo</span></div>
+      <div class="cost-row"><span>Photo storage (Cloudflare R2)</span><span class="cost-amount">~$20/mo</span></div>
+      <div class="cost-row"><span>Domain &amp; email</span><span class="cost-amount">~$25/mo</span></div>
+      <div class="cost-row"><span>Apple Developer Program</span><span class="cost-amount">$99/yr</span></div>
+      <div class="cost-row"><span>Total</span><span class="cost-amount">~$100/mo</span></div>
+    </div>
+
+    <!-- Promise -->
+    <div class="donate-promise">
+      <h2>The promise</h2>
+      <p>Infotograf will never have ads. It will never sell your data. It will never train AI on your photos. Your support is what makes that possible.</p>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">Infotograf</span>
+      <ul class="footer-links">
+        <li><a href="/about">About</a></li>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Service</a></li>
+        <li><a href="/guidelines">Guidelines</a></li>
+        <li><a href="/support">Support</a></li>
+        <li><a href="/fediverse">Fediverse</a></li>
+        <li><a href="/donate">Donate</a></li>
+      </ul>
+    </div>
+    <p class="footer-copyright">&copy; 2026 Infotograf. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
