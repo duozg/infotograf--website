@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, RefObject } from 'react';
+import React, { useEffect, useCallback, useState, useRef, RefObject } from 'react';
 import feedStyles from '../../features/feed/FeedPage.module.css';
 import { PostCard } from '../PostCard';
 import { PostCardSkeleton } from '../Skeleton';
@@ -26,7 +26,12 @@ export function FeedColumn({ scrollContainerRef, onPostClick }: FeedColumnProps)
   const [newPostCount, setNewPostCount] = useState(0);
   const markerDismissed = React.useRef(false);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  const didLoad = useRef(false);
+  useEffect(() => {
+    if (didLoad.current) return;
+    didLoad.current = true;
+    refresh();
+  }, [refresh]);
 
   useContainerScroll(scrollContainerRef, { hasMore, loadMore });
 

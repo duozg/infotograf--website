@@ -1,4 +1,4 @@
-export type ColumnType = 'home' | 'explore' | 'hashtag' | 'fediverse';
+export type ColumnType = 'home' | 'explore' | 'hashtag' | 'fediverse' | 'rss';
 
 export interface ColumnConfig {
   id: string;
@@ -11,4 +11,5 @@ export const COLUMN_LABELS: Record<ColumnType, string> = {
   explore: 'Explore',
   hashtag: 'Hashtag',
   fediverse: 'Fediverse',
+  rss: 'RSS Feeds',
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, RefObject } from 'react';
+import React, { useEffect, useCallback, useRef, RefObject } from 'react';
 import exploreStyles from '../../features/explore/ExplorePage.module.css';
 import { api } from '../../api/client';
 import { Post } from '../../models';
@@ -21,7 +21,12 @@ export function ExploreColumn({ scrollContainerRef, onPostClick }: ExploreColumn
 
   const { items: posts, loading, hasMore, loadMore, refresh } = usePagination({ fetcher });
 
-  useEffect(() => { refresh(); }, [refresh]);
+  const didLoad = useRef(false);
+  useEffect(() => {
+    if (didLoad.current) return;
+    didLoad.current = true;
+    refresh();
+  }, [refresh]);
 
   useContainerScroll(scrollContainerRef, { hasMore, loadMore });
 
