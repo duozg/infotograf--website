@@ -60,6 +60,23 @@ export function LoginPage() {
 
   return (
     <div className={styles.page}>
+      {/* Top bar with brand + fediverse mark */}
+      <div className={styles.topBar}>
+        <a href="/" className={styles.topBrand}>
+          <img src="/images/brand-i.png" alt="Infotograf" className={styles.topBrandI} />
+          <div className={styles.topFedBadge}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="5" r="2.5" fill="#6364ff"/>
+              <circle cx="19" cy="16" r="2.5" fill="#4A90D9"/>
+              <circle cx="5" cy="16" r="2.5" fill="#f5a623"/>
+              <line x1="12" y1="5" x2="19" y2="16" stroke="#6364ff" strokeWidth="1.2" opacity="0.5"/>
+              <line x1="12" y1="5" x2="5" y2="16" stroke="#f5a623" strokeWidth="1.2" opacity="0.5"/>
+              <line x1="5" y1="16" x2="19" y2="16" stroke="#4A90D9" strokeWidth="1.2" opacity="0.5"/>
+            </svg>
+          </div>
+        </a>
+      </div>
+
       <div className={styles.layout}>
         {/* Left: phone showcase */}
         <div className={styles.marketing}>
@@ -78,24 +95,6 @@ export function LoginPage() {
         {/* Right: login form */}
         <div className={styles.formSide}>
           <div className={styles.card}>
-            {/* Brand mark: I logo + fediverse icon */}
-            <div className={styles.brandMark}>
-              <div className={styles.brandIcon}>
-                <img src="/images/brand-i.png" alt="Infotograf" className={styles.brandI} />
-                <div className={styles.fedBadge}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="5" r="2.5" fill="#6364ff"/>
-                    <circle cx="19" cy="16" r="2.5" fill="#4A90D9"/>
-                    <circle cx="5" cy="16" r="2.5" fill="#f5a623"/>
-                    <line x1="12" y1="5" x2="19" y2="16" stroke="#6364ff" strokeWidth="1.2" opacity="0.5"/>
-                    <line x1="12" y1="5" x2="5" y2="16" stroke="#f5a623" strokeWidth="1.2" opacity="0.5"/>
-                    <line x1="5" y1="16" x2="19" y2="16" stroke="#4A90D9" strokeWidth="1.2" opacity="0.5"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Wordmark */}
             <div className={styles.logo}>
               <img src="/images/brand-i.png" alt="" className={styles.logoI} />
               <span>nfotograf</span>
