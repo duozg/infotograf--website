@@ -118,14 +118,14 @@ export default async function middleware(request: Request): Promise<Response | u
         status: res.status,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": "https://infotograf.com",
           "Cache-Control": "public, max-age=300",
         },
       });
     } catch {
       return new Response(JSON.stringify({ results: [] }), {
         status: 200,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://infotograf.com" },
       });
     }
   }
@@ -145,7 +145,7 @@ export default async function middleware(request: Request): Promise<Response | u
         status: res.status,
         headers: {
           "Content-Type": res.headers.get("Content-Type") || "text/xml",
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": "https://infotograf.com",
           "Cache-Control": "public, max-age=300",
         },
       });

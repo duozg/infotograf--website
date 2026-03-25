@@ -94,7 +94,7 @@ function parseRss(xml: string, feedUrl: string, feedIcon?: string): { title: str
 }
 
 function stripHtml(html: string): string {
-  const d = document.createElement('div'); d.innerHTML = html; return d.textContent || '';
+  return html.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'");
 }
 function extractImg(html: string): string | null {
   const m = html.match(/<img[^>]+src=["']([^"']+)["']/i); return m ? m[1] : null;
