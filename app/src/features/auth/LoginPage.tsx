@@ -4,20 +4,33 @@ import styles from './LoginPage.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { AppFooter } from '../../components/AppFooter';
 
-// Warm-toned decorative photo mosaic — evokes a chronological photo feed
-const TILE_COLORS = [
-  '#3a2e2a','#2e3a38','#3a3020','#2a3430','#382822',
-  '#304038','#3a2e34','#283840','#382e28','#2e3838',
-  '#3a3428','#283040','#382634','#2e3c2e','#3a2e20',
-  '#28303e','#362830','#2a3a34','#342820','#283436',
-];
-
-function PhotoGrid() {
+function PhoneShowcase() {
   return (
-    <div className={styles.photoGrid}>
-      {TILE_COLORS.map((color, i) => (
-        <div key={i} className={styles.photoTile} style={{ background: color }} />
-      ))}
+    <div className={styles.showcase}>
+      {/* Back phone — tilted left */}
+      <div className={`${styles.phone} ${styles.phoneBack} ${styles.phoneLeft}`}>
+        <img src="/images/about-fedi-feed.png" alt="Fediverse feed with posts from Mastodon and local users" />
+      </div>
+      {/* Back phone — tilted right */}
+      <div className={`${styles.phone} ${styles.phoneBack} ${styles.phoneRight}`}>
+        <img src="/images/about-dm.png" alt="Direct messaging with emoji reactions" />
+      </div>
+      {/* Front phone — center */}
+      <div className={`${styles.phone} ${styles.phoneFront}`}>
+        <img src="/images/about-feed.png" alt="Chronological photo feed" />
+      </div>
+    </div>
+  );
+}
+
+function FeaturePills() {
+  return (
+    <div className={styles.pills}>
+      <span className={styles.pill}>Chronological Feed</span>
+      <span className={styles.pill}>Classic Filters</span>
+      <span className={styles.pill}>Fediverse</span>
+      <span className={styles.pill}>No Ads</span>
+      <span className={styles.pill}>No Algorithm</span>
     </div>
   );
 }
@@ -48,16 +61,17 @@ export function LoginPage() {
   return (
     <div className={styles.page}>
       <div className={styles.layout}>
-        {/* Left: marketing panel */}
+        {/* Left: phone showcase */}
         <div className={styles.marketing}>
-          <PhotoGrid />
+          <PhoneShowcase />
           <div className={styles.marketingText}>
             <div className={styles.wordmark}>Infotograf</div>
-            <p className={styles.tagline}>We cut the noise.</p>
+            <p className={styles.tagline}>See photos from your friends.</p>
             <p className={styles.subTagline}>
               No algorithm. No reels. No shopping.<br />
               Just photos, filters, and a chronological feed.
             </p>
+            <FeaturePills />
           </div>
         </div>
 
