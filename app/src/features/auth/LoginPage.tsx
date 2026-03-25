@@ -78,7 +78,22 @@ export function LoginPage() {
         {/* Right: login form */}
         <div className={styles.formSide}>
           <div className={styles.card}>
-            <div className={styles.logo}>Infotograf</div>
+            <div className={styles.logoWrap}>
+              <div className={styles.logoConnected}>
+                <svg className={styles.fedRing} width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <circle cx="24" cy="24" r="20" stroke="url(#fedGrad)" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <circle cx="24" cy="4" r="3" fill="#6364ff" />
+                  <circle cx="44" cy="24" r="3" fill="#4A90D9" />
+                  <circle cx="24" cy="44" r="3" fill="#f5a623" />
+                  <circle cx="4" cy="24" r="3" fill="#4caf50" />
+                  <defs><linearGradient id="fedGrad" x1="0" y1="0" x2="48" y2="48"><stop stopColor="#6364ff"/><stop offset="1" stopColor="#4A90D9"/></linearGradient></defs>
+                </svg>
+              </div>
+              <div className={styles.logo}>
+                <img src="/images/brand-i.png" alt="" className={styles.logoI} />
+                <span>nfotograf</span>
+              </div>
+            </div>
 
             <form className={styles.form} onSubmit={handleSubmit} noValidate>
               {error && <div className={styles.error}>{error}</div>}

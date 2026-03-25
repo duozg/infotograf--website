@@ -162,13 +162,47 @@
   margin-bottom: 12px;
 }
 
-.logo {
-  text-align: center;
+.logoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 24px;
+  gap: 12px;
+}
+
+.logoConnected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fedRing {
+  animation: fedSpin 20s linear infinite;
+}
+
+@keyframes fedSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.logo {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
   font-family: var(--font-logo);
   font-style: italic;
   font-size: 36px;
   color: var(--t1);
+  letter-spacing: -0.5px;
+}
+
+.logoI {
+  height: 34px;
+  width: auto;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  margin-right: -2px;
 }
 
 .form {
