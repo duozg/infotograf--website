@@ -189,9 +189,13 @@
 }
 
 .topPlus {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 300;
   color: var(--t2);
+}
+
+.topFedLogo {
+  flex-shrink: 0;
 }
 
 /* ── Wordmark ── */
