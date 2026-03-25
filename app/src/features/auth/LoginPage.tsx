@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import styles from './LoginPage.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { AppFooter } from '../../components/AppFooter';
+import { FediverseIcon } from '../../components/FediverseIcon';
 
 function PhoneShowcase() {
   return (
@@ -60,20 +61,12 @@ export function LoginPage() {
 
   return (
     <div className={styles.page}>
-      {/* Top bar with brand + fediverse mark */}
+      {/* Top bar with brand I + fediverse logo */}
       <div className={styles.topBar}>
         <a href="/" className={styles.topBrand}>
           <img src="/images/brand-i.png" alt="Infotograf" className={styles.topBrandI} />
-          <div className={styles.topFedBadge}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="5" r="2.5" fill="#6364ff"/>
-              <circle cx="19" cy="16" r="2.5" fill="#4A90D9"/>
-              <circle cx="5" cy="16" r="2.5" fill="#f5a623"/>
-              <line x1="12" y1="5" x2="19" y2="16" stroke="#6364ff" strokeWidth="1.2" opacity="0.5"/>
-              <line x1="12" y1="5" x2="5" y2="16" stroke="#f5a623" strokeWidth="1.2" opacity="0.5"/>
-              <line x1="5" y1="16" x2="19" y2="16" stroke="#4A90D9" strokeWidth="1.2" opacity="0.5"/>
-            </svg>
-          </div>
+          <span className={styles.topPlus}>+</span>
+          <FediverseIcon size={32} />
         </a>
       </div>
 
