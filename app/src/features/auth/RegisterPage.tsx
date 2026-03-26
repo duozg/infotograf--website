@@ -77,9 +77,47 @@ export function RegisterPage() {
   const [countdown, setCountdown] = useState(0);
   const countdownRef = useRef<ReturnType<typeof setInterval>>();
 
+  // Availability checks
+  const [usernameTaken, setUsernameTaken] = useState<boolean | null>(null);
+  const [emailTaken, setEmailTaken] = useState<boolean | null>(null);
+  const [checkingUsername, setCheckingUsername] = useState(false);
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const usernameTimer = useRef<ReturnType<typeof setTimeout>>();
+  const emailTimer = useRef<ReturnType<typeof setTimeout>>();
+
   // General
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Debounced username availability check
+  useEffect(() => {
+    if (!USERNAME_RE.test(username)) { setUsernameTaken(null); return; }
+    setCheckingUsername(true);
+    clearTimeout(usernameTimer.current);
+    usernameTimer.current = setTimeout(async () => {
+      try {
+        const res = await api.get<{ available: boolean }>(`/users/check-username/${username.trim()}`);
+        setUsernameTaken(!res.available);
+      } catch { setUsernameTaken(null); }
+      setCheckingUsername(false);
+    }, 500);
+    return () => clearTimeout(usernameTimer.current);
+  }, [username]);
+
+  // Debounced email availability check
+  useEffect(() => {
+    if (!EMAIL_RE.test(email)) { setEmailTaken(null); return; }
+    setCheckingEmail(true);
+    clearTimeout(emailTimer.current);
+    emailTimer.current = setTimeout(async () => {
+      try {
+        const res = await api.get<{ available: boolean }>(`/users/check-email/${email.trim()}`);
+        setEmailTaken(!res.available);
+      } catch { setEmailTaken(null); }
+      setCheckingEmail(false);
+    }, 500);
+    return () => clearTimeout(emailTimer.current);
+  }, [email]);
 
   // Countdown timer for resend
   useEffect(() => {
@@ -94,11 +132,16 @@ export function RegisterPage() {
     }
   }, [countdown]);
 
-  // Validation
-  const uValid = touchedU ? USERNAME_RE.test(username) : null;
-  const eValid = touchedE ? EMAIL_RE.test(email) : null;
+  // Validation: format check + availability check
+  const uFormatOk = USERNAME_RE.test(username);
+  const eFormatOk = EMAIL_RE.test(email);
   const pValid = touchedP ? password.length >= 8 : null;
-  const formValid = USERNAME_RE.test(username) && EMAIL_RE.test(email) && password.length >= 8;
+
+  // Combined: format valid AND not taken
+  const uValid = touchedU ? (uFormatOk ? (usernameTaken === false ? true : usernameTaken === true ? false : null) : false) : null;
+  const eValid = touchedE ? (eFormatOk ? (emailTaken === false ? true : emailTaken === true ? false : null) : false) : null;
+
+  const formValid = uFormatOk && usernameTaken === false && eFormatOk && emailTaken === false && password.length >= 8;
 
   const fullPhone = selectedCountry.dial + phoneNumber.replace(/^0+/, '');
 
@@ -185,18 +228,22 @@ export function RegisterPage() {
                 onChange={e => { setUsername(e.target.value); setTouchedU(true); }}
                 onBlur={() => setTouchedU(true)}
                 autoCapitalize="none" autoCorrect="off" spellCheck={false} disabled={loading} />
-              {uValid !== null && <span className={`${styles.fieldIcon} ${uValid ? styles.pass : styles.fail}`}>{uValid ? '✓' : '✗'}</span>}
+              {checkingUsername && <span className={styles.fieldSpinner} />}
+              {!checkingUsername && uValid !== null && <span className={`${styles.fieldIcon} ${uValid ? styles.pass : styles.fail}`}>{uValid ? '✓' : '✗'}</span>}
             </div>
-            {uValid === false && <div className={styles.hint}>3+ characters, letters/numbers/underscores/dots only</div>}
+            {touchedU && !uFormatOk && username.length > 0 && <div className={styles.hint}>3+ characters, letters/numbers/underscores/dots only</div>}
+            {usernameTaken === true && <div className={styles.hint}>Username is already taken</div>}
 
             <div className={styles.fieldWrap}>
               <input className={`${styles.input} ${eValid === true ? styles.inputValid : ''} ${eValid === false ? styles.inputInvalid : ''}`}
                 type="email" placeholder="Email" value={email}
                 onChange={e => { setEmail(e.target.value); setTouchedE(true); }}
                 onBlur={() => setTouchedE(true)} disabled={loading} />
-              {eValid !== null && <span className={`${styles.fieldIcon} ${eValid ? styles.pass : styles.fail}`}>{eValid ? '✓' : '✗'}</span>}
+              {checkingEmail && <span className={styles.fieldSpinner} />}
+              {!checkingEmail && eValid !== null && <span className={`${styles.fieldIcon} ${eValid ? styles.pass : styles.fail}`}>{eValid ? '✓' : '✗'}</span>}
             </div>
-            {eValid === false && <div className={styles.hint}>Enter a valid email address</div>}
+            {touchedE && !eFormatOk && email.length > 0 && <div className={styles.hint}>Enter a valid email address</div>}
+            {emailTaken === true && <div className={styles.hint}>Email is already registered</div>}
 
             <div className={styles.fieldWrap}>
               <input className={`${styles.input} ${pValid === true ? styles.inputValid : ''} ${pValid === false ? styles.inputInvalid : ''}`}
