@@ -5,135 +5,168 @@ import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
 import { AppFooter } from '../../components/AppFooter';
 
-// ─── Country data ──────────────────────────────────────────
+// ─── Allowed countries with dialing codes ──────────────────
 
-const COUNTRY_INFO: Record<string, { flag: string; name: string }> = {
-  AU: { flag: '🇦🇺', name: 'Australia' }, US: { flag: '🇺🇸', name: 'United States' },
-  GB: { flag: '🇬🇧', name: 'United Kingdom' }, CA: { flag: '🇨🇦', name: 'Canada' },
-  NZ: { flag: '🇳🇿', name: 'New Zealand' }, VN: { flag: '🇻🇳', name: 'Vietnam' },
-  AT: { flag: '🇦🇹', name: 'Austria' }, BE: { flag: '🇧🇪', name: 'Belgium' },
-  BG: { flag: '🇧🇬', name: 'Bulgaria' }, HR: { flag: '🇭🇷', name: 'Croatia' },
-  CY: { flag: '🇨🇾', name: 'Cyprus' }, CZ: { flag: '🇨🇿', name: 'Czech Republic' },
-  DK: { flag: '🇩🇰', name: 'Denmark' }, EE: { flag: '🇪🇪', name: 'Estonia' },
-  FI: { flag: '🇫🇮', name: 'Finland' }, FR: { flag: '🇫🇷', name: 'France' },
-  DE: { flag: '🇩🇪', name: 'Germany' }, GR: { flag: '🇬🇷', name: 'Greece' },
-  HU: { flag: '🇭🇺', name: 'Hungary' }, IE: { flag: '🇮🇪', name: 'Ireland' },
-  IT: { flag: '🇮🇹', name: 'Italy' }, LV: { flag: '🇱🇻', name: 'Latvia' },
-  LT: { flag: '🇱🇹', name: 'Lithuania' }, LU: { flag: '🇱🇺', name: 'Luxembourg' },
-  MT: { flag: '🇲🇹', name: 'Malta' }, NL: { flag: '🇳🇱', name: 'Netherlands' },
-  PL: { flag: '🇵🇱', name: 'Poland' }, PT: { flag: '🇵🇹', name: 'Portugal' },
-  RO: { flag: '🇷🇴', name: 'Romania' }, SK: { flag: '🇸🇰', name: 'Slovakia' },
-  SI: { flag: '🇸🇮', name: 'Slovenia' }, ES: { flag: '🇪🇸', name: 'Spain' },
-  SE: { flag: '🇸🇪', name: 'Sweden' },
-};
+const COUNTRIES = [
+  { code: 'AU', flag: '🇦🇺', name: 'Australia', dial: '+61' },
+  { code: 'US', flag: '🇺🇸', name: 'United States', dial: '+1' },
+  { code: 'GB', flag: '🇬🇧', name: 'United Kingdom', dial: '+44' },
+  { code: 'CA', flag: '🇨🇦', name: 'Canada', dial: '+1' },
+  { code: 'NZ', flag: '🇳🇿', name: 'New Zealand', dial: '+64' },
+  { code: 'VN', flag: '🇻🇳', name: 'Vietnam', dial: '+84' },
+  { code: 'AT', flag: '🇦🇹', name: 'Austria', dial: '+43' },
+  { code: 'BE', flag: '🇧🇪', name: 'Belgium', dial: '+32' },
+  { code: 'BG', flag: '🇧🇬', name: 'Bulgaria', dial: '+359' },
+  { code: 'HR', flag: '🇭🇷', name: 'Croatia', dial: '+385' },
+  { code: 'CY', flag: '🇨🇾', name: 'Cyprus', dial: '+357' },
+  { code: 'CZ', flag: '🇨🇿', name: 'Czech Republic', dial: '+420' },
+  { code: 'DK', flag: '🇩🇰', name: 'Denmark', dial: '+45' },
+  { code: 'EE', flag: '🇪🇪', name: 'Estonia', dial: '+372' },
+  { code: 'FI', flag: '🇫🇮', name: 'Finland', dial: '+358' },
+  { code: 'FR', flag: '🇫🇷', name: 'France', dial: '+33' },
+  { code: 'DE', flag: '🇩🇪', name: 'Germany', dial: '+49' },
+  { code: 'GR', flag: '🇬🇷', name: 'Greece', dial: '+30' },
+  { code: 'HU', flag: '🇭🇺', name: 'Hungary', dial: '+36' },
+  { code: 'IE', flag: '🇮🇪', name: 'Ireland', dial: '+353' },
+  { code: 'IT', flag: '🇮🇹', name: 'Italy', dial: '+39' },
+  { code: 'LV', flag: '🇱🇻', name: 'Latvia', dial: '+371' },
+  { code: 'LT', flag: '🇱🇹', name: 'Lithuania', dial: '+370' },
+  { code: 'LU', flag: '🇱🇺', name: 'Luxembourg', dial: '+352' },
+  { code: 'MT', flag: '🇲🇹', name: 'Malta', dial: '+356' },
+  { code: 'NL', flag: '🇳🇱', name: 'Netherlands', dial: '+31' },
+  { code: 'PL', flag: '🇵🇱', name: 'Poland', dial: '+48' },
+  { code: 'PT', flag: '🇵🇹', name: 'Portugal', dial: '+351' },
+  { code: 'RO', flag: '🇷🇴', name: 'Romania', dial: '+40' },
+  { code: 'SK', flag: '🇸🇰', name: 'Slovakia', dial: '+421' },
+  { code: 'SI', flag: '🇸🇮', name: 'Slovenia', dial: '+386' },
+  { code: 'ES', flag: '🇪🇸', name: 'Spain', dial: '+34' },
+  { code: 'SE', flag: '🇸🇪', name: 'Sweden', dial: '+46' },
+];
 
 // ─── Validation ────────────────────────────────────────────
 
 const USERNAME_RE = /^[a-zA-Z0-9._]{3,30}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-function validateUsername(v: string) {
-  if (!v) return null; // not yet touched
-  return USERNAME_RE.test(v);
-}
-function validateEmail(v: string) {
-  if (!v) return null;
-  return EMAIL_RE.test(v);
-}
-function validatePassword(v: string) {
-  if (!v) return null;
-  return v.length >= 8;
-}
+// ─── Steps ─────────────────────────────────────────────────
 
-// ─── Location status ──────────────────────────────────────
-
-type LocationStatus =
-  | { state: 'checking' }
-  | { state: 'allowed'; country: string | null }
-  | { state: 'vpn'; message: string }
-  | { state: 'blocked'; message: string }
-  | { state: 'error'; message: string };
-
-// ─── Component ─────────────────────────────────────────────
+type Step = 'form' | 'phone' | 'code';
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  // Form
+  // Step
+  const [step, setStep] = useState<Step>('form');
+
+  // Form fields
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [touchedU, setTouchedU] = useState(false);
+  const [touchedE, setTouchedE] = useState(false);
+  const [touchedP, setTouchedP] = useState(false);
+
+  // Phone
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneToken, setPhoneToken] = useState('');
+
+  // Code
+  const [code, setCode] = useState('');
+  const [countdown, setCountdown] = useState(0);
+  const countdownRef = useRef<ReturnType<typeof setInterval>>();
+
+  // General
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Track if fields have been interacted with
-  const [touchedUsername, setTouchedUsername] = useState(false);
-  const [touchedEmail, setTouchedEmail] = useState(false);
-  const [touchedPassword, setTouchedPassword] = useState(false);
-
-  // Location / pre-register check
-  const [locationStatus, setLocationStatus] = useState<LocationStatus>({ state: 'checking' });
-  const preCheckRan = useRef(false);
-
-  // Run pre-register check on mount
+  // Countdown timer for resend
   useEffect(() => {
-    if (preCheckRan.current) return;
-    preCheckRan.current = true;
-    runPreCheck();
-  }, []);
-
-  async function runPreCheck() {
-    setLocationStatus({ state: 'checking' });
-    try {
-      const deviceMetadata = {
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        locale: navigator.language,
-        keyboardLanguage: navigator.languages?.[0] || navigator.language,
-      };
-      const result = await api.post<{ allowed: boolean; country: string | null }>('/auth/pre-register', { deviceMetadata });
-      setLocationStatus({ state: 'allowed', country: result.country });
-    } catch (err: any) {
-      const msg = err?.message || 'Connection failed';
-      if (msg.toLowerCase().includes('vpn') || msg.toLowerCase().includes('proxy')) {
-        setLocationStatus({ state: 'vpn', message: msg });
-      } else if (msg.toLowerCase().includes('region') || msg.toLowerCase().includes('available')) {
-        setLocationStatus({ state: 'blocked', message: msg });
-      } else {
-        setLocationStatus({ state: 'error', message: msg });
-      }
+    if (countdown > 0) {
+      countdownRef.current = setInterval(() => {
+        setCountdown(c => {
+          if (c <= 1) { clearInterval(countdownRef.current); return 0; }
+          return c - 1;
+        });
+      }, 1000);
+      return () => clearInterval(countdownRef.current);
     }
-  }
+  }, [countdown]);
 
-  // Validation states
-  const usernameValid = touchedUsername ? validateUsername(username) : null;
-  const emailValid = touchedEmail ? validateEmail(email) : null;
-  const passwordValid = touchedPassword ? validatePassword(password) : null;
-
+  // Validation
+  const uValid = touchedU ? USERNAME_RE.test(username) : null;
+  const eValid = touchedE ? EMAIL_RE.test(email) : null;
+  const pValid = touchedP ? password.length >= 8 : null;
   const formValid = USERNAME_RE.test(username) && EMAIL_RE.test(email) && password.length >= 8;
-  const locationAllowed = locationStatus.state === 'allowed';
-  const canSubmit = formValid && locationAllowed && !loading;
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  const fullPhone = selectedCountry.dial + phoneNumber.replace(/^0+/, '');
+
+  // ─── Step 1: Form → Phone ───────────────────────────
+
+  const handleFormNext = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    setTouchedUsername(true);
-    setTouchedEmail(true);
-    setTouchedPassword(true);
-    if (!canSubmit) return;
+    setTouchedU(true); setTouchedE(true); setTouchedP(true);
+    if (!formValid) return;
+    setError('');
+    setStep('phone');
+  }, [formValid]);
+
+  // ─── Step 2: Send SMS ───────────────────────────────
+
+  const handleSendCode = useCallback(async () => {
+    if (!phoneNumber.trim()) { setError('Please enter your phone number.'); return; }
     setError('');
     setLoading(true);
     try {
-      await register(username.trim(), email.trim(), password);
-      navigate('/', { replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
+      const result = await api.post<{ phoneToken: string }>('/auth/send-phone-code', { phone: fullPhone });
+      setPhoneToken(result.phoneToken);
+      setStep('code');
+      setCountdown(30);
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : 'Failed to send code.');
     } finally {
       setLoading(false);
     }
-  }, [canSubmit, username, email, password, register, navigate]);
+  }, [phoneNumber, fullPhone]);
 
-  const countryInfo = locationStatus.state === 'allowed' && locationStatus.country
-    ? COUNTRY_INFO[locationStatus.country] : null;
+  // ─── Step 3: Verify code + Register ─────────────────
+
+  const handleVerifyAndRegister = useCallback(async () => {
+    if (code.length !== 6) { setError('Please enter the 6-digit code.'); return; }
+    setError('');
+    setLoading(true);
+    try {
+      // Verify code
+      await api.post('/auth/verify-phone-code', { phone: fullPhone, code, phoneToken });
+      // Register
+      await register({ username: username.trim(), email: email.trim(), password, phone: fullPhone, phoneToken });
+      navigate('/', { replace: true });
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : 'Verification failed.');
+    } finally {
+      setLoading(false);
+    }
+  }, [code, fullPhone, phoneToken, username, email, password, register, navigate]);
+
+  // ─── Resend ─────────────────────────────────────────
+
+  const handleResend = useCallback(async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const result = await api.post<{ phoneToken: string }>('/auth/send-phone-code', { phone: fullPhone });
+      setPhoneToken(result.phoneToken);
+      setCountdown(30);
+      setCode('');
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : 'Failed to resend.');
+    } finally {
+      setLoading(false);
+    }
+  }, [fullPhone]);
+
+  // ─── Render ─────────────────────────────────────────
 
   return (
     <div className={styles.page}>
@@ -141,126 +174,103 @@ export function RegisterPage() {
         <div className={styles.logo}>Infotograf</div>
         <p className={styles.subtitle}>Sign up to see photos from your friends.</p>
 
-        {/* ─── Location status banner ──────────────── */}
-        <div className={`${styles.statusBanner} ${styles[`status_${locationStatus.state}`]}`}>
-          {locationStatus.state === 'checking' && (
-            <>
-              <span className={styles.statusSpinner} />
-              <span>Checking your location...</span>
-            </>
-          )}
-          {locationStatus.state === 'allowed' && (
-            <>
-              <span className={styles.statusFlag}>{countryInfo?.flag || '🌍'}</span>
-              <span>{countryInfo?.name || 'Location verified'}</span>
-              <span className={styles.statusCheck}>✓</span>
-            </>
-          )}
-          {locationStatus.state === 'vpn' && (
-            <>
-              <span className={styles.statusWarn}>⚠</span>
-              <span>VPN detected — please disable to continue</span>
-            </>
-          )}
-          {locationStatus.state === 'blocked' && (
-            <>
-              <span className={styles.statusBlock}>⊘</span>
-              <span>{locationStatus.message}</span>
-            </>
-          )}
-          {locationStatus.state === 'error' && (
-            <>
-              <span className={styles.statusWarn}>⚠</span>
-              <span>{locationStatus.message}</span>
-              <button className={styles.retryBtn} onClick={runPreCheck}>Retry</button>
-            </>
-          )}
-        </div>
+        {error && <div className={styles.error}>{error}</div>}
 
-        {/* ─── Form ────────────────────────────────── */}
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          {error && <div className={styles.error}>{error}</div>}
+        {/* ─── Step 1: Form fields ──────────────── */}
+        {step === 'form' && (
+          <form className={styles.form} onSubmit={handleFormNext} noValidate>
+            <div className={styles.fieldWrap}>
+              <input className={`${styles.input} ${uValid === true ? styles.inputValid : ''} ${uValid === false ? styles.inputInvalid : ''}`}
+                type="text" placeholder="Username" value={username}
+                onChange={e => { setUsername(e.target.value); setTouchedU(true); }}
+                onBlur={() => setTouchedU(true)}
+                autoCapitalize="none" autoCorrect="off" spellCheck={false} disabled={loading} />
+              {uValid !== null && <span className={`${styles.fieldIcon} ${uValid ? styles.pass : styles.fail}`}>{uValid ? '✓' : '✗'}</span>}
+            </div>
+            {uValid === false && <div className={styles.hint}>3+ characters, letters/numbers/underscores/dots only</div>}
 
-          {/* Username */}
-          <div className={styles.fieldWrap}>
-            <input
-              className={`${styles.input} ${usernameValid === true ? styles.inputValid : ''} ${usernameValid === false ? styles.inputInvalid : ''}`}
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={e => { setUsername(e.target.value); setTouchedUsername(true); }}
-              onBlur={() => setTouchedUsername(true)}
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              disabled={loading || !locationAllowed}
-            />
-            {usernameValid !== null && (
-              <span className={`${styles.fieldIcon} ${usernameValid ? styles.fieldIconPass : styles.fieldIconFail}`}>
-                {usernameValid ? '✓' : '✗'}
-              </span>
-            )}
+            <div className={styles.fieldWrap}>
+              <input className={`${styles.input} ${eValid === true ? styles.inputValid : ''} ${eValid === false ? styles.inputInvalid : ''}`}
+                type="email" placeholder="Email" value={email}
+                onChange={e => { setEmail(e.target.value); setTouchedE(true); }}
+                onBlur={() => setTouchedE(true)} disabled={loading} />
+              {eValid !== null && <span className={`${styles.fieldIcon} ${eValid ? styles.pass : styles.fail}`}>{eValid ? '✓' : '✗'}</span>}
+            </div>
+            {eValid === false && <div className={styles.hint}>Enter a valid email address</div>}
+
+            <div className={styles.fieldWrap}>
+              <input className={`${styles.input} ${pValid === true ? styles.inputValid : ''} ${pValid === false ? styles.inputInvalid : ''}`}
+                type="password" placeholder="Password" value={password}
+                onChange={e => { setPassword(e.target.value); setTouchedP(true); }}
+                onBlur={() => setTouchedP(true)} disabled={loading} />
+              {pValid !== null && <span className={`${styles.fieldIcon} ${pValid ? styles.pass : styles.fail}`}>{pValid ? '✓' : '✗'}</span>}
+            </div>
+            {pValid === false && <div className={styles.hint}>Password must be at least 8 characters</div>}
+
+            <button className={styles.submitBtn} type="submit" disabled={!formValid}>Next</button>
+          </form>
+        )}
+
+        {/* ─── Step 2: Phone number ─────────────── */}
+        {step === 'phone' && (
+          <div className={styles.form}>
+            <div className={styles.sectionTitle}>Phone Verification</div>
+            <p className={styles.sectionHint}>We'll send a code to verify your number. Only numbers from supported countries are accepted.</p>
+
+            <div className={styles.phoneRow}>
+              <select className={styles.countrySelect} value={selectedCountry.code}
+                onChange={e => setSelectedCountry(COUNTRIES.find(c => c.code === e.target.value) || COUNTRIES[0])}
+                disabled={loading}>
+                {COUNTRIES.map(c => (
+                  <option key={c.code} value={c.code}>{c.flag} {c.dial}</option>
+                ))}
+              </select>
+              <input className={styles.input} type="tel" placeholder="Phone number"
+                value={phoneNumber} onChange={e => setPhoneNumber(e.target.value.replace(/[^\d]/g, ''))}
+                disabled={loading} />
+            </div>
+            <p className={styles.sectionHint}>e.g. {selectedCountry.dial} followed by your number</p>
+
+            <button className={styles.submitBtn} onClick={handleSendCode}
+              disabled={loading || !phoneNumber.trim()}>
+              {loading ? 'Sending...' : 'Send Code'}
+            </button>
+            <button className={styles.linkBtn} onClick={() => { setStep('form'); setError(''); }}>Back</button>
           </div>
-          {usernameValid === false && (
-            <div className={styles.fieldHint}>3+ characters, letters/numbers/underscores/dots only</div>
-          )}
+        )}
 
-          {/* Email */}
-          <div className={styles.fieldWrap}>
-            <input
-              className={`${styles.input} ${emailValid === true ? styles.inputValid : ''} ${emailValid === false ? styles.inputInvalid : ''}`}
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => { setEmail(e.target.value); setTouchedEmail(true); }}
-              onBlur={() => setTouchedEmail(true)}
-              disabled={loading || !locationAllowed}
-            />
-            {emailValid !== null && (
-              <span className={`${styles.fieldIcon} ${emailValid ? styles.fieldIconPass : styles.fieldIconFail}`}>
-                {emailValid ? '✓' : '✗'}
-              </span>
-            )}
+        {/* ─── Step 3: SMS code ─────────────────── */}
+        {step === 'code' && (
+          <div className={styles.form}>
+            <div className={styles.sectionTitle}>Enter verification code</div>
+            <p className={styles.sectionHint}>Enter the 6-digit code sent to {fullPhone}</p>
+
+            <input className={styles.codeInput} type="text" inputMode="numeric" maxLength={6}
+              placeholder="000000" value={code}
+              onChange={e => setCode(e.target.value.replace(/[^\d]/g, '').slice(0, 6))}
+              autoFocus disabled={loading} />
+
+            <button className={styles.submitBtn} onClick={handleVerifyAndRegister}
+              disabled={loading || code.length !== 6}>
+              {loading ? 'Verifying...' : 'Create Account'}
+            </button>
+
+            <div className={styles.resendRow}>
+              {countdown > 0 ? (
+                <span className={styles.resendWait}>Resend in {countdown}s</span>
+              ) : (
+                <button className={styles.linkBtn} onClick={handleResend} disabled={loading}>Resend Code</button>
+              )}
+              <button className={styles.linkBtn} onClick={() => { setStep('phone'); setCode(''); setError(''); }}>Change Number</button>
+            </div>
           </div>
-          {emailValid === false && (
-            <div className={styles.fieldHint}>Enter a valid email address</div>
-          )}
+        )}
 
-          {/* Password */}
-          <div className={styles.fieldWrap}>
-            <input
-              className={`${styles.input} ${passwordValid === true ? styles.inputValid : ''} ${passwordValid === false ? styles.inputInvalid : ''}`}
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={e => { setPassword(e.target.value); setTouchedPassword(true); }}
-              onBlur={() => setTouchedPassword(true)}
-              disabled={loading || !locationAllowed}
-            />
-            {passwordValid !== null && (
-              <span className={`${styles.fieldIcon} ${passwordValid ? styles.fieldIconPass : styles.fieldIconFail}`}>
-                {passwordValid ? '✓' : '✗'}
-              </span>
-            )}
-          </div>
-          {passwordValid === false && (
-            <div className={styles.fieldHint}>Password must be at least 8 characters</div>
-          )}
-
-          <p className={styles.terms}>
-            By signing up, you agree to our{' '}
-            <a href="https://infotograf.com/terms" target="_blank" rel="noopener noreferrer">Terms</a> and{' '}
-            <a href="https://infotograf.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
-          </p>
-
-          <button
-            className={styles.submitBtn}
-            type="submit"
-            disabled={!canSubmit}
-          >
-            {loading ? 'Creating account...' : 'Create Account'}
-          </button>
-        </form>
+        <p className={styles.terms}>
+          By signing up, you agree to our{' '}
+          <a href="https://infotograf.com/terms" target="_blank" rel="noopener noreferrer">Terms</a> and{' '}
+          <a href="https://infotograf.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+        </p>
 
         <div className={styles.footer}>
           Already have an account?{' '}

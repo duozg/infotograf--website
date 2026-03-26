@@ -33,101 +33,6 @@
   line-height: 1.4;
 }
 
-/* ─── Location status banner ────────────────── */
-
-.statusBanner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: var(--radius);
-  font-size: 13px;
-  margin-bottom: 16px;
-  transition: background 0.3s, border-color 0.3s;
-  border: 1px solid transparent;
-}
-
-.status_checking {
-  background: var(--input);
-  color: var(--t2);
-}
-
-.status_allowed {
-  background: rgba(76, 175, 80, 0.08);
-  border-color: rgba(76, 175, 80, 0.25);
-  color: var(--t1);
-}
-
-.status_vpn {
-  background: rgba(255, 152, 0, 0.08);
-  border-color: rgba(255, 152, 0, 0.3);
-  color: #e68a00;
-}
-
-.status_blocked {
-  background: rgba(237, 73, 86, 0.08);
-  border-color: rgba(237, 73, 86, 0.25);
-  color: var(--red);
-}
-
-.status_error {
-  background: rgba(255, 152, 0, 0.08);
-  border-color: rgba(255, 152, 0, 0.3);
-  color: #e68a00;
-}
-
-.statusSpinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--border);
-  border-top-color: var(--tlink);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  flex-shrink: 0;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.statusFlag {
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.statusCheck {
-  margin-left: auto;
-  color: #4caf50;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.statusWarn {
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.statusBlock {
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.retryBtn {
-  margin-left: auto;
-  background: none;
-  border: 1px solid currentColor;
-  border-radius: var(--radius-btn);
-  color: inherit;
-  font-size: 12px;
-  padding: 3px 10px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.retryBtn:hover {
-  opacity: 0.8;
-}
-
 /* ─── Form ──────────────────────────────────── */
 
 .form {
@@ -155,22 +60,10 @@
 
 .input::placeholder { color: var(--t2); }
 .input:focus { border-color: var(--tlink); }
-
-.inputValid {
-  border-color: #4caf50;
-}
-
-.inputValid:focus {
-  border-color: #4caf50;
-}
-
-.inputInvalid {
-  border-color: var(--red);
-}
-
-.inputInvalid:focus {
-  border-color: var(--red);
-}
+.inputValid { border-color: #4caf50; }
+.inputValid:focus { border-color: #4caf50; }
+.inputInvalid { border-color: var(--red); }
+.inputInvalid:focus { border-color: var(--red); }
 
 .fieldIcon {
   position: absolute;
@@ -182,31 +75,96 @@
   pointer-events: none;
 }
 
-.fieldIconPass {
-  color: #4caf50;
-}
+.pass { color: #4caf50; }
+.fail { color: var(--red); }
 
-.fieldIconFail {
-  color: var(--red);
-}
-
-.fieldHint {
+.hint {
   font-size: 11px;
   color: var(--red);
   padding: 0 2px;
   margin-top: -4px;
 }
 
-.terms {
+.error {
+  color: var(--red);
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* ─── Phone step ────────────────────────────── */
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--t1);
+  text-align: center;
+}
+
+.sectionHint {
   font-size: 12px;
   color: var(--t2);
   text-align: center;
   line-height: 1.4;
 }
 
-.terms a {
-  color: var(--tlink);
+.phoneRow {
+  display: flex;
+  gap: 8px;
 }
+
+.countrySelect {
+  width: 100px;
+  padding: 10px 6px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--t1);
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.countrySelect:focus { border-color: var(--tlink); }
+
+/* ─── Code step ─────────────────────────────── */
+
+.codeInput {
+  width: 100%;
+  padding: 14px 12px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--t1);
+  font-size: 24px;
+  font-weight: 600;
+  font-family: monospace;
+  text-align: center;
+  letter-spacing: 8px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.codeInput::placeholder {
+  color: var(--t2);
+  letter-spacing: 8px;
+}
+
+.codeInput:focus { border-color: var(--tlink); }
+
+.resendRow {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.resendWait {
+  color: var(--t2);
+}
+
+/* ─── Buttons ───────────────────────────────── */
 
 .submitBtn {
   width: 100%;
@@ -224,15 +182,35 @@
 
 .submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.error {
-  color: var(--red);
+.linkBtn {
+  background: none;
+  border: none;
+  color: var(--tlink);
   font-size: 13px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.linkBtn:hover { text-decoration: underline; }
+.linkBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Footer ────────────────────────────────── */
+
+.terms {
+  font-size: 12px;
+  color: var(--t2);
   text-align: center;
+  line-height: 1.4;
+  margin-top: 16px;
+}
+
+.terms a {
+  color: var(--tlink);
 }
 
 .footer {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 16px;
   font-size: 13px;
   color: var(--t2);
 }
@@ -241,10 +219,3 @@
   color: var(--tlink);
   font-weight: 600;
 }
-
-/* Backward compat aliases */
-.layout { display: contents; }
-.leftSide { display: none; }
-.rightSide { display: contents; }
-.formCard { display: contents; }
-.formSection { display: contents; }
