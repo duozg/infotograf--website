@@ -1,2 +1,4 @@
 _out/
 node_modules/
+app/dist/
+app/assets/
