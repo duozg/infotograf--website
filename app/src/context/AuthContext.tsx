@@ -94,7 +94,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const register = useCallback(async (username: string, email: string, password: string) => {
-    const data = await api.post<AuthResponse>('/auth/register', { username, email, password });
+    const data = await api.post<AuthResponse>('/auth/register', {
+      username,
+      email,
+      password,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      locale: navigator.language,
+      language: navigator.languages?.[0] || navigator.language,
+    });
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     localStorage.setItem('user', JSON.stringify(data.user));

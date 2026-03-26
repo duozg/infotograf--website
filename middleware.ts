@@ -29,8 +29,30 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
+// Countries allowed to register — Five Eyes + EU 27
+const ALLOWED_COUNTRIES = new Set([
+  "AU","US","GB","CA","NZ","VN",
+  "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR",
+  "DE","GR","HU","IE","IT","LV","LT","LU","MT","NL",
+  "PL","PT","RO","SK","SI","ES","SE",
+]);
+
 export default async function middleware(request: Request): Promise<Response | undefined> {
   const url = new URL(request.url);
+
+  // ── Geo-block registration page for non-whitelisted countries ──
+  if (url.pathname === "/register") {
+    const country = (request as any).geo?.country as string | undefined;
+    if (country && !ALLOWED_COUNTRIES.has(country)) {
+      return new Response(
+        `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Not Available</title>` +
+        `<style>body{font-family:-apple-system,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#1c1a1b;color:#e8e6e7;}` +
+        `.msg{text-align:center;max-width:400px;padding:40px;}.msg h1{font-weight:200;font-size:24px;margin-bottom:16px;}.msg p{color:#8a8889;font-size:15px;}</style></head>` +
+        `<body><div class="msg"><h1>Infotograf is not available in your region yet.</h1><p>We're working on expanding to more countries.</p></div></body></html>`,
+        { status: 403, headers: { "Content-Type": "text/html; charset=utf-8" } }
+      );
+    }
+  }
 
   // ── @username public profile routes ──
   const atMatch = url.pathname.match(/^\/@([a-zA-Z0-9._]+)$/);
