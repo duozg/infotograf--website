@@ -13,7 +13,8 @@
     { "source": "/guidelines", "destination": "/guidelines.html" },
     { "source": "/fediverse",  "destination": "/fediverse.html" },
     { "source": "/donate",     "destination": "/donate.html" },
-    { "source": "/verified",   "destination": "/verified.html" },
+    { "source": "/verified",      "destination": "/verified.html" },
+    { "source": "/child-safety", "destination": "/child-safety.html" },
     { "source": "/(.*)",       "destination": "/index.html" }
   ],
   "headers": [
