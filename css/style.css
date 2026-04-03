@@ -175,6 +175,13 @@ body {
   line-height: 1.5;
 }
 
+.hero-cta-group {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .hero-cta {
   display: inline-block;
   padding: 14px 48px;
@@ -187,6 +194,11 @@ body {
   font-weight: 600;
   text-decoration: none;
   transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.hero-cta--secondary {
+  background: linear-gradient(to bottom, #444, #2a2a2a);
+  border-color: #555;
 }
 
 .hero-cta:hover {
