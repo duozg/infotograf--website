@@ -150,12 +150,20 @@ export function LoginPage() {
           <div className={styles.appLinks}>
             <span>Get the app</span>
             <a
-              href="https://apps.apple.com/app/infotograf/id6746817898"
+              href="https://apps.apple.com/app/id6761331537"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.storeBtn}
             >
               App Store
+            </a>
+            <a
+              href="https://play.google.com/apps/testing/com.infotograf.android"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.storeBtn}
+            >
+              Google Play
             </a>
           </div>
         </div>
